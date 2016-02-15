@@ -144,18 +144,18 @@ void SP2::Init()
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axis", 1000, 1000, 1000);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1));
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//blood-valley_ft.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//orbital-element_ft.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1));
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//blood-valley_bk.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//orbital-element_bk.tga");
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1));
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//blood-valley_rt.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//orbital-element_rt.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1));
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//blood-valley_lf.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//orbital-element_lf.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1));
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//blood-valley_up.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//orbital-element_up.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//blood-valley_dn.tga");
-
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//orbital-element_dn.tga");
+	
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 50);
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//mars_floor.tga");
