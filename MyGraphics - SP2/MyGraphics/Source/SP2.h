@@ -30,6 +30,12 @@ class SP2 : public Scene
 		GEO_LIGHTBALL,
 		GEO_FLOOR,
 		GEO_TEXT,
+		GEO_INTERNAL_TOP,
+		GEO_INTERNAL_LEFT,
+		GEO_INTERNAL_RIGHT,
+		GEO_INTERNAL_BOTTOM,
+		GEO_INTERNAL_BACK,
+		GEO_INTERNAL_FRONT,
 
 		GEO_HITBOX,
 
@@ -103,6 +109,7 @@ public:
 private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
+	void RenderInternalSkybox();
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderObjs(Mesh* mesh, bool light);
 	void RenderText(Mesh* mesh, std::string text, Color color);

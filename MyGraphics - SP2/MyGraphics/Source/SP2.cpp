@@ -160,6 +160,22 @@ void SP2::Init()
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//grass.tga");
 
+
+
+	//INTERNAL SKYBOX
+	meshList[GEO_INTERNAL_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_FRONT]->textureID = LoadTGA("Image//sides.tga");
+	meshList[GEO_INTERNAL_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_BACK]->textureID = LoadTGA("Image//sides.tga");
+	meshList[GEO_INTERNAL_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_LEFT]->textureID = LoadTGA("Image//sides.tga");
+	meshList[GEO_INTERNAL_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_RIGHT]->textureID = LoadTGA("Image//sides.tga");
+	meshList[GEO_INTERNAL_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_TOP]->textureID = LoadTGA("Image//roofnew.tga");
+	meshList[GEO_INTERNAL_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
+	meshList[GEO_INTERNAL_BOTTOM]->textureID = LoadTGA("Image//floor.tga");
+
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("sphere", Color(1, 1, 1));
 	meshList[GEO_HITBOX] = MeshBuilder::GenerateCube("hitbox", Color(1, 0, 0));
 
@@ -215,6 +231,51 @@ void SP2::Init()
 	Object* rightWall = new Object();
 	rightWall->hitbox.SetSize(10, 100, 100);
 	rightWall->SetPosition(55.f, 50.f, 0);
+
+
+	//INTERNAL SKYBOX BOUNDARIES
+	Object* internalWall_Ground = new Object();
+	internalWall_Ground->hitbox.SetSize(15.f, 1, 5);
+	internalWall_Ground->SetPosition(5, 17.5f, 0);
+
+	Object* internalWall_Ground2 = new Object();
+	internalWall_Ground2->hitbox.SetSize(10.f, 1, 15);
+	internalWall_Ground2->SetPosition(17.5, 17.5f, 0);
+
+
+	Object* internalWall_Right = new Object();
+	internalWall_Right->hitbox.SetSize(15, 5, 1);
+	internalWall_Right->SetPosition(5, 20.f, 3.f);
+
+	Object* internalWall_Right2 = new Object();
+	internalWall_Right2->hitbox.SetSize(10, 5, 1);
+	internalWall_Right2->SetPosition(17.5f, 20.f, 8.f);
+
+	Object* internalWall_Left = new Object();
+	internalWall_Left->hitbox.SetSize(15, 5, 1);
+	internalWall_Left->SetPosition(5, 20.f, -3.f);
+
+	Object* internalWall_Left2 = new Object();
+	internalWall_Left2->hitbox.SetSize(10, 5, 1);
+	internalWall_Left2->SetPosition(17.5f, 20.f, -8.f);
+
+	Object* internalWall_Back = new Object();
+	internalWall_Back->hitbox.SetSize(1, 5, 5);
+	internalWall_Back->SetPosition(-2.5f, 20.f, 0.f);
+
+	Object* internalWall_Back2 = new Object();
+	internalWall_Back2->hitbox.SetSize(1, 5, 5);
+	internalWall_Back2->SetPosition(12.5f, 20.f, 5.f);
+
+	Object* internalWall_Back3 = new Object();
+	internalWall_Back3->hitbox.SetSize(1, 5, 5);
+	internalWall_Back3->SetPosition(12.5f, 20.f, -5.f);
+
+	Object* internalWall_Front = new Object();
+	internalWall_Front->hitbox.SetSize(1, 5, 15);
+	internalWall_Front->SetPosition(22.5f, 20.f, 0.f);
+
+
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -393,6 +454,11 @@ void SP2::Render()
 	modelStack.Translate(player.position.x, player.position.y, player.position.z);
 	RenderSkybox();
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderInternalSkybox();
+	modelStack.PopMatrix();
+
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
@@ -619,7 +685,271 @@ void SP2::RenderSkybox()
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
+
+	
+
 }
+
+void SP2::RenderInternalSkybox(){
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 20, -2.5f);
+	modelStack.Rotate(0, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_FRONT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 20, -2.5f);
+	modelStack.Rotate(0, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_FRONT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 20, -2.5f);
+	modelStack.Rotate(0, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_FRONT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 20, -7.5f);
+	modelStack.Rotate(0, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_FRONT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 20, -7.5f);
+	modelStack.Rotate(0, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_FRONT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 20, 2.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BACK], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 20, 2.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BACK], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 20, 2.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BACK], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 20, 7.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BACK], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 20, 7.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BACK], false);
+	modelStack.PopMatrix();
+
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-2.5f, 20, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_LEFT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(12.5f, 20, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_LEFT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(12.5f, 20, -5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_LEFT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(22.5f, 20, 0);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(22.5f, 20, 5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(22.5f, 20, -5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 22.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 22.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 22.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 22.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 22.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 22.5f, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 22.5f, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 22.5f, -5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 22.5f, -5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_TOP], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 17.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5,5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 17.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 17.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 17.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+	
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 17.5f, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 17.5f, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 17.5f, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 17.5f, -5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(15, 17.5f, -5);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_INTERNAL_BOTTOM], false);
+	modelStack.PopMatrix();
+}
+
 
 void SP2::ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs)
 {
@@ -642,10 +972,10 @@ void SP2::ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs)
 			objArrangementData.push_back(transX);	// 2 - X translation
 			objArrangementData.push_back(transZ);	// 3 - Z translation
 
-			Object* obj = new Object();
-			obj->hitbox.SetSize(scaleH, scaleV, scaleH);
-			obj->SetPosition(transX, scaleV / 2, transZ);
-			obj->SetHealth(15);
+			//Object* obj = new Object();
+			//obj->hitbox.SetSize(scaleH, scaleV, scaleH);
+			//obj->SetPosition(transX, scaleV / 2, transZ);
+			//obj->SetHealth(15);
 		}
 	}
 }
