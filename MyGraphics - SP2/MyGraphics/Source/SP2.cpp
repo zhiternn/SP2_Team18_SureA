@@ -277,7 +277,7 @@ void SP2::Update(double dt)
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
 	}
-	if (Application::IsKeyPressed('T') && readyToUse_SHOOT >= 2.f){
+	if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
 		readyToUse_SHOOT = 0.f;
 		bulletsList.push_back(new Projectile(
 			Vector3(player.position.x, player.position.y, player.position.z),
