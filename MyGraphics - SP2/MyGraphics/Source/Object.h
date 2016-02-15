@@ -21,6 +21,7 @@ public:
 private:
 	int HP;
 	bool isInvulnerable;
+	bool isDead;
 };
 
 #endif

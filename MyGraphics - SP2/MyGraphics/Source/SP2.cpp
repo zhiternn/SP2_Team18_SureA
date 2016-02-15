@@ -8,6 +8,7 @@
 #include "LoadTGA.h"
 #include "Camera.h"
 #include "Effect_Explosion.h"
+#include "Waypoint.h"
 
 SP2::SP2()
 {
@@ -178,6 +179,7 @@ void SP2::Init()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("sphere", Color(1, 1, 1));
 	meshList[GEO_HITBOX] = MeshBuilder::GenerateCube("hitbox", Color(1, 0, 0));
+	meshList[GEO_HITBOX]->material.kAmbient.Set(0, 0, 0);
 
 	meshList[GEO_PORTAL_BODY] = MeshBuilder::GenerateOBJ("model_air", "OBJ//portal.obj");
 	meshList[GEO_PORTAL_BODY]->material.SetToChrome();
@@ -213,7 +215,7 @@ void SP2::Init()
 
 	//BOUNDARIES
 	Object* floor = new Object();
-	floor->hitbox.SetSize(100, 10, 100);
+	floor->hitbox.SetSize(100, 9.5f, 100);
 	floor->SetPosition(0, -5.f, 0);
 
 	Object* frontWall = new Object();
@@ -275,7 +277,7 @@ void SP2::Init()
 	internalWall_Front->hitbox.SetSize(1, 5, 15);
 	internalWall_Front->SetPosition(22.5f, 20.f, 0.f);
 
-
+	GenerateWaypoints(100, 100);
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -316,7 +318,6 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 
 	mesh->Render();
-
 
 	if (mesh->textureID > 0)
 	{
@@ -510,9 +511,22 @@ void SP2::Render()
 		RenderExplosion();
 		modelStack.PopMatrix();
 	}
+
+	for (int i = 0; i < Waypoint::waypointList.size(); ++i){
+		modelStack.PushMatrix();
+		modelStack.Translate(
+			Waypoint::waypointList[i]->position.x,
+			Waypoint::waypointList[i]->position.y,
+			Waypoint::waypointList[i]->position.z
+			);
+		modelStack.Scale(1, 1, 1);
+		//RenderMesh(meshList[GEO_HITBOX], true);
+		modelStack.PopMatrix();
+	}
+
 	// HIT BOXES
 	if (showHitBox){
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
 			modelStack.PushMatrix();
 			modelStack.Translate(
@@ -528,7 +542,7 @@ void SP2::Render()
 			RenderMesh(meshList[GEO_HITBOX], false);
 			modelStack.PopMatrix();
 		}
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
 	if ((player.position - portal.position).Length() < 2.f){
@@ -976,6 +990,11 @@ void SP2::ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs)
 			//obj->hitbox.SetSize(scaleH, scaleV, scaleH);
 			//obj->SetPosition(transX, scaleV / 2, transZ);
 			//obj->SetHealth(15);
+
+			Object* obj = new Object();
+			obj->hitbox.SetSize(scaleH, scaleV, scaleH);
+			obj->SetPosition(transX, scaleV / 2, transZ);
+			obj->SetHealth(15);
 		}
 	}
 }

@@ -120,6 +120,23 @@ bool Hitbox::CheckHitBox(Hitbox lhs, Vector3& pos, Vector3 oldPos, Hitbox* selfH
 	return collided;
 }
 
+bool Hitbox::CheckHitBox(Hitbox lhs)
+{
+	for (size_t i = 0; i < Object::objectList.size(); ++i){
+		if (
+			lhs.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
+			lhs.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
+			lhs.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
+			lhs.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
+			lhs.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
+			lhs.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z
+			){
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Hitbox::CheckHitBox(Vector3 lhs)
 {
 	for (size_t i = 0; i < Object::objectList.size(); ++i){
