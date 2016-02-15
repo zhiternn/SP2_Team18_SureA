@@ -190,7 +190,7 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
-	meshList[GEO_Testitem] = MeshBuilder::GenerateOBJ("wall", "OBJ//wall.obj");
+	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
 	//Initializing transforming matrices
@@ -384,52 +384,8 @@ void SP2::Update(double dt)
 	{
 		PickUp();
 	}
-	//////////////////
-	//ITEM ANIMATION//
-	//////////////////
-
-	if (takeItem == true)
-	{
-		fly += (float(1 * dt));
-	}
-	if (fly > 1)
-	{
-		takeItem = false;
-		if (cItemGrow == false)
-		{
-			ItemGrow = true;
-		}
-		else
-			ItemGrow = false;
-	}
-	if (ItemGrow == true && growingbool == true)
-	{
-		growing -= (float(300 * dt));
-	}
-	if (ItemGrow == true && growingbool == false)
-	{
-		growing += (float(300 * dt));
-	}
-	if (growing < -1)
-	{
-		growingbool = false;
-		counter++;
-	}
-
-	if (growing > 30)
-	{
-		growingbool = true;
-		counter++;
-	}
-
-	if (counter > 11)
-	{
-		cItemGrow = true;
-	}
 	
-
-	//////////////////
-
+	PickUpAnimation(dt);
 
 	if (Application::IsKeyPressed(0x31)){
 		glEnable(GL_CULL_FACE);
@@ -518,25 +474,32 @@ void SP2::Render()
 	RenderSkybox();
 	modelStack.PopMatrix();
 
+	if (cItemGrow == false)
+	{
 		modelStack.PushMatrix();
-		modelStack.Translate(0, fly + 0,0);
+		modelStack.Translate(0, fly + 0.5, 0);
 		modelStack.Scale(growing/300 + 0.1, growing/300 + 0.1, growing/300 + 0.1);
-			modelStack.PushMatrix();
-				modelStack.Translate(0, 0, 0);
-				RenderMesh(meshList[GEO_Testitem], true);
-			modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0, 0);
+		RenderMesh(meshList[GEO_Testitem], true);
 		modelStack.PopMatrix();
-		if (cItemGrow)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
-			modelStack.Scale(0.1,0.1,0.1);
-			modelStack.PushMatrix();
-			modelStack.Translate(0, 0, 0);
-			RenderMesh(meshList[GEO_Testitem], true);
-			modelStack.PopMatrix();
-			modelStack.PopMatrix();
-		}
+		modelStack.PopMatrix();
+	}
+	if (cItemGrow)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
+		modelStack.Scale(0.1,0.1,0.1);
+		modelStack.PushMatrix();
+		modelStack.Translate(-player.right.x * 5, -player.right.y * 5 - 3.f, -player.right.z * 5);
+		modelStack.PushMatrix();
+		modelStack.Rotate(rotateitem, 0, 1, 0);
+		RenderMesh(meshList[GEO_Testitem], true);
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
 	modelStack.PopMatrix();
@@ -630,9 +593,7 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
-<<<<<<< Updated upstream
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-=======
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
@@ -643,7 +604,6 @@ void SP2::Render()
 		//RenderTextOnScreen(meshList[GEO_TEXT], "counter " + std::to_string(counter), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
 	}
 
->>>>>>> Stashed changes
 }
 
 void SP2::Exit()
@@ -1058,7 +1018,6 @@ void SP2::RenderInternalSkybox(){
 	modelStack.PopMatrix();
 }
 
-
 void SP2::ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs)
 {
 	int fromX = -sizeX*0.5;
@@ -1165,5 +1124,53 @@ void SP2::PickUp()
 
 void SP2::PickUpAnimation(double dt)
 {
+	//////////////////
+	//ITEM ANIMATION//
+	//////////////////
 
+	if (takeItem == true)
+	{
+		fly += (float(1 * dt));
+	}
+	if (fly > 1)
+	{
+		takeItem = false;
+		if (cItemGrow == false)
+		{
+			ItemGrow = true;
+		}
+		else
+			ItemGrow = false;
+	}
+	if (ItemGrow == true && growingbool == true)
+	{
+		growing -= (float(1000 * dt));
+	}
+	if (ItemGrow == true && growingbool == false)
+	{
+		growing += (float(1000 * dt));
+	}
+	if (growing < -1)
+	{
+		growingbool = false;
+		counter++;
+	}
+
+	if (growing > 30)
+	{
+		growingbool = true;
+		counter++;
+	}
+
+	if (counter > 11)
+	{
+		cItemGrow = true;
+	}
+	if (cItemGrow == true)
+	{
+		rotateitem += (float(1000 * dt));
+	}
+	///////////////////
+	///ITEM ANIMATION//
+	///////////////////
 }

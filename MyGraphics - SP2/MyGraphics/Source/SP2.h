@@ -147,6 +147,7 @@ private:
 
 	float fly;//item floats
 	float growing;//item grows.
+	float rotateitem;//itemRotation
 
 	float readyToUse;
 	float readyToInteract;
