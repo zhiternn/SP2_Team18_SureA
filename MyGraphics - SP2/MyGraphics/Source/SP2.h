@@ -36,6 +36,7 @@ class SP2 : public Scene
 		GEO_INTERNAL_BOTTOM,
 		GEO_INTERNAL_BACK,
 		GEO_INTERNAL_FRONT,
+		GEO_TEST,
 
 		GEO_HITBOX,
 
@@ -137,6 +138,7 @@ private:
 
 	bool enableLight;
 	bool showHitBox;
+	bool maze1 = false;
 
 	bool itemText;//item
 	bool takeItem;//item

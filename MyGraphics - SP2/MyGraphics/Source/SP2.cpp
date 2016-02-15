@@ -190,8 +190,14 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
+<<<<<<< Updated upstream
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
+=======
+	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
+	meshList[GEO_TEST]->textureID = LoadTGA("Image//test.tga");
+
+>>>>>>> Stashed changes
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -335,9 +341,32 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-
+#include <iostream>
 void SP2::Update(double dt)
 {
+	//double mouseX, mouseY;
+	//Application::GetMouseMovement(mouseX, mouseY);
+	//std::cout << mouseX << "------------" << mouseY << std::endl;
+
+	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
+	//	std::cout << "test" << std::endl;
+	//	maze1 == true;
+	//}
+	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
+	//	std::cout << "NAICE" << std::endl;
+	//	maze1 == true;
+	//}
+	//else{
+	//	std::cout << "died" << std::endl;
+	//}
+
+	//else{
+	//	std::cout << "diedtest" << std::endl;
+	//} 
+
+
+
+
 	player.Update(dt);
 
 	UpdatePortal(dt);
@@ -531,6 +560,11 @@ void SP2::Render()
 		portal.position.z
 		);
 	RenderPortal();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+
+	RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100,100,0,0);
 	modelStack.PopMatrix();
 
 	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
