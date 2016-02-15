@@ -19,9 +19,16 @@ public:
 	}
 	~Waypoint();
 
+	void Reset()
+	{
+		H = G = F = 0.f;
+
+		parent = nullptr;
+	}
+
 	static vector<Waypoint*> waypointList;
 
-	//Adjacent Distance from target to self (even through invalid nodes)
+	//Distance between note and target
 	float H; // Heuristic
 	//Distance between each Waypoint
 	float G; // Movement Cost
@@ -31,9 +38,9 @@ public:
 	Vector3 position;
 
 	Waypoint* parent; // A node to reach this node
-};
+}; 
 vector<Waypoint*> Waypoint::waypointList;
-#include <iostream>
+
 void GenerateWaypoints(int sizeX, int sizeZ)
 {
 	Hitbox forWaypoint1;
@@ -62,6 +69,12 @@ void GenerateWaypoints(int sizeX, int sizeZ)
 			if (!Hitbox::CheckHitBox(forWaypoint4) && forWaypoint4.position.x < sizeX / 2 && forWaypoint4.position.x > -sizeX / 2 && forWaypoint4.position.z < sizeZ / 2 && forWaypoint4.position.z > -sizeZ / 2)
 				Waypoint::waypointList.push_back(new Waypoint(forWaypoint4.position));
 		}
+	}
+}
+
+void ResetWaypoints(){
+	for (size_t i = 0; i < Waypoint::waypointList.size(); ++i){
+		Waypoint::waypointList[i]->Reset();
 	}
 }
 
