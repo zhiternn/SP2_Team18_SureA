@@ -156,9 +156,9 @@ void SP2::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//orbital-element_dn.tga");
 	
-	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 50);
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 15);
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
-	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//mars_floor.tga");
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//grass.tga");
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("sphere", Color(1, 1, 1));
 	meshList[GEO_HITBOX] = MeshBuilder::GenerateCube("hitbox", Color(1, 0, 0));
