@@ -66,7 +66,6 @@ void SP2::Init()
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 
-
 	// Use our shader
 	glUseProgram(m_programID);
 
@@ -191,6 +190,9 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
+	meshList[GEO_Testitem] = MeshBuilder::GenerateOBJ("wall", "OBJ//wall.obj");
+	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
+
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 	screenX /= 20;
@@ -202,8 +204,17 @@ void SP2::Init()
 	readyToUse_HITBOX = 2.f;
 	readyToUse_SHOOT = 2.f;
 	readyToInteract = 2.f;
+
 	enableLight = true;
 	showHitBox = false;
+
+	itemText = false;//item
+	takeItem = false;//item
+	ItemGrow = false;//item
+	cItemGrow = false;//item
+	fly = 0;//item
+	growing = 0;//item grows.
+
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 
@@ -369,6 +380,57 @@ void SP2::Update(double dt)
 		}
 	}
 
+	if (Application::IsKeyPressed('F'))
+	{
+		PickUp();
+	}
+	//////////////////
+	//ITEM ANIMATION//
+	//////////////////
+
+	if (takeItem == true)
+	{
+		fly += (float(1 * dt));
+	}
+	if (fly > 1)
+	{
+		takeItem = false;
+		if (cItemGrow == false)
+		{
+			ItemGrow = true;
+		}
+		else
+			ItemGrow = false;
+	}
+	if (ItemGrow == true && growingbool == true)
+	{
+		growing -= (float(300 * dt));
+	}
+	if (ItemGrow == true && growingbool == false)
+	{
+		growing += (float(300 * dt));
+	}
+	if (growing < -1)
+	{
+		growingbool = false;
+		counter++;
+	}
+
+	if (growing > 30)
+	{
+		growingbool = true;
+		counter++;
+	}
+
+	if (counter > 11)
+	{
+		cItemGrow = true;
+	}
+	
+
+	//////////////////
+
+
 	if (Application::IsKeyPressed(0x31)){
 		glEnable(GL_CULL_FACE);
 	}
@@ -456,6 +518,25 @@ void SP2::Render()
 	RenderSkybox();
 	modelStack.PopMatrix();
 
+		modelStack.PushMatrix();
+		modelStack.Translate(0, fly + 0,0);
+		modelStack.Scale(growing/300 + 0.1, growing/300 + 0.1, growing/300 + 0.1);
+			modelStack.PushMatrix();
+				modelStack.Translate(0, 0, 0);
+				RenderMesh(meshList[GEO_Testitem], true);
+			modelStack.PopMatrix();
+		modelStack.PopMatrix();
+		if (cItemGrow)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
+			modelStack.Scale(0.1,0.1,0.1);
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0, 0);
+			RenderMesh(meshList[GEO_Testitem], true);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+		}
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
 	modelStack.PopMatrix();
@@ -549,7 +630,20 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+<<<<<<< Updated upstream
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+=======
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
+
+	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "counter " + std::to_string(counter), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	}
+
+>>>>>>> Stashed changes
 }
 
 void SP2::Exit()
@@ -1059,4 +1153,17 @@ void SP2::RenderExplosion()
 	modelStack.Scale(3, 3, 3);
 	RenderMesh(meshList[GEO_EXPLOSION], false);
 	modelStack.PopMatrix();
+}
+
+void SP2::PickUp()
+{
+	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
+	{
+		takeItem = true;
+	}
+}
+
+void SP2::PickUpAnimation(double dt)
+{
+
 }

@@ -44,6 +44,8 @@ class SP2 : public Scene
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
 
+		GEO_Testitem,//Test for pick up.
+
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -121,6 +123,9 @@ private:
 	void UpdatePortal(double dt);
 	void RenderExplosion();
 
+	void PickUp();
+	void PickUpAnimation(double dt);
+
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
@@ -132,6 +137,16 @@ private:
 
 	bool enableLight;
 	bool showHitBox;
+
+	bool itemText;//item
+	bool takeItem;//item
+	bool growingbool;//item
+	bool ItemGrow;//
+	bool cItemGrow;//item
+	int counter;
+
+	float fly;//item floats
+	float growing;//item grows.
 
 	float readyToUse;
 	float readyToInteract;
