@@ -535,7 +535,7 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 }
 
 void SP2::Exit()
