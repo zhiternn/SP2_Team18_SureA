@@ -39,6 +39,8 @@ class SP2 : public Scene
 		GEO_TEST,
 
 		GEO_HITBOX,
+		GEO_BASECAMP,
+		GEO_ENEMYSHIP,
 
 		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
