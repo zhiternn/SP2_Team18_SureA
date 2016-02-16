@@ -199,6 +199,13 @@ void SP2::Init()
 
 	meshList[GEO_ENEMYSHIP] = MeshBuilder::GenerateOBJ("enemyship", "OBJ//enemyShip.obj");
 	meshList[GEO_ENEMYSHIP]->textureID = LoadTGA("Image//enemyTex.tga");
+
+	meshList[GEO_TURRET] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret.obj");
+	meshList[GEO_TURRET]->textureID = LoadTGA("Image//turret.tga");
+
+	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
+	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
+
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 	screenX /= 20;
@@ -566,6 +573,17 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ENEMYSHIP], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(-15, -5.5, 15);
+	RenderMesh(meshList[GEO_TURRET], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(25, 0, -25);
+	modelStack.Scale(4, 4, 4);
+	RenderMesh(meshList[GEO_ALLYSHIP], true);
+	modelStack.PopMatrix();
+
 	if (cItemGrow == false)
 	{
 		modelStack.PushMatrix();
@@ -689,9 +707,9 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
-<<<<<<< 3f0fec58a41688c38ebefe8f9d778aed581b9692
+
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-=======
+
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
@@ -700,7 +718,7 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
->>>>>>> ed1519b82688c64a3cefd9891f2281d2c1404596
+
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
