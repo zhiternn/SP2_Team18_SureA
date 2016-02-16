@@ -189,15 +189,11 @@ void SP2::Init()
 	meshList[GEO_PORTAL_BACK]->textureID = LoadTGA("Image//portal_Back.tga");
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
-
-<<<<<<< Updated upstream
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
-=======
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//test.tga");
 
->>>>>>> Stashed changes
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -224,11 +220,11 @@ void SP2::Init()
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 
-	player.Init(Vector3(0, 5, 10), Vector3(0, 0, -1));
+	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
 
 	portal.hitbox.SetSize(4, 3, 1);
 	portal.hitbox.SetPivot(0, 1.3f, 0);
-	portal.SetPosition(0, 0, -49);
+	portal.SetPosition(0, 0, 48);
 
 	//BOUNDARIES
 	Object* floor = new Object();
@@ -564,7 +560,7 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 
-	RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100,100,0,0);
+	//RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100,100,0,0);
 	modelStack.PopMatrix();
 
 	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
@@ -628,7 +624,6 @@ void SP2::Render()
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
@@ -1111,6 +1106,7 @@ void SP2::UpdatePortal(double dt)
 void SP2::RenderPortal()
 {
 	modelStack.PushMatrix();
+	modelStack.Translate(0, 0.35f, 0);
 	modelStack.Scale(3, 3, 3);
 	RenderMesh(meshList[GEO_PORTAL_BODY], true);
 
@@ -1119,6 +1115,7 @@ void SP2::RenderPortal()
 
 	modelStack.Translate(0, 0.35f, 0);
 	modelStack.Scale(0.9f, 0.9f, 0.9f);
+	modelStack.Rotate(180, 1, 0, 0);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0.09f);
@@ -1161,6 +1158,7 @@ void SP2::PickUpAnimation(double dt)
 	//////////////////
 	//ITEM ANIMATION//
 	//////////////////
+
 
 	if (takeItem == true)
 	{
