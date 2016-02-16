@@ -302,7 +302,33 @@ void SP2::Init()
 	internalWall_Front->hitbox.SetSize(1, 5, 15);
 	internalWall_Front->SetPosition(22.5f, 20.f, 0.f);
 
+	//Base Camp
+	Object* CampWall_Right = new Object();
+	CampWall_Right->hitbox.SetSize(42, 10, 1);
+	CampWall_Right->SetPosition(0, 5.f, 49.f);
+
+	Object* CampWall_Left = new Object();
+	CampWall_Left->hitbox.SetSize(42, 10, 1);
+	CampWall_Left->SetPosition(0, 5.f, 29);
+
+	Object* CampWall_Back = new Object();
+	CampWall_Back->hitbox.SetSize(1, 5, 8);
+	CampWall_Back->SetPosition(21.f, 2.5f, 33.f);
+
+	Object* CampWall_Back2 = new Object();
+	CampWall_Back2->hitbox.SetSize(1, 5, 8);
+	CampWall_Back2->SetPosition(21.f, 2.5f, 45.5f);
+
+	Object* CampWall_Front = new Object();
+	CampWall_Front->hitbox.SetSize(1.5, 5, 8);
+	CampWall_Front->SetPosition(-20.5f, 2.5f, 45.5f);
+
+	Object* CampWall_Front2 = new Object();
+	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
+	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
+
 	GenerateWaypoints(100, 100);
+
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -352,7 +378,6 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 #include <iostream>
 void SP2::Update(double dt)
 {
-<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
@@ -366,10 +391,12 @@ void SP2::Update(double dt)
 	if (stateChanged && Application::state2D){
 		Application::SetMousePosition(500,950);
 	}
-	else{}
+	else{ }
 
-	if (!Application::state2D){
+	if (Application::state2D == false){
 		player.Update(dt);
+		std::cout << "testies" << std::endl;
+		
 	}
 	else{
 		double mouseX, mouseY;
@@ -400,7 +427,6 @@ void SP2::Update(double dt)
 
 	}
 	
-=======
 	//double mouseX, mouseY;
 	//Application::GetMouseMovement(mouseX, mouseY);
 	//std::cout << mouseX << "------------" << mouseY << std::endl;
@@ -420,9 +446,6 @@ void SP2::Update(double dt)
 	//else{
 	//	std::cout << "diedtest" << std::endl;
 	//} 
-
-	player.Update(dt);
->>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
 
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -561,8 +584,7 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
-	modelStack.Translate(-25, 0, -20);
+	modelStack.Translate(0, 0, 40);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
@@ -573,6 +595,7 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ENEMYSHIP], true);
 	modelStack.PopMatrix();
 
+<<<<<<< 92e4bedd11c99cedb6c9e9446ff5b2472ec81c3c
 	modelStack.PushMatrix();
 	modelStack.Translate(-15, -5.5, 15);
 	RenderMesh(meshList[GEO_TURRET], true);
@@ -610,9 +633,11 @@ void SP2::Render()
 		modelStack.PopMatrix();
 	}
 =======
+=======
+	
+
+>>>>>>> b550b62bca843952563545ebc315cace88dda763
 	RenderPickUpObj();
-	modelStack.PopMatrix();
->>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
 
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
@@ -684,7 +709,7 @@ void SP2::Render()
 
 	// HIT BOXES
 	if (showHitBox){
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
 			modelStack.PushMatrix();
 			modelStack.Translate(
@@ -700,7 +725,7 @@ void SP2::Render()
 			RenderMesh(meshList[GEO_HITBOX], false);
 			modelStack.PopMatrix();
 		}
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
 	if ((player.position - portal.position).Length() < 2.f){
@@ -717,8 +742,11 @@ void SP2::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+<<<<<<< 92e4bedd11c99cedb6c9e9446ff5b2472ec81c3c
 
 
+=======
+>>>>>>> b550b62bca843952563545ebc315cace88dda763
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
@@ -1351,7 +1379,7 @@ void SP2::RenderPickUpObj()
 	if (haveItem == false)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(0, fly + 0.5, +0);
+		modelStack.Translate(0, fly + 0.5, player.sprint1 + 0);
 		modelStack.Scale(growing / 300 + 0.1, growing / 300 + 0.1, growing / 300 + 0.1);
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 0, 0);

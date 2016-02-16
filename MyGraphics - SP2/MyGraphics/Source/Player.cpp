@@ -25,7 +25,6 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 	hitbox.SetPosition(pos);
 }
 
-#include <iostream>
 void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 10.f;

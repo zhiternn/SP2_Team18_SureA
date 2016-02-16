@@ -147,19 +147,8 @@ private:
 	bool enableLight;
 	bool showHitBox;
 
-<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
-	bool itemText;//item
-	bool takeItem;//item
-	bool growingbool;//item
-	bool ItemGrow;//
-	bool cItemGrow;//item
-	bool state;
-	int counter;
 
-	float fly;//item floats
-	float growing;//item grows.
-	float rotateitem;//itemRotation
-=======
+
 	bool itemText;//item pickup
 	bool takeItem;//item pickup (Trigger to get item)
 	bool growingbool;//item pickup (Growing bigger or smaller)
@@ -177,8 +166,6 @@ private:
 	float fly;//item floats(pickup)
 	float growing;//item grows.(pickup)
 	float rotateitem;//itemRotation(pickup)
->>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
-
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;
