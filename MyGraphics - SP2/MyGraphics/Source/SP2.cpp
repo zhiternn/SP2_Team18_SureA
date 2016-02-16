@@ -192,7 +192,7 @@ void SP2::Init()
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
-	meshList[GEO_TEST]->textureID = LoadTGA("Image//test.tga");
+	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
 
 
 	//Initializing transforming matrices
@@ -340,30 +340,53 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 #include <iostream>
 void SP2::Update(double dt)
 {
-	//double mouseX, mouseY;
-	//Application::GetMouseMovement(mouseX, mouseY);
-	//std::cout << mouseX << "------------" << mouseY << std::endl;
+	bool stateChanged = false;
+	if (Application::IsKeyPressed('O')){
+		Application::state2D = true;
+		stateChanged = true;
 
-	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
-	//	std::cout << "test" << std::endl;
-	//	maze1 == true;
-	//}
-	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
-	//	std::cout << "NAICE" << std::endl;
-	//	maze1 == true;
-	//}
-	//else{
-	//	std::cout << "died" << std::endl;
-	//}
+	}
+	else if (Application::IsKeyPressed('P')){
+		Application::state2D = false;
+		stateChanged = true;
+	}
+	if (stateChanged && Application::state2D){
+		Application::SetMousePosition(500,950);
+	}
+	else{}
 
-	//else{
-	//	std::cout << "diedtest" << std::endl;
-	//} 
+	if (!Application::state2D){
+		player.Update(dt);
+	}
+	else{
+		double mouseX, mouseY;
+		Application::GetMouseMovement(mouseX, mouseY);
+		std::cout << mouseX << "-----------|" << mouseY << std::endl;
+		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
+			std::cout << "test" << std::endl;
+		}
+		else if (mouseX>-43 && mouseX< 135 && mouseY<-25 && mouseY>-350){
+			std::cout << "test2" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
+			std::cout << "test3" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
+			std::cout << "test4" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>290){
+			std::cout << "test5" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
+			std::cout << "test6" << std::endl;
+		}
+		else{
+			Application::state2D = false;
+			std::cout << "die" << std::endl;
+		}
 
-
-
-
-	player.Update(dt);
+	}
+	
 
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -445,10 +468,11 @@ void SP2::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Vector3 camPos, camTar, camUp;
-	
+
 	camPos = player.camera.position;
 	camTar = player.camera.target;
 	camUp = player.camera.up;
+
 
 
 	viewStack.LoadIdentity();
@@ -557,11 +581,7 @@ void SP2::Render()
 		);
 	RenderPortal();
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-
-	//RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100,100,0,0);
-	modelStack.PopMatrix();
+	
 
 	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
 	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
@@ -631,6 +651,11 @@ void SP2::Render()
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 		//RenderTextOnScreen(meshList[GEO_TEXT], "counter " + std::to_string(counter), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	}
+	if (Application::state2D == true){
+		modelStack.PushMatrix();
+		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
+		modelStack.PopMatrix();
 	}
 
 }

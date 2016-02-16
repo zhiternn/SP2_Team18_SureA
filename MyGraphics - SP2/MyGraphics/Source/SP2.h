@@ -144,6 +144,7 @@ private:
 	bool growingbool;//item
 	bool ItemGrow;//
 	bool cItemGrow;//item
+	bool state;
 	int counter;
 
 	float fly;//item floats

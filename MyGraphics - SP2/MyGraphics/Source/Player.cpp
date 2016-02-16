@@ -32,8 +32,7 @@ void Player::Update(double dt)
 	static const float MOVEMENT_SPEED = 5.f;
 
 	Vector3 oldPos = position;
-	int speedMultiplier = 1;
-	std::cout << sprint1 << std::endl;
+	int speedMultiplier = 2;
 
 	if (Application::IsKeyPressed(VK_SHIFT)){
 		if (tired == false){
@@ -60,18 +59,18 @@ void Player::Update(double dt)
 	}
 	if (Application::IsKeyPressed('S'))
 	{
-		position.x -= (view.x * speedMultiplier  * dt);
-		position.z -= (view.z * speedMultiplier  * dt);
+		position.x -= (view.x * speedMultiplier * dt);
+		position.z -= (view.z * speedMultiplier * dt);
 	}
 	if (Application::IsKeyPressed('A'))
 	{
-		position.x -= (right.x * speedMultiplier  * dt);
-		position.z -= (right.z * speedMultiplier  * dt);
+		position.x -= (right.x * speedMultiplier * dt);
+		position.z -= (right.z * speedMultiplier * dt);
 	}
 	if (Application::IsKeyPressed('D'))
 	{
-		position.x += (right.x * speedMultiplier  * dt);
-		position.z += (right.z * speedMultiplier  * dt);
+		position.x += (right.x * speedMultiplier * dt);
+		position.z += (right.z * speedMultiplier * dt);
 	}
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
@@ -95,6 +94,7 @@ void Player::Update(double dt)
 	right = rotate * right;
 	camera.up = rotate * camera.up;
 
+	
 	if (view.y < 0.95 && mouseY > 0 || view.y > -0.95 && mouseY < 0){
 		float pitch = (float)(mouseY * CAMERA_SPEED * dt);
 		rotate.SetToRotation(pitch, right.x, right.y, right.z);

@@ -16,6 +16,8 @@ GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
 
+bool Application::state2D;
+
 //Define an error callback
 static void error_callback(int error, const char* description)
 {
@@ -35,6 +37,11 @@ bool Application::IsKeyPressed(unsigned short key)
     return ((GetAsyncKeyState(key) & 0x8001) != 0);
 }
 
+void Application::SetMousePosition(double x, double y)
+{
+	glfwSetCursorPos(m_window, x, y);
+}
+
 void Application::GetMouseMovement(double& x, double& y)
 {
 	int sizeX = 0;
@@ -46,7 +53,20 @@ void Application::GetMouseMovement(double& x, double& y)
 	x = (sizeX / 2) - x;
 	y = (sizeY / 2) - y;
 
-	glfwSetCursorPos(m_window, sizeX / 2, sizeY / 2);
+	if (!state2D){
+		glfwSetCursorPos(m_window, sizeX / 2, sizeY / 2);
+
+		glfwSetInputMode(m_window,
+			GLFW_CURSOR,
+			GLFW_CURSOR_HIDDEN
+			);
+	}
+	else{
+		glfwSetInputMode(m_window,
+			GLFW_CURSOR,
+			GLFW_CURSOR_NORMAL
+			);
+	}
 }
 
 void Application::GetScreenSize(int& x, int& y)
@@ -93,7 +113,7 @@ void Application::Init()
 	//If the window couldn't be created
 	if (!m_window)
 	{
-		fprintf( stderr, "Failed to open GLFW window.\n" );
+		fprintf(stderr, "Failed to open GLFW window.\n");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -109,7 +129,7 @@ void Application::Init()
 	GLenum err = glewInit();
 
 	//If GLEW hasn't initialized
-	if (err != GLEW_OK) 
+	if (err != GLEW_OK)
 	{
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 		//return -1;
@@ -119,6 +139,7 @@ void Application::Init()
 	int sizeY = 0;
 	glfwGetWindowSize(m_window, &sizeX, &sizeY);
 	glfwSetCursorPos(m_window, sizeX / 2, sizeY / 2);
+
 	glfwSetInputMode(m_window,
 		GLFW_CURSOR,
 		GLFW_CURSOR_HIDDEN
