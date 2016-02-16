@@ -389,7 +389,62 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+<<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
 	
+=======
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
+=======
+
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+	bool stateChanged = false;
+	if (Application::IsKeyPressed('O')){
+		Application::state2D = true;
+		stateChanged = true;
+
+	}
+	else if (Application::IsKeyPressed('P')){
+		Application::state2D = false;
+		stateChanged = true;
+	}
+	if (stateChanged && Application::state2D){
+		Application::SetMousePosition(500,950);
+	}
+	else{ }
+
+	if (Application::state2D == false){
+		player.Update(dt);
+		std::cout << "testies" << std::endl;
+		
+	}
+	else{
+		double mouseX, mouseY;
+		Application::GetMouseMovement(mouseX, mouseY);
+		std::cout << mouseX << "-----------|" << mouseY << std::endl;
+		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
+			std::cout << "test" << std::endl;
+		}
+		else if (mouseX>-43 && mouseX< 135 && mouseY<-25 && mouseY>-350){
+			std::cout << "test2" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
+			std::cout << "test3" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
+			std::cout << "test4" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>290){
+			std::cout << "test5" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
+			std::cout << "test6" << std::endl;
+		}
+		else{
+			Application::state2D = false;
+			std::cout << "die" << std::endl;
+		}
+
+	}
+>>>>>>> b72adcbe9acbeb349ca90e05e5990a428f6d9a1b
 	
 	//double mouseX, mouseY;
 	//Application::GetMouseMovement(mouseX, mouseY);
@@ -411,12 +466,30 @@ void SP2::Update(double dt)
 	//	std::cout << "diedtest" << std::endl;
 	//} 
 
+<<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
 	m_timer.startTimer();
 	m_timer.getElapsedTime();
 	std::cout << &StopWatch::getElapsedTime << std::endl;
+=======
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
+<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
+=======
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
+=======
+	player.Update(dt);
+>>>>>>> b72adcbe9acbeb349ca90e05e5990a428f6d9a1b
 	enemy.Update(dt);
 	MazeInteraction(dt);
 
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
+=======
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
+=======
+	player.Update(dt);
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
@@ -555,6 +628,11 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
+=======
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	modelStack.Translate(0, 0, 40);
 	RenderPickUpObj();
 	modelStack.PopMatrix();
@@ -563,7 +641,14 @@ void SP2::Render()
 
 
 	modelStack.PushMatrix();
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
 	modelStack.Translate(0, 0,40);
+=======
+=======
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+	modelStack.Translate(-25, 0, -20);
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
@@ -586,9 +671,17 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
 
 	RenderPickUpObj();
 	
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
+=======
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
+=======
+	RenderPickUpObj();
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 
 	modelStack.PushMatrix();
 	RenderInternalSkybox();

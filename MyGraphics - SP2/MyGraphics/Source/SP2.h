@@ -152,8 +152,19 @@ private:
 	bool enableLight;
 	bool showHitBox;
 
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
 
 
+=======
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
+
+
+=======
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
+=======
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	bool itemText;//item pickup
 	bool takeItem;//item pickup (Trigger to get item)
 	bool growingbool;//item pickup (Growing bigger or smaller)
@@ -171,6 +182,14 @@ private:
 	float fly;//item floats(pickup)
 	float growing;//item grows.(pickup)
 	float rotateitem;//itemRotation(pickup)
+<<<<<<< 707725402e9c94fa31338499799042d2aa284383
+=======
+<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
+=======
+=======
+>>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
+>>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 
 	float readyToUse;
 	float readyToInteract;
