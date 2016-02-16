@@ -3,10 +3,6 @@
 
 Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 {
-	this->sizeX = scaleX;
-	this->sizeY = scaleY;
-	this->sizeZ = scaleZ;
-
 	pivot.Set(0, 0, 0);
 
 	position.Set(pos.x, pos.y, pos.z);

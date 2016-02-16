@@ -18,10 +18,11 @@ public:
 	void SetHealth(int amount);
 	void SetPosition(float x, float y, float z);
 	void ReceiveDamage(int amount);
+
+	bool isDead;
 private:
 	int HP;
 	bool isInvulnerable;
-	bool isDead;
 };
 
 #endif

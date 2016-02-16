@@ -13,6 +13,7 @@
 #include "Object.h"
 #include "Projectile.h"
 #include "Hitbox.h"
+#include "Enemy.h"
 
 using std::vector;
 
@@ -178,6 +179,8 @@ private:
 	int screenX, screenY;
 
 	Player player;
+
+	Enemy enemy;
 
 	Mtx44 MVP;
 
