@@ -207,11 +207,22 @@ void SP2::Init()
 	meshList[GEO_ENEMYSHIP] = MeshBuilder::GenerateOBJ("enemyship", "OBJ//enemyShip.obj");
 	meshList[GEO_ENEMYSHIP]->textureID = LoadTGA("Image//enemyTex.tga");
 
+<<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
+=======
+<<<<<<< Updated upstream
+<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
+=======
+>>>>>>> Stashed changes
+>>>>>>> c3f9cf5ab05342f28066181552b2de02ae25d77e
 	meshList[GEO_TURRET] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret.obj");
 	meshList[GEO_TURRET]->textureID = LoadTGA("Image//turret.tga");
 
 	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
 	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 	meshList[GEO_UIBAR] = MeshBuilder::GenerateOBJ("Bar", "OBJ//UIBar.obj");
 	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//enemyTex.tga");
 
@@ -400,8 +411,55 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+<<<<<<< b7d7a4ce2dcc103fa9afde29816ae2b756c664dc
 		if (m_timer.TimesUp()){
 			std::cout << "RING RING RING" << std::endl;
+=======
+	
+	
+	//double mouseX, mouseY;
+	//Application::GetMouseMovement(mouseX, mouseY);
+	//std::cout << mouseX << "------------" << mouseY << std::endl;
+
+	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
+	//	std::cout << "test" << std::endl;
+	//	maze1 == true;
+	//}
+	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
+	//	std::cout << "NAICE" << std::endl;
+	//	maze1 == true;
+	//}
+	//else{
+	//	std::cout << "died" << std::endl;
+	//}
+
+	//else{
+	//	std::cout << "diedtest" << std::endl;
+	//} 
+
+<<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
+	m_timer.startTimer();
+	m_timer.getElapsedTime();
+	std::cout << &StopWatch::getElapsedTime << std::endl;
+	enemy.Update(dt);
+	MazeInteraction(dt);
+=======
+<<<<<<< Updated upstream
+<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
+=======
+	player.Update(dt);
+	enemy.Update(dt);
+>>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
+=======
+>>>>>>> Stashed changes
+>>>>>>> c3f9cf5ab05342f28066181552b2de02ae25d77e
+
+	UpdatePortal(dt);
+	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
+		readyToInteract = 0.f;
+		if ((player.position - portal.position).Length() < 2.f){
+			player.position.Set(0, 50, 0);
+>>>>>>> 4996be88662264d3df1c99fb150bb69a260a3458
 		}
 
 		enemy.Update(dt);
@@ -547,11 +605,19 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 40);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 	RenderPickUpObj();
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+<<<<<<< Updated upstream
 	modelStack.Translate(0, 0,40);
+=======
+	modelStack.Translate(-25, 0, -20);
+>>>>>>> Stashed changes
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
@@ -576,6 +642,14 @@ void SP2::Render()
 
 
 	RenderPickUpObj();
+<<<<<<< b7d7a4ce2dcc103fa9afde29816ae2b756c664dc
+=======
+<<<<<<< Updated upstream
+	
+=======
+
+>>>>>>> Stashed changes
+>>>>>>> 4996be88662264d3df1c99fb150bb69a260a3458
 
 	modelStack.PushMatrix();
 	RenderPickUpObj();
@@ -721,6 +795,10 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
