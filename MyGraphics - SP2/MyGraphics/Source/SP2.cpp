@@ -263,11 +263,11 @@ void SP2::Init()
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
 	internalWall_Ground->hitbox.SetSize(15.f, 1, 5);
-	internalWall_Ground->SetPosition(5, 17.5f, 0);
+	internalWall_Ground->SetPosition(5, 17.f, 0);
 
 	Object* internalWall_Ground2 = new Object();
 	internalWall_Ground2->hitbox.SetSize(10.f, 1, 15);
-	internalWall_Ground2->SetPosition(17.5, 17.5f, 0);
+	internalWall_Ground2->SetPosition(17.5, 17.f, 0);
 
 
 	Object* internalWall_Right = new Object();
@@ -326,6 +326,10 @@ void SP2::Init()
 	Object* CampWall_Front2 = new Object();
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
+
+	Object* Turret = new Object();
+	Turret->hitbox.SetSize(5, 5, 2.5);
+	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
 	GenerateWaypoints(100, 100);
 
@@ -595,9 +599,9 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ENEMYSHIP], true);
 	modelStack.PopMatrix();
 
-<<<<<<< 92e4bedd11c99cedb6c9e9446ff5b2472ec81c3c
 	modelStack.PushMatrix();
-	modelStack.Translate(-15, -5.5, 15);
+	modelStack.Translate(-47, -5.5, -20);
+	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_TURRET], true);
 	modelStack.PopMatrix();
 
@@ -607,36 +611,7 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 
-	if (cItemGrow == false)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(0, fly + 0.5, 0);
-		modelStack.Scale(growing/300 + 0.1, growing/300 + 0.1, growing/300 + 0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 0, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-	if (cItemGrow)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
-		modelStack.Scale(0.1,0.1,0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(-player.right.x * 5, -player.right.y * 5 - 3.f, -player.right.z * 5);
-		modelStack.PushMatrix();
-		modelStack.Rotate(rotateitem, 0, 1, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-=======
-=======
-	
 
->>>>>>> b550b62bca843952563545ebc315cace88dda763
 	RenderPickUpObj();
 
 	modelStack.PushMatrix();
@@ -739,14 +714,9 @@ void SP2::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-<<<<<<< 92e4bedd11c99cedb6c9e9446ff5b2472ec81c3c
 
 
-=======
->>>>>>> b550b62bca843952563545ebc315cace88dda763
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
