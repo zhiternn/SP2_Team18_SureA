@@ -200,16 +200,13 @@ void SP2::Init()
 	meshList[GEO_ENEMYSHIP] = MeshBuilder::GenerateOBJ("enemyship", "OBJ//enemyShip.obj");
 	meshList[GEO_ENEMYSHIP]->textureID = LoadTGA("Image//enemyTex.tga");
 
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 	meshList[GEO_TURRET] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret.obj");
 	meshList[GEO_TURRET]->textureID = LoadTGA("Image//turret.tga");
 
 	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
 	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
-=======
 	meshList[GEO_UIBAR] = MeshBuilder::GenerateOBJ("Bar", "OBJ//UIBar.obj");
 	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//enemyTex.tga");
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -456,10 +453,7 @@ void SP2::Update(double dt)
 	//	std::cout << "diedtest" << std::endl;
 	//} 
 
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
-=======
 
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
@@ -597,17 +591,14 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 	modelStack.Translate(0, 0, 40);
-=======
 	RenderPickUpObj();
 	modelStack.PopMatrix();
 
 
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-25, 0, -20);
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
+	modelStack.Translate(0, 0,40);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
@@ -618,7 +609,6 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ENEMYSHIP], true);
 	modelStack.PopMatrix();
 
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 	modelStack.PushMatrix();
 	modelStack.Translate(-47, -5.5, -20);
 	modelStack.Rotate(180, 0, 1, 0);
@@ -633,9 +623,7 @@ void SP2::Render()
 
 
 	RenderPickUpObj();
-=======
 	
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
@@ -730,11 +718,8 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
-=======
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
@@ -744,10 +729,7 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 
-=======
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
