@@ -25,32 +25,53 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 	hitbox.SetPosition(pos);
 }
 
+#include <iostream>
 void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 10.f;
 	static const float MOVEMENT_SPEED = 5.f;
 
 	Vector3 oldPos = position;
+	int speedMultiplier = 1;
+	std::cout << sprint1 << std::endl;
 
+	if (Application::IsKeyPressed(VK_SHIFT)){
+		if (tired == false){
+			speedMultiplier = 10;
+		}
+	}
 	if (Application::IsKeyPressed('W'))
 	{
-		position.x += (view.x * MOVEMENT_SPEED * dt);
-		position.z += (view.z * MOVEMENT_SPEED * dt);
+		position.x += (view.x * MOVEMENT_SPEED * speedMultiplier * dt);
+		position.z += (view.z * MOVEMENT_SPEED * speedMultiplier * dt);
+	}
+
+	if (sprint1 >= 0){
+		sprint1 -= 0.5 * dt;
+		tired = false;
+	}
+	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
+		sprint = true;
+		sprint1 += 1 * dt;
+		
+		if (sprint1 >= 3){
+			tired = true;
+		}
 	}
 	if (Application::IsKeyPressed('S'))
 	{
-		position.x -= (view.x * MOVEMENT_SPEED * dt);
-		position.z -= (view.z * MOVEMENT_SPEED * dt);
+		position.x -= (view.x * speedMultiplier  * dt);
+		position.z -= (view.z * speedMultiplier  * dt);
 	}
 	if (Application::IsKeyPressed('A'))
 	{
-		position.x -= (right.x * MOVEMENT_SPEED * dt);
-		position.z -= (right.z * MOVEMENT_SPEED * dt);
+		position.x -= (right.x * speedMultiplier  * dt);
+		position.z -= (right.z * speedMultiplier  * dt);
 	}
 	if (Application::IsKeyPressed('D'))
 	{
-		position.x += (right.x * MOVEMENT_SPEED * dt);
-		position.z += (right.z * MOVEMENT_SPEED * dt);
+		position.x += (right.x * speedMultiplier  * dt);
+		position.z += (right.z * speedMultiplier  * dt);
 	}
 	if (Application::IsKeyPressed(VK_SPACE))
 	{

@@ -138,7 +138,6 @@ private:
 
 	bool enableLight;
 	bool showHitBox;
-	bool maze1 = false;
 
 	bool itemText;//item
 	bool takeItem;//item

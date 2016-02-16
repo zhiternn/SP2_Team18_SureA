@@ -20,6 +20,9 @@ public:
 	Camera camera;
 
 	float vSpeed;
+	float sprint1;
+	bool sprint;
+	bool tired;
 
 	Player();
 	~Player();
