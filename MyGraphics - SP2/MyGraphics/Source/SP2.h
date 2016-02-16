@@ -50,6 +50,7 @@ class SP2 : public Scene
 		GEO_PORTAL_BACK,
 
 		GEO_Testitem,//Test for pick up.
+		GEO_UIBAR,
 
 		NUM_GEOMETRY,
 	};
@@ -147,8 +148,11 @@ private:
 	bool enableLight;
 	bool showHitBox;
 
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 
 
+=======
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 	bool itemText;//item pickup
 	bool takeItem;//item pickup (Trigger to get item)
 	bool growingbool;//item pickup (Growing bigger or smaller)
@@ -166,6 +170,10 @@ private:
 	float fly;//item floats(pickup)
 	float growing;//item grows.(pickup)
 	float rotateitem;//itemRotation(pickup)
+<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
+=======
+
+>>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;

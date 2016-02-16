@@ -44,18 +44,21 @@ void Player::Update(double dt)
 		position.z += (view.z * MOVEMENT_SPEED * speedMultiplier * dt);
 	}
 
-	if (sprint1 >= 0){
-		sprint1 -= 0.5 * dt;
+	if (sprint1 >= 0)
+	{
+		sprint1 -= 0.3 * dt;
 		tired = false;
 	}
 	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
-		sprint = true;
+		//sprint = true;
 		sprint1 += 1 * dt;
 		
-		if (sprint1 >= 3){
+		if (sprint1 >= 2)
+		{
 			tired = true;
 		}
 	}
+
 	if (Application::IsKeyPressed('S'))
 	{
 		position.x -= (view.x * speedMultiplier * dt);
