@@ -216,8 +216,9 @@ void SP2::Init()
 
 	itemText = false;//item
 	takeItem = false;//item
-	ItemGrow = false;//item
-	cItemGrow = false;//item
+	growItem = false;//item
+	haveItem = false;//item
+	putItem = false;
 	fly = 0;//item
 	growing = 0;//item grows.
 
@@ -344,6 +345,7 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 #include <iostream>
 void SP2::Update(double dt)
 {
+<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
@@ -391,6 +393,29 @@ void SP2::Update(double dt)
 
 	}
 	
+=======
+	//double mouseX, mouseY;
+	//Application::GetMouseMovement(mouseX, mouseY);
+	//std::cout << mouseX << "------------" << mouseY << std::endl;
+
+	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
+	//	std::cout << "test" << std::endl;
+	//	maze1 == true;
+	//}
+	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
+	//	std::cout << "NAICE" << std::endl;
+	//	maze1 == true;
+	//}
+	//else{
+	//	std::cout << "died" << std::endl;
+	//}
+
+	//else{
+	//	std::cout << "diedtest" << std::endl;
+	//} 
+
+	player.Update(dt);
+>>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
 
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -438,6 +463,7 @@ void SP2::Update(double dt)
 	}
 	
 	PickUpAnimation(dt);
+	Interval(dt);
 
 	if (Application::IsKeyPressed(0x31)){
 		glEnable(GL_CULL_FACE);
@@ -528,6 +554,7 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
 	modelStack.Translate(-25, 0, -20);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
@@ -564,11 +591,14 @@ void SP2::Render()
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
+=======
+	RenderPickUpObj();
+	modelStack.PopMatrix();
+>>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
 
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
 	modelStack.PopMatrix();
-
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
@@ -677,7 +707,9 @@ void SP2::Render()
 	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-		//RenderTextOnScreen(meshList[GEO_TEXT], "counter " + std::to_string(counter), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "dropItem " + std::to_string(dropItem), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "haveItem " + std::to_string(haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "intervalBool " + std::to_string(intervalBool), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
 	}
 	if (Application::state2D == true){
 		modelStack.PushMatrix();
@@ -1201,8 +1233,21 @@ void SP2::PickUp()
 {
 	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
 	{
-		takeItem = true;
+		if (haveItem == false && intervalBool == false)
+		{
+			takeItem = true;
+			intervalBool = true;
+			interval = 0;
+		}
+		if (haveItem == true && intervalBool == false)
+		{
+			haveItem = false;
+			dropItem = true;
+			intervalBool = true;
+			interval = 0;
+		}
 	}
+	
 }
 
 void SP2::PickUpAnimation(double dt)
@@ -1211,28 +1256,42 @@ void SP2::PickUpAnimation(double dt)
 	//ITEM ANIMATION//
 	//////////////////
 
-
 	if (takeItem == true)
 	{
 		fly += (float(1 * dt));
 	}
+	if (putItem == true)
+	{
+		fly -= (float(1 * dt));
+	}
+
 	if (fly > 1)
 	{
-		takeItem = false;
-		if (cItemGrow == false)
-		{
-			ItemGrow = true;
-		}
-		else
-			ItemGrow = false;
+		takeItem = false;//Stop movingup
+		cangrowItem = true;
 	}
-	if (ItemGrow == true && growingbool == true)
+	if (fly < 0)
 	{
-		growing -= (float(1000 * dt));
+		putItem = false;
+		dropItem = false;
 	}
-	if (ItemGrow == true && growingbool == false)
+
+	if (cangrowItem == true && takeItem == false || dropItem == true)//
 	{
-		growing += (float(1000 * dt));
+		growItem = true;
+	}
+	else
+	{
+		growItem = false;
+	}
+
+	if (growItem == true && growingbool == true)
+	{
+		growing -= (float(333 * dt));
+	}
+	if (growItem == true && growingbool == false)
+	{
+		growing += (float(333 * dt));
 	}
 	if (growing < -1)
 	{
@@ -1248,13 +1307,66 @@ void SP2::PickUpAnimation(double dt)
 
 	if (counter > 11)
 	{
-		cItemGrow = true;
+		cangrowItem = false;
+		if (dropItem == true)
+		{
+			putItem = true;
+			counter = 0;
+		}
+		else
+			haveItem = true;
+		counter = 0;
 	}
-	if (cItemGrow == true)
+
+	if (haveItem == true)
 	{
 		rotateitem += (float(1000 * dt));
 	}
-	///////////////////
-	///ITEM ANIMATION//
-	///////////////////
+
+	//////////////////
+	//ITEM ANIMATION//
+	//////////////////
+}
+
+void SP2::RenderPickUpObj()
+{
+	if (haveItem == false)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0, fly + 0.5, +0);
+		modelStack.Scale(growing / 300 + 0.1, growing / 300 + 0.1, growing / 300 + 0.1);
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0, 0);
+		RenderMesh(meshList[GEO_Testitem], true);
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	if (haveItem == true)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
+		modelStack.Scale(0.1, 0.1, 0.1);
+		modelStack.PushMatrix();
+		modelStack.Translate(-player.right.x * 4.5, -player.right.y * 5 - 2.8f, -player.right.z * 4.5);
+		modelStack.PushMatrix();
+		modelStack.Rotate(rotateitem, 0, 1, 0);
+		RenderMesh(meshList[GEO_Testitem], true);
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+}
+
+void SP2::Interval(double dt)
+{
+	if (intervalBool == true)
+	{
+		interval += (float)(50 * dt);
+	}
+
+	if (interval > 50)
+	{
+		intervalBool = false;
+	}
+
 }

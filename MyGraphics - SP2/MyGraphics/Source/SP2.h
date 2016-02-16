@@ -114,6 +114,7 @@ public:
 private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
+	void RenderPickUpObj();
 	void RenderInternalSkybox();
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderObjs(Mesh* mesh, bool light);
@@ -126,8 +127,11 @@ private:
 	void UpdatePortal(double dt);
 	void RenderExplosion();
 
+	void SP2::Interval(double dt);
+
 	void PickUp();
 	void PickUpAnimation(double dt);
+
 
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
@@ -141,6 +145,7 @@ private:
 	bool enableLight;
 	bool showHitBox;
 
+<<<<<<< f7fabd707faa5e4f0b25dd8fa17241def0a42fed
 	bool itemText;//item
 	bool takeItem;//item
 	bool growingbool;//item
@@ -152,6 +157,25 @@ private:
 	float fly;//item floats
 	float growing;//item grows.
 	float rotateitem;//itemRotation
+=======
+	bool itemText;//item pickup
+	bool takeItem;//item pickup (Trigger to get item)
+	bool growingbool;//item pickup (Growing bigger or smaller)
+	bool growItem;//item pickup(can grow) if not cannot
+	bool cangrowItem;
+	bool haveItem;//item pickup
+	bool putItem;//Float downwards after growing
+
+	bool dropItem;//This Triggers to drop item
+	bool intervalBool;//Interval for ... anything i guess.
+
+	int counter;//item pickup
+	
+	float interval;
+	float fly;//item floats(pickup)
+	float growing;//item grows.(pickup)
+	float rotateitem;//itemRotation(pickup)
+>>>>>>> 37c7320b85c17e62f3b379eee5b80294b5766b1c
 
 	float readyToUse;
 	float readyToInteract;
