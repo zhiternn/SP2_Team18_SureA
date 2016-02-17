@@ -189,9 +189,12 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
+=======
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
@@ -242,7 +245,11 @@ void SP2::Init()
 	animation_scalePortal = 0.f;
 
 	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
+=======
+	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	enemy.Init(Vector3(0, 0, -3), 5.f);
 
 	portal.hitbox.SetSize(4, 3, 1);
@@ -342,12 +349,16 @@ void SP2::Init()
 	Turret->hitbox.SetSize(5, 5, 2.5);
 	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	Object* AllyShip = new Object();
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
 
 
+=======
+
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	GenerateWaypoints(100, 100, 1, 1);
 }
 
@@ -398,7 +409,10 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
+=======
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
@@ -450,7 +464,11 @@ void SP2::Update(double dt)
 		}
 
 	}
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	
+=======
+
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	//double mouseX, mouseY;
 	//Application::GetMouseMovement(mouseX, mouseY);
 	//std::cout << mouseX << "------------" << mouseY << std::endl;
@@ -475,9 +493,17 @@ void SP2::Update(double dt)
 	
 	std::cout << &StopWatch::getElapsedTime << std::endl;
 
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	m_timer.getElapsedTime();
 	enemy.Update(dt);
 	MazeInteraction(dt);
+=======
+	player.Update(dt);
+	enemy.Update(dt);
+	MazeInteraction(dt);
+
+	player.Update(dt);
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	UpdatePortal(dt);
 
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -720,6 +746,12 @@ void SP2::Render()
 
 	// HIT BOXES
 	if (showHitBox){
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
+=======
+
+		Vector3 viewy = player.view;
+		viewy.y = 0;
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
 			modelStack.PushMatrix();
 			modelStack.Translate(
@@ -791,6 +823,11 @@ void SP2::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
+<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
+=======
+	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
+>>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);

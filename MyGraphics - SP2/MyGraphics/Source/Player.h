@@ -24,6 +24,7 @@ public:
 	bool sprint;
 	bool tired;
 	bool crouch = false;
+	bool jump;
 
 	Player();
 	~Player();
