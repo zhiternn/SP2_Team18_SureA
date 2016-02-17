@@ -189,12 +189,9 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
-=======
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
@@ -245,11 +242,8 @@ void SP2::Init()
 	animation_scalePortal = 0.f;
 
 	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
-=======
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	enemy.Init(Vector3(0, 0, -3), 5.f);
 
 	portal.hitbox.SetSize(4, 3, 1);
@@ -349,20 +343,13 @@ void SP2::Init()
 	Turret->hitbox.SetSize(5, 5, 2.5);
 	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	Object* AllyShip = new Object();
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
 
 
-=======
 
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
-=======
-	tenSecs = 10;
->>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
 	GenerateWaypoints(100, 100, 1, 1);
 }
 
@@ -413,11 +400,7 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
-<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
-=======
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
@@ -430,15 +413,15 @@ void SP2::Update(double dt)
 	}
 
 	if (stateChanged && Application::state2D){
-		Application::SetMousePosition(500,950);
+		Application::SetMousePosition(500, 950);
 	}
-	else if(stateChanged && !Application::state2D){
+	else if (stateChanged && !Application::state2D){
 		Application::SetMousePosition();
 	}
 
 	if (Application::state2D == false){
 		player.Update(dt);
-		
+
 	}
 	else{
 		double mouseX, mouseY;
@@ -447,10 +430,10 @@ void SP2::Update(double dt)
 		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
 			std::cout << "test" << std::endl;
 		}
-		else if (mouseX>-43 && mouseX< 135 && mouseY<-25 && mouseY>-350){
+		else if (mouseX > -43 && mouseX < 135 && mouseY<-25 && mouseY>-350){
 			std::cout << "test2" << std::endl;
 		}
-		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
+		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY < -25){
 			std::cout << "test3" << std::endl;
 		}
 		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
@@ -468,128 +451,92 @@ void SP2::Update(double dt)
 			std::cout << "die" << std::endl;
 		}
 
-=======
-	if (m_timer.TimesUp()){
-		std::cout << "RING RING RING" << std::endl;
->>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
-	}
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
-	
-<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
-=======
-
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
-	//double mouseX, mouseY;
-	//Application::GetMouseMovement(mouseX, mouseY);
-	//std::cout << mouseX << "------------" << mouseY << std::endl;
-
-	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
-	//	std::cout << "test" << std::endl;
-	//	maze1 == true;
-	//}
-	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
-	//	std::cout << "NAICE" << std::endl;
-	//	maze1 == true;
-	//}
-	//else{
-	//	std::cout << "died" << std::endl;
-	//}
-
-	//else{
-	//	std::cout << "diedtest" << std::endl;
-	//} 
-
-	m_timer.startTimer();
-	
-	std::cout << &StopWatch::getElapsedTime << std::endl;
-
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
-	m_timer.getElapsedTime();
-=======
->>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
-	enemy.Update(dt);
-	MazeInteraction(dt);
-=======
-	player.Update(dt);
-	enemy.Update(dt);
-	MazeInteraction(dt);
-
-	player.Update(dt);
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
-	UpdatePortal(dt);
-
-	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
-		readyToInteract = 0.f;
-		if ((player.position - portal.position).Length() < 2.f){
-			player.position.Set(0, 50, 0);
+		if (m_timer.TimesUp()){
+			std::cout << "RING RING RING" << std::endl;
 		}
-		enemy.GoTo(player.position);
-	}
-	else if (readyToInteract < 2.f){
-		readyToInteract += (float)(10.f * dt);
-	}
-	if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
-		readyToUse_SHOOT = 0.f;
-		bulletsList.push_back(new Projectile(
-			Vector3(player.position.x, player.position.y, player.position.z),
-			Vector3(player.view.x, player.view.y, player.view.z),
-			30,
-			50,
-			5
-			));
-	}
-	else if (readyToUse_SHOOT < 2.f){
-		readyToUse_SHOOT += (float)(10.f * dt);
-	}
-	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
-		if ((*it)->Update(dt)){
-			it = bulletsList.erase(it);
-		}
-		else{
-			it++;
-		}
-	}
-	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
-		if ((*it)->Update(dt)){
-			it = Effect_Explosion::explosionList.erase(it);
-		}
-		else{
-			it++;
-		}
-	}
 
-	if (Application::IsKeyPressed('F'))
-	{
-		PickUp();
-	}
-	
-	PickUpAnimation(dt);
-	Interval(dt);
 
-	if (Application::IsKeyPressed(0x31)){
-		glEnable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed(0x32)){
-		glDisable(GL_CULL_FACE);
-	}
-	if (Application::IsKeyPressed(0x35)){
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	if (Application::IsKeyPressed(0x34)){
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
 
-	if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-		readyToUse_HITBOX = 0.f;
-		if (showHitBox){
-			showHitBox = false;
+		m_timer.startTimer();
+		m_timer.getElapsedTime();
+		enemy.Update(dt);
+		MazeInteraction(dt);
+
+		UpdatePortal(dt);
+
+		if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
+			readyToInteract = 0.f;
+			if ((player.position - portal.position).Length() < 2.f){
+				player.position.Set(0, 50, 0);
+			}
+			enemy.GoTo(player.position);
 		}
-		else{
-			showHitBox = true;
+		else if (readyToInteract < 2.f){
+			readyToInteract += (float)(10.f * dt);
 		}
-	}
-	else if (readyToUse_HITBOX < 2.f){
-		readyToUse_HITBOX += (float)(10 * dt);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
+			readyToUse_SHOOT = 0.f;
+			bulletsList.push_back(new Projectile(
+				Vector3(player.position.x, player.position.y, player.position.z),
+				Vector3(player.view.x, player.view.y, player.view.z),
+				30,
+				50,
+				5
+				));
+		}
+		else if (readyToUse_SHOOT < 2.f){
+			readyToUse_SHOOT += (float)(10.f * dt);
+		}
+		for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
+			if ((*it)->Update(dt)){
+				it = bulletsList.erase(it);
+			}
+			else{
+				it++;
+			}
+		}
+		for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
+			if ((*it)->Update(dt)){
+				it = Effect_Explosion::explosionList.erase(it);
+			}
+			else{
+				it++;
+			}
+		}
+
+		if (Application::IsKeyPressed('F'))
+		{
+			PickUp();
+		}
+
+		PickUpAnimation(dt);
+		Interval(dt);
+
+		if (Application::IsKeyPressed(0x31)){
+			glEnable(GL_CULL_FACE);
+		}
+		if (Application::IsKeyPressed(0x32)){
+			glDisable(GL_CULL_FACE);
+		}
+		if (Application::IsKeyPressed(0x35)){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		if (Application::IsKeyPressed(0x34)){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
+		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+			readyToUse_HITBOX = 0.f;
+			if (showHitBox){
+				showHitBox = false;
+			}
+			else{
+				showHitBox = true;
+			}
+		}
+		else if (readyToUse_HITBOX < 2.f){
+			readyToUse_HITBOX += (float)(10 * dt);
+		}
 	}
 }
 
@@ -758,12 +705,9 @@ void SP2::Render()
 
 	// HIT BOXES
 	if (showHitBox){
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
-=======
 
 		Vector3 viewy = player.view;
 		viewy.y = 0;
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
 			modelStack.PushMatrix();
 			modelStack.Translate(
@@ -835,11 +779,8 @@ void SP2::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
-=======
 	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);

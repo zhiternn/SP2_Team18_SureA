@@ -43,7 +43,7 @@ void Player::Update(double dt)
 		crouch = false;
 	}
 
-	if(crouch == true)
+	if (crouch == true)
 	{
 		position.y = 0.5;
 		hitbox.SetSize(0.2f, 1.5, 0.2f);
@@ -55,13 +55,10 @@ void Player::Update(double dt)
 		hitbox.SetSize(0.2f, 3, 0.2f);
 		speedMultiplier = 2;
 	}
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
-=======
-	
-	
-	
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
+
+
+
 	if (Application::IsKeyPressed(VK_SHIFT)){
 		if (tired == false && crouch == false){
 			speedMultiplier = 10;
@@ -78,7 +75,6 @@ void Player::Update(double dt)
 		sprint1 -= 0.3 * dt;
 		tired = false;
 	}
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT) && crouch == false){
 		if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S') || Application::IsKeyPressed('A') || Application::IsKeyPressed('D')) && Application::IsKeyPressed(VK_SHIFT)){
 			//sprint = true;
@@ -88,50 +84,47 @@ void Player::Update(double dt)
 			{
 				tired = true;
 			}
-=======
-	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
-		//sprint = true;
-		sprint1 += 1 * dt;
-		
-		if (sprint1 >= 2)
-		{
-			tired = true;
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
+			if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
+				//sprint = true;
+				sprint1 += 1 * dt;
+
+				if (sprint1 >= 2)
+				{
+					tired = true;
+				}
+			}
 		}
 	}
+		
 
-<<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
+		if (Application::IsKeyPressed('S'))
+		{
+			position.x -= (view.x * speedMultiplier * dt);
+			position.z -= (view.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			position.x -= (right.x * speedMultiplier * dt);
+			position.z -= (right.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			position.x += (right.x * speedMultiplier * dt);
+			position.z += (right.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed(VK_SPACE))
+		{
+			vSpeed = MOVEMENT_SPEED * dt;
+		}
 
-=======
-	if (Application::IsKeyPressed('S'))
-	{
-		position.x -= (view.x * speedMultiplier * dt);
-		position.z -= (view.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		position.x -= (right.x * speedMultiplier * dt);
-		position.z -= (right.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		position.x += (right.x * speedMultiplier * dt);
-		position.z += (right.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed(VK_SPACE))
-	{
-		vSpeed = MOVEMENT_SPEED * dt;
-	}
-	
-	//Conflicts with crouching
-	/*vSpeed -= (float)(WV_GRAVITY / 5 * dt);
-	position.y += vSpeed;*/
-	hitbox.SetPosition(position);
-	
-	if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
-		vSpeed = 0.f;
-	}
->>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
+		//Conflicts with crouching
+		/*vSpeed -= (float)(WV_GRAVITY / 5 * dt);
+		position.y += vSpeed;*/
+		hitbox.SetPosition(position);
+
+		if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
+			vSpeed = 0.f;
+		}
 
 		if (Application::IsKeyPressed('S'))
 		{
