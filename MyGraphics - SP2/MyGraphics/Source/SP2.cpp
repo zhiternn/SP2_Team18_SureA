@@ -400,68 +400,12 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
-
-	bool stateChanged = false;
-	if (Application::IsKeyPressed('O')){
-		Application::state2D = true;
-		stateChanged = true;
-
-	}
-	else if (Application::IsKeyPressed('P')){
-		Application::state2D = false;
-		stateChanged = true;
-	}
-
-	if (stateChanged && Application::state2D){
-		Application::SetMousePosition(500, 950);
-	}
-	else if (stateChanged && !Application::state2D){
-		Application::SetMousePosition();
-	}
-
-	if (Application::state2D == false){
-		player.Update(dt);
-
-	}
-	else{
-		double mouseX, mouseY;
-		Application::GetMouseMovement(mouseX, mouseY);
-		std::cout << mouseX << "-----------|" << mouseY << std::endl;
-		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
-			std::cout << "test" << std::endl;
-		}
-		else if (mouseX > -43 && mouseX < 135 && mouseY<-25 && mouseY>-350){
-			std::cout << "test2" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY < -25){
-			std::cout << "test3" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
-			std::cout << "test4" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>290){
-			std::cout << "test5" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
-			std::cout << "test6" << std::endl;
-		}
-		else{
-			Application::SetMousePosition();
-			Application::state2D = false;
-			std::cout << "die" << std::endl;
-		}
-
 		if (m_timer.TimesUp()){
 			std::cout << "RING RING RING" << std::endl;
 		}
 
-
-
-		m_timer.startTimer();
-		m_timer.getElapsedTime();
 		enemy.Update(dt);
 		MazeInteraction(dt);
-
 		UpdatePortal(dt);
 
 		if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -538,7 +482,7 @@ void SP2::Update(double dt)
 			readyToUse_HITBOX += (float)(10 * dt);
 		}
 	}
-}
+
 
 void SP2::Render()
 {
