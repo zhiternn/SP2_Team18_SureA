@@ -23,6 +23,7 @@ public:
 	float sprint1;
 	bool sprint;
 	bool tired;
+	bool crouch = false;
 
 	Player();
 	~Player();

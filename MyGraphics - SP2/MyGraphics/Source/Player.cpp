@@ -33,8 +33,23 @@ void Player::Update(double dt)
 	Vector3 oldPos = position;
 	int speedMultiplier = 2;
 
+	if (Application::IsKeyPressed('C'))
+	{
+		crouch = true;
+	}
+	else
+	{
+		crouch = false;
+	}
+	if (crouch == true)
+	{
+		position.y = 0;
+		hitbox.SetSize(0.2f, 1.5, 0.2f);
+		speedMultiplier = 1;
+	}
+	
 	if (Application::IsKeyPressed(VK_SHIFT)){
-		if (tired == false){
+		if (tired == false && crouch == false){
 			speedMultiplier = 10;
 		}
 	}
@@ -49,7 +64,7 @@ void Player::Update(double dt)
 		sprint1 -= 0.3 * dt;
 		tired = false;
 	}
-	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
+	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT) && crouch == false){
 		//sprint = true;
 		sprint1 += 1 * dt;
 		
@@ -58,6 +73,8 @@ void Player::Update(double dt)
 			tired = true;
 		}
 	}
+	
+	
 
 	if (Application::IsKeyPressed('S'))
 	{

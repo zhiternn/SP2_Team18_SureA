@@ -188,6 +188,10 @@ void SP2::Init()
 	meshList[GEO_PORTAL_BACK]->textureID = LoadTGA("Image//portal_Back.tga");
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
+=======
+
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
@@ -238,7 +242,11 @@ void SP2::Init()
 	animation_scalePortal = 0.f;
 
 	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
+=======
+	player.Init(Vector3(0, 5, 10), Vector3(0, 0, -1));
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 	enemy.Init(Vector3(0, 0, -3), 5.f);
 
 	portal.hitbox.SetSize(4, 3, 1);
@@ -338,8 +346,13 @@ void SP2::Init()
 	Turret->hitbox.SetSize(5, 5, 2.5);
 	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 
 	GenerateWaypoints(100, 100, 1, 1);
+=======
+	GenerateWaypoints(100, 100, 1, 1);
+
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -389,13 +402,15 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 <<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
 	
 =======
 <<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
 =======
+=======
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 
->>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
@@ -466,6 +481,7 @@ void SP2::Update(double dt)
 	//	std::cout << "diedtest" << std::endl;
 	//} 
 
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 <<<<<<< 2c885bb37e200206df272c8e27c90721bf602981
 	m_timer.startTimer();
 	m_timer.getElapsedTime();
@@ -478,19 +494,24 @@ void SP2::Update(double dt)
 <<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
 >>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 =======
+=======
+
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 	player.Update(dt);
 >>>>>>> b72adcbe9acbeb349ca90e05e5990a428f6d9a1b
 	enemy.Update(dt);
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 	MazeInteraction(dt);
 
 <<<<<<< 707725402e9c94fa31338499799042d2aa284383
 =======
 >>>>>>> 9f4512624977f7d2d80b372751879597212519c6
 =======
+=======
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 	player.Update(dt);
->>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
->>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	UpdatePortal(dt);
+
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
 		if ((player.position - portal.position).Length() < 2.f){
@@ -628,27 +649,18 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-<<<<<<< 707725402e9c94fa31338499799042d2aa284383
-=======
-<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
-<<<<<<< 2978375ae8d2ca7f4be8d8ee1849481f5e5a764b
->>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	modelStack.Translate(0, 0, 40);
 	RenderPickUpObj();
 	modelStack.PopMatrix();
 
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 
 
 
+=======
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 	modelStack.PushMatrix();
-<<<<<<< 707725402e9c94fa31338499799042d2aa284383
 	modelStack.Translate(0, 0,40);
-=======
-=======
->>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
-	modelStack.Translate(-25, 0, -20);
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
->>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
@@ -671,17 +683,8 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 
-<<<<<<< 5bb4a234420b45c64239b2a3c51be35d308551db
 
 	RenderPickUpObj();
-	
-<<<<<<< 707725402e9c94fa31338499799042d2aa284383
-=======
->>>>>>> 9f4512624977f7d2d80b372751879597212519c6
-=======
-	RenderPickUpObj();
->>>>>>> 49865f3947428d2aadb5956ede897d9ba18a058e
->>>>>>> bcfcde5d222357fe2445a53d6b25578334c1e29e
 
 	modelStack.PushMatrix();
 	RenderInternalSkybox();
@@ -714,7 +717,11 @@ void SP2::Render()
 		);
 	RenderPortal();
 	modelStack.PopMatrix();
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
 	
+=======
+
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -765,6 +772,10 @@ void SP2::Render()
 
 	// HIT BOXES
 	if (showHitBox){
+<<<<<<< 0f05f1f3fe6d79f50c7792ea6bbdb06b44372810
+=======
+
+>>>>>>> dd4da229b5e0da372a01acab5d5d6a9c263d8e1b
 		Vector3 viewy = player.view;
 		viewy.y = 0;
 		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
