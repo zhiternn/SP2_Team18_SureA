@@ -188,15 +188,12 @@ void SP2::Init()
 	meshList[GEO_PORTAL_BACK]->textureID = LoadTGA("Image//portal_Back.tga");
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
-=======
 
 	meshList[GEO_Testitem] = MeshBuilder::GenerateCube("wall", Color(0, 1, 0));
 	meshList[GEO_Testitem]->textureID = LoadTGA("Image//walls3.tga");
 
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
 
@@ -206,7 +203,6 @@ void SP2::Init()
 	meshList[GEO_ENEMYSHIP] = MeshBuilder::GenerateOBJ("enemyship", "OBJ//enemyShip.obj");
 	meshList[GEO_ENEMYSHIP]->textureID = LoadTGA("Image//enemyTex.tga");
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	meshList[GEO_TURRET] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret.obj");
 	meshList[GEO_TURRET]->textureID = LoadTGA("Image//turret.tga");
 
@@ -215,8 +211,6 @@ void SP2::Init()
 	meshList[GEO_UIBAR] = MeshBuilder::GenerateOBJ("Bar", "OBJ//UIBar.obj");
 	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//enemyTex.tga");
 
-=======
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 	screenX /= 20;
@@ -243,12 +237,9 @@ void SP2::Init()
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
-=======
-	player.Init(Vector3(0, 5, 10), Vector3(0, 0, -1));
+	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
 	enemy.Init(Vector3(0, 0, -3), 5.f);
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 
 	portal.hitbox.SetSize(4, 3, 1);
 	portal.hitbox.SetPivot(0, 1.3f, 0);
@@ -318,7 +309,6 @@ void SP2::Init()
 	internalWall_Front->hitbox.SetSize(1, 5, 15);
 	internalWall_Front->SetPosition(22.5f, 20.f, 0.f);
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	//Base Camp
 	Object* CampWall_Right = new Object();
 	CampWall_Right->hitbox.SetSize(42, 10, 1);
@@ -348,11 +338,8 @@ void SP2::Init()
 	Turret->hitbox.SetSize(5, 5, 2.5);
 	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
-	GenerateWaypoints(100, 100);
 
-=======
 	GenerateWaypoints(100, 100, 1, 1);
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -402,54 +389,7 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
-	bool stateChanged = false;
-	if (Application::IsKeyPressed('O')){
-		Application::state2D = true;
-		stateChanged = true;
-
-	}
-	else if (Application::IsKeyPressed('P')){
-		Application::state2D = false;
-		stateChanged = true;
-	}
-	if (stateChanged && Application::state2D){
-		Application::SetMousePosition(500,950);
-	}
-	else{ }
-
-	if (Application::state2D == false){
-		player.Update(dt);
-		std::cout << "testies" << std::endl;
-		
-	}
-	else{
-		double mouseX, mouseY;
-		Application::GetMouseMovement(mouseX, mouseY);
-		std::cout << mouseX << "-----------|" << mouseY << std::endl;
-		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
-			std::cout << "test" << std::endl;
-		}
-		else if (mouseX>-43 && mouseX< 135 && mouseY<-25 && mouseY>-350){
-			std::cout << "test2" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
-			std::cout << "test3" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
-			std::cout << "test4" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>290){
-			std::cout << "test5" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
-			std::cout << "test6" << std::endl;
-		}
-		else{
-			Application::state2D = false;
-			std::cout << "die" << std::endl;
-		}
-
-	}
+	
 	
 	//double mouseX, mouseY;
 	//Application::GetMouseMovement(mouseX, mouseY);
@@ -471,11 +411,11 @@ void SP2::Update(double dt)
 	//	std::cout << "diedtest" << std::endl;
 	//} 
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
-=======
-	player.Update(dt);
+	m_timer.startTimer();
+	m_timer.getElapsedTime();
+	std::cout << &StopWatch::getElapsedTime << std::endl;
 	enemy.Update(dt);
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
+	MazeInteraction(dt);
 
 	UpdatePortal(dt);
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
@@ -614,40 +554,13 @@ void SP2::Render()
 	RenderSkybox();
 	modelStack.PopMatrix();
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 40);
 	RenderPickUpObj();
 	modelStack.PopMatrix();
 
 
-=======
-	if (cItemGrow == false)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(0, fly + 0.5, 0);
-		modelStack.Scale(growing / 300 + 0.1, growing / 300 + 0.1, growing / 300 + 0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 0, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-	if (cItemGrow)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
-		modelStack.Scale(0.1, 0.1, 0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(-player.right.x * 5, -player.right.y * 5 - 3.f, -player.right.z * 5);
-		modelStack.PushMatrix();
-		modelStack.Rotate(rotateitem, 0, 1, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0,40);
@@ -655,7 +568,6 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
 
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	modelStack.PushMatrix();
 	modelStack.Translate(20, 20, 35);
 	modelStack.Scale(2, 2, 2);
@@ -682,8 +594,6 @@ void SP2::Render()
 	RenderInternalSkybox();
 	modelStack.PopMatrix();
 
-=======
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(100, 100, 100);
@@ -711,9 +621,7 @@ void SP2::Render()
 		);
 	RenderPortal();
 	modelStack.PopMatrix();
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
 	
-=======
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -724,7 +632,6 @@ void SP2::Render()
 	modelStack.Scale(1.f, 1.f, 1.f);
 	RenderMesh(meshList[GEO_LIGHTBALL], true);
 	modelStack.PopMatrix();
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 
 	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
 	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
@@ -765,8 +672,6 @@ void SP2::Render()
 
 	// HIT BOXES
 	if (showHitBox){
-<<<<<<< caf1ce4fdbbcd1affacee06a93d31a327714026f
-=======
 		Vector3 viewy = player.view;
 		viewy.y = 0;
 		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
@@ -804,7 +709,6 @@ void SP2::Render()
 				modelStack.PopMatrix();
 			}
 		}
->>>>>>> 179f8bd8453a34a6f07ef3bcd22952ab73e94e1c
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
 			modelStack.PushMatrix();
@@ -1513,4 +1417,55 @@ void SP2::Interval(double dt)
 		intervalBool = false;
 	}
 
+}
+
+void SP2::MazeInteraction(double dt){
+	bool stateChanged = false;
+	if (Application::IsKeyPressed('O')){
+		Application::state2D = true;
+		stateChanged = true;
+
+	}
+	else if (Application::IsKeyPressed('P')){
+		Application::state2D = false;
+		stateChanged = true;
+	}
+	if (stateChanged && Application::state2D){
+		Application::SetMousePosition(500, 950);
+	}
+	else{}
+
+	if (Application::state2D == false){
+		player.Update(dt);
+		std::cout << "testies" << std::endl;
+
+	}
+	else{
+		double mouseX, mouseY;
+		Application::GetMouseMovement(mouseX, mouseY);
+		std::cout << mouseX << "-----------|" << mouseY << std::endl;
+		if (mouseX > -43 && mouseX<483 && mouseY >-461 && mouseY < -350){
+			std::cout << "test" << std::endl;
+		}
+		else if (mouseX>-43 && mouseX< 135 && mouseY<-25 && mouseY>-350){
+			std::cout << "test2" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
+			std::cout << "test3" << std::endl;
+		}
+		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
+			std::cout << "test4" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>290){
+			std::cout << "test5" << std::endl;
+		}
+		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
+			std::cout << "test6" << std::endl;
+		}
+		else{
+			Application::state2D = false;
+			std::cout << "die" << std::endl;
+		}
+
+	}
 }

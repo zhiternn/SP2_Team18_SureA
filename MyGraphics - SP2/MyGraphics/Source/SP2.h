@@ -14,6 +14,7 @@
 #include "Projectile.h"
 #include "Hitbox.h"
 #include "Enemy.h"
+#include "timer.h"
 
 using std::vector;
 
@@ -120,6 +121,7 @@ private:
 	void RenderSkybox();
 	void RenderPickUpObj();
 	void RenderInternalSkybox();
+	void MazeInteraction(double dt);
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderObjs(Mesh* mesh, bool light);
 	void RenderText(Mesh* mesh, std::string text, Color color);
@@ -142,6 +144,7 @@ private:
 	unsigned m_parameters[U_TOTAL];
 
 	Mesh *meshList[NUM_GEOMETRY];
+	StopWatch m_timer;
 
 	vector<float> objArrangementData;
 	vector<Projectile*> bulletsList;
