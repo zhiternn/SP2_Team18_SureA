@@ -406,123 +406,102 @@ void SP2::Update(double dt)
 {
 	if (m_timer.TimesUp()){
 		std::cout << "RING RING RING" << std::endl;
-
-
-		//double mouseX, mouseY;
-		//Application::GetMouseMovement(mouseX, mouseY);
-		//std::cout << mouseX << "------------" << mouseY << std::endl;
-
-		//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
-		//	std::cout << "test" << std::endl;
-		//	maze1 == true;
-		//}
-		//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
-		//	std::cout << "NAICE" << std::endl;
-		//	maze1 == true;
-		//}
-		//else{
-		//	std::cout << "died" << std::endl;
-		//}
-
-		//else{
-		//	std::cout << "diedtest" << std::endl;
-		//} 
-
-		enemy.Update(dt);
-		MazeInteraction(dt);
-
-		UpdatePortal(dt);
+	}
+	enemy.Update(dt);
+	MazeInteraction(dt);
+	UpdatePortal(dt);
+	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
+		readyToInteract = 0.f;
+		if ((player.position - portal.position).Length() < 2.f){
+			player.position.Set(0, 50, 0);
+		}
+	}
 		if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 			readyToInteract = 0.f;
 			if ((player.position - portal.position).Length() < 2.f){
 				player.position.Set(0, 50, 0);
 			}
-
-			if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
-				readyToInteract = 0.f;
-				if ((player.position - portal.position).Length() < 2.f){
-					player.position.Set(0, 50, 0);
-				}
-				enemy.GoTo(player.position);
+			enemy.GoTo(player.position);
+		}
+		else if (readyToInteract < 2.f){
+			readyToInteract += (float)(10.f * dt);
+		}
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
+			readyToUse_SHOOT = 0.f;
+			bulletsList.push_back(new Projectile(
+				Vector3(player.position.x, player.position.y, player.position.z),
+				Vector3(player.view.x, player.view.y, player.view.z),
+				30,
+				50,
+				5
+				));
+		}
+		else if (readyToUse_SHOOT < 2.f){
+			readyToUse_SHOOT += (float)(10.f * dt);
+		}
+		for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
+			if ((*it)->Update(dt)){
+				it = bulletsList.erase(it);
 			}
-			else if (readyToInteract < 2.f){
-				readyToInteract += (float)(10.f * dt);
-			}
-			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
-				readyToUse_SHOOT = 0.f;
-				bulletsList.push_back(new Projectile(
-					Vector3(player.position.x, player.position.y, player.position.z),
-					Vector3(player.view.x, player.view.y, player.view.z),
-					30,
-					50,
-					5
-					));
-			}
-			else if (readyToUse_SHOOT < 2.f){
-				readyToUse_SHOOT += (float)(10.f * dt);
-			}
-			for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
-				if ((*it)->Update(dt)){
-					it = bulletsList.erase(it);
-				}
-				else{
-					it++;
-				}
-			}
-			for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
-				if ((*it)->Update(dt)){
-					it = Effect_Explosion::explosionList.erase(it);
-				}
-				else{
-					it++;
-				}
-			}
-
-			if (Application::IsKeyPressed('F'))
-			{
-				for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}
-			}
-
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-				ItemObject::ItemList[i]->PickUpAnimation(dt);
-			}
-
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-				ItemObject::ItemList[i]->ItemDelay(dt);
-			}
-
-			Interval(dt);
-
-			if (Application::IsKeyPressed(0x31)){
-				glEnable(GL_CULL_FACE);
-			}
-			if (Application::IsKeyPressed(0x32)){
-				glDisable(GL_CULL_FACE);
-			}
-			if (Application::IsKeyPressed(0x35)){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-			if (Application::IsKeyPressed(0x34)){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			}
-
-			if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-				readyToUse_HITBOX = 0.f;
-				if (showHitBox){
-					showHitBox = false;
-				}
-				else{
-					showHitBox = true;
-				}
-			}
-			else if (readyToUse_HITBOX < 2.f){
-				readyToUse_HITBOX += (float)(10 * dt);
+			else{
+				it++;
 			}
 		}
+		for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
+			if ((*it)->Update(dt)){
+				it = Effect_Explosion::explosionList.erase(it);
+			}
+			else{
+				it++;
+			}
+		}
+
+		if (Application::IsKeyPressed('F'))
+		{
+			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+				ItemObject::ItemList[i]->PickUp(player.hitbox);
+			}
+		}
+
+		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+			ItemObject::ItemList[i]->PickUpAnimation(dt);
+		}
+
+		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+			ItemObject::ItemList[i]->ItemDelay(dt);
+		}
+
+		Interval(dt);
+
+		if (Application::IsKeyPressed(0x31)){
+			glEnable(GL_CULL_FACE);
+		}
+		if (Application::IsKeyPressed(0x32)){
+			glDisable(GL_CULL_FACE);
+		}
+		if (Application::IsKeyPressed(0x35)){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		if (Application::IsKeyPressed(0x34)){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
+		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+			readyToUse_HITBOX = 0.f;
+			if (showHitBox){
+				showHitBox = false;
+			}
+			else{
+				showHitBox = true;
+			}
+		}
+		else if (readyToUse_HITBOX < 2.f){
+			readyToUse_HITBOX += (float)(10 * dt);
+		}
 	}
-}
+
+
+
 
 void SP2::Render()
 {

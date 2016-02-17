@@ -84,18 +84,15 @@ void Player::Update(double dt)
 			{
 				tired = true;
 			}
-			if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT)){
-				//sprint = true;
-				sprint1 += 1 * dt;
 
-				if (sprint1 >= 2)
-				{
-					tired = true;
-				}
-			}
+
 		}
+
+	
 	}
-		
+
+
+
 
 		if (Application::IsKeyPressed('S'))
 		{
@@ -149,10 +146,10 @@ void Player::Update(double dt)
 		vSpeed -= (float)(WV_GRAVITY / 5 * dt);
 		position.y += vSpeed;
 		hitbox.SetPosition(position);
-	if (Hitbox::CheckHitBox(hitbox, position, oldPos))
-	{
-		vSpeed = 0.f;
-	}
+		if (Hitbox::CheckHitBox(hitbox, position, oldPos))
+		{
+			vSpeed = 0.f;
+		}
 
 		if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
 			vSpeed = 0.f;
@@ -182,3 +179,6 @@ void Player::Update(double dt)
 		camera.Update(position, view);
 	}
 
+
+
+	
