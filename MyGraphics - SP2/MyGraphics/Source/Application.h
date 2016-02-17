@@ -14,7 +14,7 @@ public:
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
 	static void GetMouseMovement(double& x, double& y);
-	static void SetMousePosition(double x, double y);
+	static void SetMousePosition(double x = 0, double y = 0);
 	static void GetScreenSize(int& x, int& y);
 	static bool state2D;
 

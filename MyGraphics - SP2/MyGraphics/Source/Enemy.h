@@ -20,14 +20,16 @@ public:
 	void Init(Vector3 pos, float speed);
 	void Update(double dt);
 
-	void FindPath(Vector3 destination);
-	list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end);
+	void GoTo(Vector3 destination);
+	//list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end);
 
 	Vector3 position;
-	list<Waypoint*>::iterator checkPoint;//determines at which waypoint of the path it is at
-	list<Waypoint*> path;
 private:
 	float speed;
+
+	Vector3 checkPointDir;
+	list<Waypoint*>::reverse_iterator checkPoint;//determines at which waypoint of the path it is at
+	list<Waypoint*> path;
 };
 
 #endif

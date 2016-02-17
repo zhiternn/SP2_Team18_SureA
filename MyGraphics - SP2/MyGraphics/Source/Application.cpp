@@ -39,7 +39,20 @@ bool Application::IsKeyPressed(unsigned short key)
 
 void Application::SetMousePosition(double x, double y)
 {
-	glfwSetCursorPos(m_window, x, y);
+	if (x == 0 && y == 0){
+		int sizeX = 0;
+		int sizeY = 0;
+
+		glfwGetWindowSize(m_window, &sizeX, &sizeY);
+
+		sizeX = (sizeX / 2) - x;
+		sizeY = (sizeY / 2) - y;
+
+		glfwSetCursorPos(m_window, sizeX, sizeY);
+	}
+	else{
+		glfwSetCursorPos(m_window, x, y);
+	}
 }
 
 void Application::GetMouseMovement(double& x, double& y)

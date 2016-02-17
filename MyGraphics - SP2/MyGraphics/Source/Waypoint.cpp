@@ -23,6 +23,8 @@ Waypoint::~Waypoint()
 void Waypoint::Reset()
 {
 	movementCost = 999.f;
+
+	next = nullptr;
 }
 
 void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)
@@ -32,17 +34,17 @@ void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypo
 	Hitbox forWaypoint3;
 	Hitbox forWaypoint4;
 
-	forWaypoint1.SetSize(waypointSizeH, 1, waypointSizeH);
-	forWaypoint2.SetSize(waypointSizeH, 1, waypointSizeH);
-	forWaypoint3.SetSize(waypointSizeH, 1, waypointSizeH);
-	forWaypoint4.SetSize(waypointSizeH, 1, waypointSizeH);
+	forWaypoint1.SetSize(waypointSizeH, waypointSizeV, waypointSizeH);
+	forWaypoint2.SetSize(waypointSizeH, waypointSizeV, waypointSizeH);
+	forWaypoint3.SetSize(waypointSizeH, waypointSizeV, waypointSizeH);
+	forWaypoint4.SetSize(waypointSizeH, waypointSizeV, waypointSizeH);
 
 	for (size_t i = 0; i < Object::objectList.size(); ++i){
-		if (Object::objectList[i]->hitbox.minPoint.y < 3.f){
-			forWaypoint1.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x + (Object::objectList[i]->hitbox.sizeX / 2 + 0.5f), 0.6f, Object::objectList[i]->hitbox.position.z + (Object::objectList[i]->hitbox.sizeZ / 2 + 0.5f)));
-			forWaypoint2.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x + (Object::objectList[i]->hitbox.sizeX / 2 + 0.5f), 0.6f, Object::objectList[i]->hitbox.position.z - (Object::objectList[i]->hitbox.sizeZ / 2 + 0.5f)));
-			forWaypoint3.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x - (Object::objectList[i]->hitbox.sizeX / 2 + 0.5f), 0.6f, Object::objectList[i]->hitbox.position.z + (Object::objectList[i]->hitbox.sizeZ / 2 + 0.5f)));
-			forWaypoint4.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x - (Object::objectList[i]->hitbox.sizeX / 2 + 0.5f), 0.6f, Object::objectList[i]->hitbox.position.z - (Object::objectList[i]->hitbox.sizeZ / 2 + 0.5f)));
+		if (Object::objectList[i]->hitbox.minPoint.y < waypointSizeV){
+			forWaypoint1.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x + (Object::objectList[i]->hitbox.sizeX / 2 + waypointSizeH / 2), waypointSizeV / 2, Object::objectList[i]->hitbox.position.z + (Object::objectList[i]->hitbox.sizeZ / 2 + waypointSizeH / 2)));
+			forWaypoint2.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x + (Object::objectList[i]->hitbox.sizeX / 2 + waypointSizeH / 2), waypointSizeV / 2, Object::objectList[i]->hitbox.position.z - (Object::objectList[i]->hitbox.sizeZ / 2 + waypointSizeH / 2)));
+			forWaypoint3.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x - (Object::objectList[i]->hitbox.sizeX / 2 + waypointSizeH / 2), waypointSizeV / 2, Object::objectList[i]->hitbox.position.z + (Object::objectList[i]->hitbox.sizeZ / 2 + waypointSizeH / 2)));
+			forWaypoint4.SetPosition(Vector3(Object::objectList[i]->hitbox.position.x - (Object::objectList[i]->hitbox.sizeX / 2 + waypointSizeH / 2), waypointSizeV / 2, Object::objectList[i]->hitbox.position.z - (Object::objectList[i]->hitbox.sizeZ / 2 + waypointSizeH / 2)));
 
 			if (!Hitbox::CheckHitBox(forWaypoint1) && forWaypoint1.position.x < mapSizeX / 2 && forWaypoint1.position.x > -mapSizeX / 2 && forWaypoint1.position.z < mapSizeZ / 2 && forWaypoint1.position.z > -mapSizeZ / 2)
 				Waypoint::waypointList.push_back(new Waypoint(forWaypoint1.position, waypointSizeH, waypointSizeV));
@@ -75,7 +77,11 @@ void Waypoint::LinkWaypoints()
 				pos.y = Waypoint::sizeV / 2;
 				collisionChecker.SetPosition(pos);
 
-				collided = Hitbox::CheckHitBox(collisionChecker);
+				if (Hitbox::CheckHitBox(collisionChecker)){//collided
+					collided = true;
+
+					break;
+				}
 			}
 			if (!collided){
 				this->reachableWaypoints.insert(std::pair<float, Waypoint*>(distance, Waypoint::waypointList[j]));
@@ -87,7 +93,6 @@ void Waypoint::LinkWaypoints()
 void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)
 {
 	StoreWaypoints(mapSizeX, mapSizeZ, waypointSizeH, waypointSizeV);
-
 	//iterates through each waypoint and create a link to all reachable waypoints from curr waypoint
 	for (vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
 		(*it)->LinkWaypoints();

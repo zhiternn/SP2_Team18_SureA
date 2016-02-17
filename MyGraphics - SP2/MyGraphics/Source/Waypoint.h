@@ -24,7 +24,7 @@ public:
 
 	Vector3 position;
 	float movementCost; //cost to move from start node to curr node
-
+	Waypoint* next;
 	map<float, Waypoint*> reachableWaypoints;
 private:
 };

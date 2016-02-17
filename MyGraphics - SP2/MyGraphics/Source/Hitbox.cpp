@@ -120,12 +120,22 @@ bool Hitbox::CheckHitBox(Hitbox lhs)
 {
 	for (size_t i = 0; i < Object::objectList.size(); ++i){
 		if (
+			//check agasint objs
 			lhs.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
 			lhs.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
 			lhs.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
 			lhs.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
 			lhs.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
 			lhs.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z
+			||
+			//objs check against this
+			//counter checker for accuracy
+			Object::objectList[i]->hitbox.maxPoint.x > lhs.minPoint.x &&
+			Object::objectList[i]->hitbox.minPoint.x < lhs.maxPoint.x &&
+			Object::objectList[i]->hitbox.maxPoint.y > lhs.minPoint.y &&
+			Object::objectList[i]->hitbox.minPoint.y < lhs.maxPoint.y &&
+			Object::objectList[i]->hitbox.maxPoint.z > lhs.minPoint.z &&
+			Object::objectList[i]->hitbox.minPoint.z < lhs.maxPoint.z
 			){
 			return true;
 		}
