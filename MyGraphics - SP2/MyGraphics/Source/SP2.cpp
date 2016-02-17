@@ -8,6 +8,8 @@
 #include "LoadTGA.h"
 #include "Camera.h"
 #include "Effect_Explosion.h"
+#include "ItemBox.h"
+#include "Countdown.h"
 
 SP2::SP2()
 {
@@ -232,19 +234,10 @@ void SP2::Init()
 	enableLight = true;
 	showHitBox = false;
 
-	itemText = false;//item
-	takeItem = false;//item
-	growItem = false;//item
-	haveItem = false;//item
-	putItem = false;
-	fly = 0;//item
-	growing = 0;//item grows.
-
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 
 	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
-
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
 	enemy.Init(Vector3(0, 0, -3), 5.f);
 
@@ -273,6 +266,16 @@ void SP2::Init()
 	rightWall->hitbox.SetSize(10, 100, 100);
 	rightWall->SetPosition(55.f, 50.f, 0);
 
+
+	//Items
+	ItemObject* item1 = new ItemObject();
+	item1->SetPosition(0, 0, 0);
+
+	ItemObject* item2 = new ItemObject();
+	item2->SetPosition(0, 5, 0);
+
+	ItemObject* item3 = new ItemObject();
+	item3->SetPosition(-5, 0, 0);
 
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
@@ -477,10 +480,19 @@ void SP2::Update(double dt)
 
 			if (Application::IsKeyPressed('F'))
 			{
-				PickUp();
+				for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+					ItemObject::ItemList[i]->PickUp(player.hitbox);
+				}
 			}
 
-			PickUpAnimation(dt);
+			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+				ItemObject::ItemList[i]->PickUpAnimation(dt);
+			}
+
+			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+				ItemObject::ItemList[i]->ItemDelay(dt);
+			}
+
 			Interval(dt);
 
 			if (Application::IsKeyPressed(0x31)){
@@ -574,13 +586,6 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 40);
-
-
-	RenderPickUpObj();
-
-
-	modelStack.PushMatrix();
 	modelStack.Translate(0, 0,40);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_BASECAMP], true);
@@ -600,12 +605,13 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(25, 0, -25);
-	modelStack.Scale(1, 2.5, 1);
+	modelStack.Scale(4, 4, 4);
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
 	RenderPickUpObj();
+
+	modelStack.PushMatrix();
 	RenderInternalSkybox();
 	modelStack.PopMatrix();
 
@@ -674,6 +680,20 @@ void SP2::Render()
 		modelStack.PopMatrix();
 	}
 
+	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
+	//	if (Math::RadianToDegree(acos(Waypoint::waypointList[i]->position.Dot(player.view))) < 180.f){
+	//		modelStack.PushMatrix();
+	//		modelStack.Translate(
+	//			Waypoint::waypointList[i]->position.x,
+	//			Waypoint::waypointList[i]->position.y,
+	//			Waypoint::waypointList[i]->position.z
+	//			);
+	//		modelStack.Scale(1, 1, 1);
+	//		RenderMesh(meshList[GEO_HITBOX], true);
+	//		modelStack.PopMatrix();
+	//	}
+	//}
+
 	// HIT BOXES
 	if (showHitBox){
 		Vector3 viewy = player.view;
@@ -722,6 +742,21 @@ void SP2::Render()
 			RenderMesh(meshList[GEO_HITBOX], false);
 			modelStack.PopMatrix();
 		}
+		for (std::vector<ItemObject*>::iterator it = ItemObject::ItemList.begin(); it < ItemObject::ItemList.end(); ++it){
+			modelStack.PushMatrix();
+			modelStack.Translate(
+				(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
+				(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
+				(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
+				);
+			modelStack.Scale(
+				(*it)->hitbox.sizeX,
+				(*it)->hitbox.sizeY,
+				(*it)->hitbox.sizeZ
+				);
+			RenderMesh(meshList[GEO_HITBOX], false);
+			modelStack.PopMatrix();
+		}
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
@@ -732,18 +767,29 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+
+
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
-	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
-	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "dropItem " + std::to_string(dropItem), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "haveItem " + std::to_string(haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
-		
-	}
+
+	//if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
+	//{
+	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+	
+	//	
+	//}
 	if (Application::state2D == true){
 		modelStack.PushMatrix();
 		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
@@ -903,9 +949,6 @@ void SP2::RenderSkybox()
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
-
-	
-
 }
 
 void SP2::RenderInternalSkybox(){
@@ -1266,146 +1309,150 @@ void SP2::RenderExplosion()
 	modelStack.PopMatrix();
 }
 
-void SP2::PickUp()
-{
-	if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
-	{
-		if (haveItem == false && intervalBool == false)
-		{
-			takeItem = true;
-			intervalBool = true;
-			interval = 0;
-		}
-		if (haveItem == true && intervalBool == false)
-		{
-			haveItem = false;
-			dropItem = true;
-			intervalBool = true;
-			interval = 0;
-		}
-	}
-	
-}
+//void SP2::PickUp()
+//{
+//	if (Hitbox::CheckItems(player.hitbox))
+//	{
+//		if (haveItem == false && intervalBool == false)
+//		{
+//			takeItem = true;
+//			intervalBool = true;
+//			interval = 0;
+//		}
+//		if (haveItem == true && intervalBool == false)
+//		{
+//			haveItem = false;
+//			dropItem = true;
+//			intervalBool = true;
+//			interval = 0;
+//		}
+//	}
+//}
 
-void SP2::PickUpAnimation(double dt)
-{
-	//////////////////
-	//ITEM ANIMATION//
-	//////////////////
-
-	if (takeItem == true)
-	{
-		fly += (float(1 * dt));
-	}
-	if (putItem == true)
-	{
-		fly -= (float(1 * dt));
-	}
-
-	if (fly > 1)
-	{
-		takeItem = false;//Stop movingup
-		cangrowItem = true;
-	}
-	if (fly < 0)
-	{
-		putItem = false;
-		dropItem = false;
-	}
-
-	if (cangrowItem == true && takeItem == false || dropItem == true)//
-	{
-		growItem = true;
-	}
-	else
-	{
-		growItem = false;
-	}
-
-	if (growItem == true && growingbool == true)
-	{
-		growing -= (float(333 * dt));
-	}
-	if (growItem == true && growingbool == false)
-	{
-		growing += (float(333 * dt));
-	}
-	if (growing < -1)
-	{
-		growingbool = false;
-		counter++;
-	}
-
-	if (growing > 30)
-	{
-		growingbool = true;
-		counter++;
-	}
-
-	if (counter > 11)
-	{
-		cangrowItem = false;
-		if (dropItem == true)
-		{
-			putItem = true;
-			counter = 0;
-		}
-		else
-			haveItem = true;
-		counter = 0;
-	}
-
-	if (haveItem == true)
-	{
-		rotateitem += (float(1000 * dt));
-	}
-
-	//////////////////
-	//ITEM ANIMATION//
-	//////////////////
-}
+//void SP2::PickUpAnimation(double dt)
+//{
+//	//////////////////
+//	//ITEM ANIMATION//
+//	//////////////////
+//
+//	if (takeItem == true)
+//	{
+//		fly += (float(1 * dt));
+//	}
+//	if (putItem == true)
+//	{
+//		fly -= (float(1 * dt));
+//	}
+//
+//	if (fly > 1)
+//	{
+//		takeItem = false;//Stop movingup
+//		cangrowItem = true;
+//	}
+//	if (fly < 0)
+//	{
+//		putItem = false;
+//		dropItem = false;
+//	}
+//
+//	if (cangrowItem == true && takeItem == false || dropItem == true)//
+//	{
+//		growItem = true;
+//	}
+//	else
+//	{
+//		growItem = false;
+//	}
+//
+//	if (growItem == true && growingbool == true)
+//	{
+//		growing -= (float(333 * dt));
+//	}
+//	if (growItem == true && growingbool == false)
+//	{
+//		growing += (float(333 * dt));
+//	}
+//	if (growing < -1)
+//	{
+//		growingbool = false;
+//		counter++;
+//	}
+//
+//	if (growing > 30)
+//	{
+//		growingbool = true;
+//		counter++;
+//	}
+//
+//	if (counter > 11)
+//	{
+//		cangrowItem = false;
+//		if (dropItem == true)
+//		{
+//			putItem = true;
+//			counter = 0;
+//		}
+//		else
+//			haveItem = true;
+//		counter = 0;
+//	}
+//
+//	if (haveItem == true)
+//	{
+//		rotateitem += (float(1000 * dt));
+//	}
+//
+//	//////////////////
+//	//ITEM ANIMATION//
+//	//////////////////
+//}
 
 void SP2::RenderPickUpObj()
 {
-	if (haveItem == false)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(0, fly + 0.5, player.sprint1 + 0);
-		modelStack.Scale(growing / 300 + 0.1, growing / 300 + 0.1, growing / 300 + 0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 0, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+		if (ItemObject::ItemList[i]->haveItem == false)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(0, ItemObject::ItemList[i]->fly, 0);
+			modelStack.PushMatrix();
+			modelStack.Translate(
+				ItemObject::ItemList[i]->position.x,
+				ItemObject::ItemList[i]->position.y,
+				ItemObject::ItemList[i]->position.z
+				);
+			modelStack.Scale(ItemObject::ItemList[i]->growing / 300 + 0.1, ItemObject::ItemList[i]->growing / 300 + 0.1, ItemObject::ItemList[i]->growing / 300 + 0.1);
+			RenderMesh(meshList[GEO_Testitem], true);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+		}
+		if (ItemObject::ItemList[i]->haveItem == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
+			modelStack.Scale(0.1, 0.1, 0.1);
+			modelStack.PushMatrix();
+			modelStack.Translate(-player.right.x * 4.5, -player.right.y * 4.5, -player.right.z * 4.5);
+			modelStack.PushMatrix();
+			modelStack.Rotate(ItemObject::ItemList[i]->rotateitem, 0, 1, 0);
+			RenderMesh(meshList[GEO_Testitem], true);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+		}
 	}
-	if (haveItem == true)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
-		modelStack.Scale(0.1, 0.1, 0.1);
-		modelStack.PushMatrix();
-		modelStack.Translate(-player.right.x * 4.5, -player.right.y * 4.5f, -player.right.z * 4.5);
-		modelStack.PushMatrix();
-		modelStack.Rotate(rotateitem, 0, 1, 0);
-		RenderMesh(meshList[GEO_Testitem], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-
 }
 
 void SP2::Interval(double dt)
 {
-	if (intervalBool == true)
-	{
-		interval += (float)(50 * dt);
-	}
+	//if (intervalBool == true)
+	//{
+	//	interval += (float)(50 * dt);
+	//}
 
-	if (interval > 50)
-	{
-		intervalBool = false;
-	}
+	//if (interval > 50)
+	//{
+	//	intervalBool = false;
+	//}
 
 }
 
@@ -1414,7 +1461,7 @@ void SP2::MazeInteraction(double dt){
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(5);
+
 	}
 	else if (Application::IsKeyPressed('P')){
 		Application::state2D = false;
@@ -1422,8 +1469,6 @@ void SP2::MazeInteraction(double dt){
 	}
 	if (stateChanged && Application::state2D){
 		Application::SetMousePosition(500, 950);
-	
-
 	}
 	else{}
 
@@ -1461,4 +1506,3 @@ void SP2::MazeInteraction(double dt){
 
 	}
 }
-

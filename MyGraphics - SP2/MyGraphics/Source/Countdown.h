@@ -27,7 +27,7 @@ public:
 		if (timeStarted){
 			duration -= getElapsedTime();
 
-			std::cout << duration << std::endl;
+			//std::cout << duration << std::endl;
 
 			if (duration <= 0){
 				duration = 0;

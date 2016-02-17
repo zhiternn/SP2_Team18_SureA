@@ -145,7 +145,6 @@ private:
 
 	Mesh *meshList[NUM_GEOMETRY];
 	Countdown m_timer;
-	double tenSecs;
 
 	vector<float> objArrangementData;
 	vector<Projectile*> bulletsList;
@@ -154,23 +153,25 @@ private:
 	bool showHitBox;
 
 	bool itemText;//item pickup
-	bool takeItem;//item pickup (Trigger to get item)
-	bool growingbool;//item pickup (Growing bigger or smaller)
-	bool growItem;//item pickup(can grow) if not cannot
-	bool cangrowItem;
-	bool haveItem;//item pickup
-	bool putItem;//Float downwards after growing
 
-	bool dropItem;//This Triggers to drop item
+	//bool takeItem;//item pickup (Trigger to get item)
+	//bool growingbool;//item pickup (Growing bigger or smaller)
+	//bool growItem;//item pickup(can grow) if not cannot
+	//bool cangrowItem;
+	//bool haveItem;//item pickup
+	//bool putItem;//Float downwards after growing
+
+	//bool dropItem;//This Triggers to drop item
+
+
+	//int counter;//item pickup
+
+	//float interval;
+	//float fly;//item floats(pickup)
+	//float growing;//item grows.(pickup)
+	//float rotateitem;//itemRotation(pickup)
+
 	bool intervalBool;//Interval for ... anything i guess.
-
-	int counter;//item pickup
-	
-	float interval;
-	float fly;//item floats(pickup)
-	float growing;//item grows.(pickup)
-	float rotateitem;//itemRotation(pickup)
-
 
 	float readyToUse;
 	float readyToInteract;

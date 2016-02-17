@@ -1,5 +1,7 @@
 #include "Hitbox.h"
 #include "Object.h"
+#include "ItemBox.h"
+
 
 Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 {
@@ -160,4 +162,28 @@ bool Hitbox::CheckHitBox(Vector3 lhs)
 		}
 	}
 	return false;
+}
+
+bool Hitbox::CheckItems(Hitbox lhs, Hitbox rhs)
+{
+		if (
+			lhs.maxPoint.x > rhs.minPoint.x &&
+			lhs.minPoint.x < rhs.maxPoint.x &&
+			lhs.maxPoint.y > rhs.minPoint.y &&
+			lhs.minPoint.y < rhs.maxPoint.y &&
+			lhs.maxPoint.z > rhs.minPoint.z &&
+			lhs.minPoint.z < rhs.maxPoint.z
+			||
+			rhs.maxPoint.x > lhs.minPoint.x &&
+			rhs.minPoint.x < lhs.maxPoint.x &&
+			rhs.maxPoint.y > lhs.minPoint.y &&
+			rhs.minPoint.y < lhs.maxPoint.y &&
+			rhs.maxPoint.z > lhs.minPoint.z &&
+			rhs.minPoint.z < lhs.maxPoint.z
+			){
+			return true;
+		}
+		else{
+			return false;
+		}
 }
