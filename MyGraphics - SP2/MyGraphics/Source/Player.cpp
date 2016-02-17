@@ -64,7 +64,11 @@ void Player::Update(double dt)
 		sprint1 -= 0.3 * dt;
 		tired = false;
 	}
+<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
 	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT) && crouch == false){
+=======
+	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S') || Application::IsKeyPressed('A') || Application::IsKeyPressed('D')) && Application::IsKeyPressed(VK_SHIFT)){
+>>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
 		//sprint = true;
 		sprint1 += 1 * dt;
 		
