@@ -408,6 +408,21 @@ void SP2::Update(double dt)
 {
 	if (m_timer.TimesUp()){
 		std::cout << "RING RING RING" << std::endl;
+=======
+<<<<<<< d9362869be442b7748bbb69eee1fe0fc521759af
+
+=======
+>>>>>>> e86f72fab073705135a536fc6653981ac8c88d83
+	bool stateChanged = false;
+	if (Application::IsKeyPressed('O')){
+		Application::state2D = true;
+		stateChanged = true;
+
+	}
+	else if (Application::IsKeyPressed('P')){
+		Application::state2D = false;
+		stateChanged = true;
+>>>>>>> 459b2c380c1565bded0aca58b5d6b86ef2ded997
 	}
 	enemy.Update(dt);
 	MazeInteraction(dt);
@@ -454,10 +469,55 @@ void SP2::Update(double dt)
 		}
 	}
 
+<<<<<<< d463ca683ab637a27c9f59ee52e915ff38f4a419
 	if (Application::IsKeyPressed('F'))
 	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
 			ItemObject::ItemList[i]->PickUp(player.hitbox);
+=======
+<<<<<<< d9362869be442b7748bbb69eee1fe0fc521759af
+		if (m_timer.TimesUp()){
+			std::cout << "RING RING RING" << std::endl;
+=======
+	}
+
+	//double mouseX, mouseY;
+	//Application::GetMouseMovement(mouseX, mouseY);
+	//std::cout << mouseX << "------------" << mouseY << std::endl;
+
+	//if (mouseX < 500 && mouseX > 360 && mouseY>359 && mouseY < 400){
+	//	std::cout << "test" << std::endl;
+	//	maze1 == true;
+	//}
+	//else if (mouseX > 355 && mouseX < 380 && mouseY >165 && mouseY < 393){
+	//	std::cout << "NAICE" << std::endl;
+	//	maze1 == true;
+	//}
+	//else{
+	//	std::cout << "died" << std::endl;
+	//}
+
+	//else{
+	//	std::cout << "diedtest" << std::endl;
+	//} 
+
+	m_timer.startTimer();
+	
+	std::cout << &StopWatch::getElapsedTime << std::endl;
+
+	m_timer.getElapsedTime();
+	enemy.Update(dt);
+	MazeInteraction(dt);
+
+	player.Update(dt);
+	UpdatePortal(dt);
+
+	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
+		readyToInteract = 0.f;
+		if ((player.position - portal.position).Length() < 2.f){
+			player.position.Set(0, 50, 0);
+>>>>>>> e86f72fab073705135a536fc6653981ac8c88d83
+>>>>>>> 459b2c380c1565bded0aca58b5d6b86ef2ded997
 		}
 	}
 
@@ -757,7 +817,14 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
+<<<<<<< d463ca683ab637a27c9f59ee52e915ff38f4a419
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+
+
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
+
 
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
