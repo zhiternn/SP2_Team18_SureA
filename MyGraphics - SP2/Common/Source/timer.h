@@ -6,7 +6,7 @@
 class StopWatch
 {
  
- private:
+ protected:
      
     LARGE_INTEGER frequency;
     LARGE_INTEGER prevTime, currTime;

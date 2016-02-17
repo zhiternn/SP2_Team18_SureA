@@ -354,11 +354,15 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
+<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
 
 
 =======
 
 >>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
+=======
+	tenSecs = 10;
+>>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
 	GenerateWaypoints(100, 100, 1, 1);
 }
 
@@ -409,6 +413,7 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
 <<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 
 =======
@@ -463,9 +468,14 @@ void SP2::Update(double dt)
 			std::cout << "die" << std::endl;
 		}
 
+=======
+	if (m_timer.TimesUp()){
+		std::cout << "RING RING RING" << std::endl;
+>>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
 	}
 <<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	
+<<<<<<< 4fd247c5925dbdb398ea382213df80652604fc2e
 =======
 
 >>>>>>> 91c6e618c676e4adc0098db14c26b43dec0001b6
@@ -495,6 +505,8 @@ void SP2::Update(double dt)
 
 <<<<<<< a1a071007aecc7ee42a77d53891c5621f59980c1
 	m_timer.getElapsedTime();
+=======
+>>>>>>> 3ade839495a64f9f4ed7e7ea80a05deff5107990
 	enemy.Update(dt);
 	MazeInteraction(dt);
 =======
@@ -1508,7 +1520,7 @@ void SP2::MazeInteraction(double dt){
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
 		stateChanged = true;
-
+		m_timer.StartCountdown(5);
 	}
 	else if (Application::IsKeyPressed('P')){
 		Application::state2D = false;
@@ -1516,6 +1528,8 @@ void SP2::MazeInteraction(double dt){
 	}
 	if (stateChanged && Application::state2D){
 		Application::SetMousePosition(500, 950);
+	
+
 	}
 	else{}
 
@@ -1553,3 +1567,4 @@ void SP2::MazeInteraction(double dt){
 
 	}
 }
+

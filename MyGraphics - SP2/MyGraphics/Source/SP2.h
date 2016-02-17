@@ -14,7 +14,7 @@
 #include "Projectile.h"
 #include "Hitbox.h"
 #include "Enemy.h"
-#include "timer.h"
+#include "Countdown.h"
 
 using std::vector;
 
@@ -144,7 +144,8 @@ private:
 	unsigned m_parameters[U_TOTAL];
 
 	Mesh *meshList[NUM_GEOMETRY];
-	StopWatch m_timer;
+	Countdown m_timer;
+	double tenSecs;
 
 	vector<float> objArrangementData;
 	vector<Projectile*> bulletsList;
