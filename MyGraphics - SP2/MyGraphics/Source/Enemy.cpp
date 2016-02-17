@@ -21,9 +21,6 @@ void Enemy::Update(double dt)
 	if (checkPoint != path.rend()){
 		//MOVE TO
 		position += checkPointDir * speed * dt;
-
-		std::cout << position << std::endl;
-		std::cout << (*checkPoint)->position << std::endl;
 		checkPointDir = ((*checkPoint)->position - position).Normalized();
 
 		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH/2){
@@ -60,52 +57,6 @@ Waypoint* GetLowestInList(vector<Waypoint*> vec)
 	return belongingWaypoint;
 }
 
-//list<Waypoint*> Enemy::Dijkstra(Waypoint* start, Waypoint* end)
-//{
-//	Waypoint* currWaypoint = start;
-//
-//	list<Waypoint*> result; // closed list
-//	vector<Waypoint*> openList;
-//	openList.clear();
-//
-//	currWaypoint->movementCost = 0.f;
-//
-//	//Store all waypoints into openList
-//	for (vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
-//		openList.push_back(*it);
-//	}
-//	openList.push_back(currWaypoint);
-//	openList.push_back(end);
-//
-//	while (currWaypoint != end){
-//		//find lowest movementCost
-//		Waypoint* lowestMovementCost = GetLowestInList(openList);
-//
-//		//store in result and assign to curr
-//		result.push_back(lowestMovementCost);
-//		currWaypoint = lowestMovementCost;
-//
-//		//if == end, return
-//		if (currWaypoint == end){	
-//			break;
-//		}
-//
-//		//else calculate neighbours
-//		CalculateMovementCost(currWaypoint);
-//
-//		//pop lowest movementCost
-//		for (vector<Waypoint*>::iterator it = openList.begin(); it != openList.end();){
-//			if ((*it)->movementCost == currWaypoint->movementCost){
-//				it = openList.erase(it);
-//			}
-//			else{
-//				++it;
-//			}
-//		}
-//	}
-//
-//	return result;
-//}
 list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 {
 	Waypoint* parentWaypoint = nullptr;
