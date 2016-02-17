@@ -153,14 +153,6 @@ private:
 	bool enableLight;
 	bool showHitBox;
 
-
-<<<<<<< b7d7a4ce2dcc103fa9afde29816ae2b756c664dc
-=======
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
->>>>>>> 4996be88662264d3df1c99fb150bb69a260a3458
 	bool itemText;//item pickup
 	bool takeItem;//item pickup (Trigger to get item)
 	bool growingbool;//item pickup (Growing bigger or smaller)

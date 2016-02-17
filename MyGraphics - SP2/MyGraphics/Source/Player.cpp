@@ -149,6 +149,10 @@ void Player::Update(double dt)
 		vSpeed -= (float)(WV_GRAVITY / 5 * dt);
 		position.y += vSpeed;
 		hitbox.SetPosition(position);
+	if (Hitbox::CheckHitBox(hitbox, position, oldPos))
+	{
+		vSpeed = 0.f;
+	}
 
 		if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
 			vSpeed = 0.f;
