@@ -342,15 +342,12 @@ void SP2::Init()
 	Turret->hitbox.SetSize(5, 5, 2.5);
 	Turret->SetPosition(-46.f, 2.5f, -20.f);
 
-<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
-=======
 	Object* AllyShip = new Object();
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
 
 
->>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
 	GenerateWaypoints(100, 100, 1, 1);
 }
 
@@ -401,7 +398,6 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
-<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
 
 	bool stateChanged = false;
 	if (Application::IsKeyPressed('O')){
@@ -474,17 +470,12 @@ void SP2::Update(double dt)
 	//else{
 	//	std::cout << "diedtest" << std::endl;
 	//} 
-=======
->>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
 
 	m_timer.startTimer();
 	
 	std::cout << &StopWatch::getElapsedTime << std::endl;
-<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
 
-=======
 	m_timer.getElapsedTime();
->>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
 	enemy.Update(dt);
 	MazeInteraction(dt);
 	UpdatePortal(dt);
@@ -655,10 +646,7 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 
-<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
 	RenderPickUpObj();
-=======
->>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
 
 	modelStack.PushMatrix();
 	RenderPickUpObj();

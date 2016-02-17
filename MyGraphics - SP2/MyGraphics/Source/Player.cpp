@@ -25,6 +25,7 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 	hitbox.SetPosition(pos);
 }
 
+
 void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 10.f;
@@ -47,7 +48,7 @@ void Player::Update(double dt)
 		hitbox.SetSize(0.2f, 1.5, 0.2f);
 		speedMultiplier = 1;
 	}
-	
+
 	if (Application::IsKeyPressed(VK_SHIFT)){
 		if (tired == false && crouch == false){
 			speedMultiplier = 10;
@@ -64,70 +65,69 @@ void Player::Update(double dt)
 		sprint1 -= 0.3 * dt;
 		tired = false;
 	}
-<<<<<<< f8730b4bab11d250841c8d9b97075c65adcf5f85
 	if (Application::IsKeyPressed('W') && Application::IsKeyPressed(VK_SHIFT) && crouch == false){
-=======
-	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S') || Application::IsKeyPressed('A') || Application::IsKeyPressed('D')) && Application::IsKeyPressed(VK_SHIFT)){
->>>>>>> 7b459089bbc3a29161a1216b2427eb8749aa244e
-		//sprint = true;
-		sprint1 += 1 * dt;
-		
-		if (sprint1 >= 2)
-		{
-			tired = true;
+		if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S') || Application::IsKeyPressed('A') || Application::IsKeyPressed('D')) && Application::IsKeyPressed(VK_SHIFT)){
+			//sprint = true;
+			sprint1 += 1 * dt;
+
+			if (sprint1 >= 2)
+			{
+				tired = true;
+			}
 		}
 	}
-	
-	
 
-	if (Application::IsKeyPressed('S'))
-	{
-		position.x -= (view.x * speedMultiplier * dt);
-		position.z -= (view.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		position.x -= (right.x * speedMultiplier * dt);
-		position.z -= (right.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		position.x += (right.x * speedMultiplier * dt);
-		position.z += (right.z * speedMultiplier * dt);
-	}
-	if (Application::IsKeyPressed(VK_SPACE))
-	{
-		vSpeed = MOVEMENT_SPEED * dt;
-	}
-	
-	vSpeed -= (float)(WV_GRAVITY/5 * dt);
-	position.y += vSpeed;
-	hitbox.SetPosition(position);
 
-	if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
-		vSpeed = 0.f;
-	}
 
-	double mouseX, mouseY;
-	Application::GetMouseMovement(mouseX, mouseY);
-	float yaw = (float)(mouseX * CAMERA_SPEED * dt);
-	Mtx44 rotate;
-	rotate.SetToRotation(yaw, 0, 1, 0);
-	view = rotate * view;
-	right = rotate * right;
-	camera.up = rotate * camera.up;
+		if (Application::IsKeyPressed('S'))
+		{
+			position.x -= (view.x * speedMultiplier * dt);
+			position.z -= (view.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			position.x -= (right.x * speedMultiplier * dt);
+			position.z -= (right.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			position.x += (right.x * speedMultiplier * dt);
+			position.z += (right.z * speedMultiplier * dt);
+		}
+		if (Application::IsKeyPressed(VK_SPACE))
+		{
+			vSpeed = MOVEMENT_SPEED * dt;
+		}
 
-	
-	if (view.y < 0.95 && mouseY > 0 || view.y > -0.95 && mouseY < 0){
-		float pitch = (float)(mouseY * CAMERA_SPEED * dt);
-		rotate.SetToRotation(pitch, right.x, right.y, right.z);
+		vSpeed -= (float)(WV_GRAVITY / 5 * dt);
+		position.y += vSpeed;
+		hitbox.SetPosition(position);
+
+		if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
+			vSpeed = 0.f;
+		}
+
+		double mouseX, mouseY;
+		Application::GetMouseMovement(mouseX, mouseY);
+		float yaw = (float)(mouseX * CAMERA_SPEED * dt);
+		Mtx44 rotate;
+		rotate.SetToRotation(yaw, 0, 1, 0);
 		view = rotate * view;
 		right = rotate * right;
 		camera.up = rotate * camera.up;
+
+
+		if (view.y < 0.95 && mouseY > 0 || view.y > -0.95 && mouseY < 0){
+			float pitch = (float)(mouseY * CAMERA_SPEED * dt);
+			rotate.SetToRotation(pitch, right.x, right.y, right.z);
+			view = rotate * view;
+			right = rotate * right;
+			camera.up = rotate * camera.up;
+		}
+
+		view.Normalize();
+		right.Normalized();
+		camera.up.Normalize();
+		camera.Update(position, view);
 	}
 
-	view.Normalize();
-	right.Normalized();
-	camera.up.Normalize();
-	camera.Update(position, view);
-}
