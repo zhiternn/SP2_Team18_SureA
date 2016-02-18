@@ -10,7 +10,7 @@ public:
 	{
 		StopWatch();
 		duration = 0;
-		timeStarted = false;
+		isCountingDown = false;
 	}
 	virtual ~Countdown()
 	{
@@ -18,31 +18,29 @@ public:
 
 	void StartCountdown(double a)
 	{
-		timeStarted = true;
+		isCountingDown = true;
 		duration = a;
 		startTimer();
 	}
-	bool TimesUp() // true when times up
+	double GetTimeLeft() // true when times up
 	{
-		if (timeStarted){
+		std::cout << duration << std::endl;
+
+		if (isCountingDown){
 			duration -= getElapsedTime();
-
-			//std::cout << duration << std::endl;
-
 			if (duration <= 0){
 				duration = 0;
-				timeStarted = false;
-
-				return true;
+				isCountingDown = false;
 			}
 		}
 
-		return false;
+			return duration;
 	}
 
+	bool isCountingDown;
 private:
 	double duration;
-	bool timeStarted;
+	
 };
 
 #endif

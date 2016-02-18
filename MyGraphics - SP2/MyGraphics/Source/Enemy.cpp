@@ -55,6 +55,7 @@ Waypoint* GetLowestInList(vector<Waypoint*> vec)
 	return belongingWaypoint;
 }
 
+
 list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 {
 	Waypoint* parentWaypoint = nullptr;

@@ -113,7 +113,11 @@ void ItemObject::PickUpAnimation(double dt)
 
 	if (haveItem == true)
 	{
+<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 		rotateitem += (float(300 * dt));
+=======
+		rotateitem += (float(10 * dt));
+>>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 	}
 
 	//////////////////
