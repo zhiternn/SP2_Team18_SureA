@@ -52,7 +52,6 @@ class SP2 : public Scene
 		GEO_PORTAL_BODY,
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
-		GEO_DOOR,
 
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,
@@ -125,7 +124,6 @@ public:
 private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 	void RenderSlideDoor();
 	void DoorMovement(double dt);
 	void RenderTraps();
@@ -133,10 +131,8 @@ private:
 	void RenderEnemyShip();
 	void RenderTurrets();
 	void RenderBaseCamp();
-=======
 	void RenderDoor();
 	void UpdateDoor(double dt);
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 	void RenderPickUpObj();
 	void RenderInternalSkybox();
 	void MazeInteraction(double dt);
@@ -158,7 +154,6 @@ private:
 	bool back;
 
 	Object portal;
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 	Object laserTrap;
 	Object laserTrap1;
 	Object laserTrap2;
@@ -166,9 +161,9 @@ private:
 	Object frontDoor2;
 	Object backDoor;
 	Object backDoor2;
-=======
+
 	Object trapdoor;
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
+
 	void RenderPortal();
 	void UpdatePortal(double dt);
 	void RenderExplosion();

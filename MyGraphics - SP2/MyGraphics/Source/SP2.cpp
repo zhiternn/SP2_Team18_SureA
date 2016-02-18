@@ -193,17 +193,17 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
-	meshList[GEO_Testitem1] = MeshBuilder::GenerateOBJ("Obj1", "OBJ//ItemObject1.obj");
-	meshList[GEO_Testitem1]->textureID = LoadTGA("Image//walls3.tga");
+	//meshList[GEO_Testitem1] = MeshBuilder::GenerateOBJ("Obj1", "OBJ//ItemObject1.obj");
+	//meshList[GEO_Testitem1]->textureID = LoadTGA("Image//walls3.tga");
 
-	meshList[GEO_Testitem2] = MeshBuilder::GenerateOBJ("Obj2", "OBJ//ItemObject2.obj");
-	meshList[GEO_Testitem2]->textureID = LoadTGA("Image//walls3.tga");
+	//meshList[GEO_Testitem2] = MeshBuilder::GenerateOBJ("Obj2", "OBJ//ItemObject2.obj");
+	//meshList[GEO_Testitem2]->textureID = LoadTGA("Image//walls3.tga");
 
-	meshList[GEO_Testitem3] = MeshBuilder::GenerateOBJ("Obj3", "OBJ//ItemObject3.obj");
-	meshList[GEO_Testitem3]->textureID = LoadTGA("Image//walls3.tga");
+	//meshList[GEO_Testitem3] = MeshBuilder::GenerateOBJ("Obj3", "OBJ//ItemObject3.obj");
+	//meshList[GEO_Testitem3]->textureID = LoadTGA("Image//walls3.tga");
 
-	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
-	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
+	//meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
+	//meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
 
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
@@ -390,12 +390,8 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
-	GenerateWaypoints(100, 100, 0.5, 4);
 
-=======
 	GenerateWaypoints(100, 100, 0.2f, 4);
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -445,15 +441,6 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
-	if (m_timer.TimesUp()){
-		std::cout << "RING RING RING" << std::endl;
-	}
-		bool stateChanged = false;
-		if (Application::IsKeyPressed('O')){
-			Application::state2D = true;
-			stateChanged = true;
-=======
 	Interval(dt);
 	enemy.Update(dt);
 	MazeInteraction(dt);
@@ -463,66 +450,29 @@ void SP2::Update(double dt)
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
 		if ((player.position - portal.position).Length() < 2.f){
-			player.position.Set(0, 50, 0);
+			player.position.Set(0, 19, 0);
 		}
 		enemy.GoTo(player.position);
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
 	}
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
-
+	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
+		if ((*it)->Update(dt)){
+			it = bulletsList.erase(it);
 		}
-		else if (Application::IsKeyPressed('P')){
-			Application::state2D = false;
-			stateChanged = true;
+		else{
+			it++;
 		}
-
-		enemy.Update(dt);
-		MazeInteraction(dt);
-		UpdatePortal(dt);
-
-		if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
-			readyToInteract = 0.f;
-			if ((player.position - portal.position).Length() < 2.f){
-				player.position.Set(0, 19, 0);
-			}
-			enemy.GoTo(player.position);
+	}
+	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
+		if ((*it)->Update(dt)){
+			it = Effect_Explosion::explosionList.erase(it);
 		}
-		else if (readyToInteract < 2.f){
-			readyToInteract += (float)(10.f * dt);
+		else{
+			it++;
 		}
-
-		if (Application::IsKeyPressed(VK_LBUTTON) && readyToUse_SHOOT >= 2.f){
-			readyToUse_SHOOT = 0.f;
-			bulletsList.push_back(new Projectile(
-				Vector3(player.position.x, player.position.y, player.position.z),
-				Vector3(player.view.x, player.view.y, player.view.z),
-				100,
-				50,
-				5
-				));
-		}
-		else if (readyToUse_SHOOT < 2.f){
-			readyToUse_SHOOT += (float)(10.f * dt);
-		}
-		for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
-			if ((*it)->Update(dt)){
-				it = bulletsList.erase(it);
-			}
-			else{
-				it++;
-			}
-		}
-		for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
-			if ((*it)->Update(dt)){
-				it = Effect_Explosion::explosionList.erase(it);
-			}
-			else{
-				it++;
-			}
-		}
-
+	}
 		if (Application::IsKeyPressed('F'))
 		{
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
@@ -534,24 +484,16 @@ void SP2::Update(double dt)
 			ItemObject::ItemList[i]->PickUpAnimation(dt);
 		}
 
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
 			ItemObject::ItemList[i]->ItemDelay(dt);
 		}
-=======
 	
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 
 		if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
 		{
 			player.position.Set(18, 19, 0);
 		}
-		
-		DoorMovement(dt);
-		Interval(dt);
-		enemy.Update(dt);
-		MazeInteraction(dt);
-		UpdatePortal(dt);
+	
 
 		if (Application::IsKeyPressed(0x31)){
 			glEnable(GL_CULL_FACE);
@@ -578,16 +520,8 @@ void SP2::Update(double dt)
 		else if (readyToUse_HITBOX < 2.f){
 			readyToUse_HITBOX += (float)(10 * dt);
 		}
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
-=======
-	}
-	else if (readyToUse_HITBOX < 2.f){
-		readyToUse_HITBOX += (float)(10 * dt);
-	}
-
-
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 }
+
 	
 
 
@@ -666,11 +600,11 @@ void SP2::Render()
 
 	RenderAllyShip();
 
-	RenderTraps();
+	//RenderTraps();
 
-	RenderSlideDoor();
+	//RenderSlideDoor();
 
-	RenderPickUpObj();
+	//RenderPickUpObj();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(15, 17.5, 0);
@@ -686,9 +620,7 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_FLOOR], true);
 	modelStack.PopMatrix();
 
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 			
-=======
 	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end(); ++it){
 		modelStack.PushMatrix();
 		modelStack.Translate(
@@ -700,46 +632,6 @@ void SP2::Render()
 		RenderMesh(meshList[GEO_LIGHTBALL], false);
 		modelStack.PopMatrix();
 	}
-	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
-		modelStack.PushMatrix();
-		modelStack.Translate(
-			(*it)->position.x,
-			(*it)->position.y,
-			(*it)->position.z
-			);
-		modelStack.Scale(
-			(*it)->scale,
-			(*it)->scale,
-			(*it)->scale
-			);
-		RenderMesh(meshList[GEO_EXPLOSION], false);
-		modelStack.PopMatrix();
-	}
-
-	// OBJs Textures with transparency to be rendered Last
-
-	modelStack.PushMatrix();
-	modelStack.Translate(
-		portal.position.x,
-		portal.position.y,
-		portal.position.z
-		);
-	RenderPortal();
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(
-		enemy.position.x,
-		enemy.position.y,
-		enemy.position.z
-		);
-	modelStack.Scale(
-		Waypoint::sizeH,
-		Waypoint::sizeV,
-		Waypoint::sizeH
-		);
-	RenderMesh(meshList[GEO_HITBOX], false);
-	modelStack.PopMatrix();
 
 	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
 	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
@@ -763,101 +655,31 @@ void SP2::Render()
 		RenderExplosion();
 		modelStack.PopMatrix();
 	}
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
+	// OBJs Textures with transparency to be rendered Last
+	modelStack.PushMatrix();
+	modelStack.Translate(
+		portal.position.x,
+		portal.position.y,
+		portal.position.z
+		);
+	RenderPortal();
+	modelStack.PopMatrix();
 
-			// OBJs Textures with transparency to be rendered Last
-			modelStack.PushMatrix();
-			modelStack.Translate(
-				portal.position.x,
-				portal.position.y,
-				portal.position.z
-				);
-			RenderPortal();
-			modelStack.PopMatrix();
-
-			modelStack.PushMatrix();
-			modelStack.Translate(
-				enemy.position.x,
-				enemy.position.y,
-				enemy.position.z
-				);
-			modelStack.Scale(
-				Waypoint::sizeH,
-				Waypoint::sizeV,
-				Waypoint::sizeH
-				);
-			RenderMesh(meshList[GEO_HITBOX], false);
-			modelStack.PopMatrix();
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
-=======
-		}
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	// UI STUFF HERE
-	if ((player.position - portal.position).Length() < 2.f){
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
-	}
-	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+	modelStack.PushMatrix();
+	modelStack.Translate(
+		enemy.position.x,
+		enemy.position.y,
+		enemy.position.z
+		);
+	modelStack.Scale(
+		Waypoint::sizeH,
+		Waypoint::sizeV,
+		Waypoint::sizeH
+		);
+	RenderMesh(meshList[GEO_HITBOX], false);
+	modelStack.PopMatrix();
 
 
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
-
-	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
-
-	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
-
-			float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
-			for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
-				modelStack.PushMatrix();
-				modelStack.Translate(
-					(*it)->position.x,
-					(*it)->position.y,
-					(*it)->position.z
-					);
-				modelStack.Rotate(
-					yawAngle,
-					0,
-					1,
-					0
-					);
-				modelStack.Scale(
-					(*it)->scale,
-					(*it)->scale,
-					(*it)->scale
-					);
-				RenderExplosion();
-				modelStack.PopMatrix();
-			}
-
-			//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
-			//	if (Math::RadianToDegree(acos(Waypoint::waypointList[i]->position.Dot(player.view))) < 180.f){
-			//		modelStack.PushMatrix();
-			//		modelStack.Translate(
-			//			Waypoint::waypointList[i]->position.x,
-			//			Waypoint::waypointList[i]->position.y,
-			//			Waypoint::waypointList[i]->position.z
-			//			);
-			//		modelStack.Scale(1, 1, 1);
-			//		RenderMesh(meshList[GEO_HITBOX], true);
-			//		modelStack.PopMatrix();
-			//	}
-			//}
-			for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end(); ++it){
-				modelStack.PushMatrix();
-				modelStack.Translate(
-					(*it)->position.x,
-					(*it)->position.y,
-					(*it)->position.z
-					);
-				modelStack.Scale(0.05, 0.05, 0.05);
-				RenderMesh(meshList[GEO_LIGHTBALL], false);
-				modelStack.PopMatrix();
-			}
 			// HIT BOXES
 			if (showHitBox){
 
@@ -879,19 +701,6 @@ void SP2::Render()
 					modelStack.PopMatrix();
 				}
 
-				//for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.begin()+1; ++it){
-				//	for (map<float, Waypoint*>::iterator it2 = (*it)->reachableWaypoints.begin(); it2 != (*it)->reachableWaypoints.end(); ++it2){
-				//		modelStack.PushMatrix();
-				//		modelStack.Translate(
-				//			(it2->second->position.x),
-				//			(it2->second->position.y),
-				//			(it2->second->position.z)
-				//			);
-				//		modelStack.Scale(1, 3, 1);
-				//		RenderMesh(meshList[GEO_HITBOX], false);
-				//		modelStack.PopMatrix();
-				//	}
-				//}
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
 					modelStack.PushMatrix();
@@ -948,9 +757,7 @@ void SP2::Render()
 				modelStack.PopMatrix();
 			}
 
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
-		}
-=======
+		
 	//if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
 	//{
 	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
@@ -979,7 +786,6 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 }
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
 
 void SP2::Exit()
 {
@@ -1659,7 +1465,6 @@ void SP2::MazeInteraction(double dt){
 	}
 }
 
-<<<<<<< 307a8fcf3c21a0f84ea433b3229ee076b509c3fc
 void SP2::RenderSlideDoor()
 {
 	//front door
@@ -1856,5 +1661,4 @@ void SP2::RenderBaseCamp()
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
 }
-=======
->>>>>>> bd9c702d3df292aab4f2d10d95406523bd2211a8
+
