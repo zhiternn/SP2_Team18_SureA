@@ -62,7 +62,6 @@ void Player::Update(double dt)
 		if (tired == false && crouch == false){
 			speedMultiplier = 10;
 		}
-=======
 	}
 	if (crouch == false)
 	{
@@ -98,7 +97,7 @@ void Player::Update(double dt)
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
 		if (vSpeed == 0.f){
-			vSpeed = 10.f * dt;
+			vSpeed = 6.f * dt;
 		}
 	}
 	//if (sprint1 >= 0)
@@ -118,15 +117,15 @@ void Player::Update(double dt)
 	//	hitbox.sizeY = 3.f;
 	//}
 
-	vSpeed -= (float)(WV_GRAVITY * dt);
-	position.y += vSpeed;
-	hitbox.SetPosition(position);
+	//vSpeed -= (float)(WV_GRAVITY * dt);
+	//position.y += vSpeed;
+	//hitbox.SetPosition(position);
 
-	if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
-		vSpeed = 0.f;
-	}
-	
-		vSpeed -= (float)(WV_GRAVITY / 5 * dt);
+	//if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
+	//	vSpeed = 0.f;
+	//}
+	//
+		vSpeed -= (float)(WV_GRAVITY * dt);
 		position.y += vSpeed;
 		hitbox.SetPosition(position);
 		if (Hitbox::CheckHitBox(hitbox, position, oldPos))

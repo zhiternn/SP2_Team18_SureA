@@ -28,9 +28,9 @@ Object::~Object()
 void Object::SetPosition(float x, float y, float z)
 {
 	position.Set(
-	position.x + x,
-	position.y + y,
-	position.z + z
+	x,
+	y,
+	z
 	);
 	hitbox.SetPosition(Vector3(
 		position.x,

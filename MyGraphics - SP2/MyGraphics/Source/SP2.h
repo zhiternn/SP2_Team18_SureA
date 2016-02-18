@@ -45,6 +45,8 @@ class SP2 : public Scene
 		GEO_ENEMYSHIP,
 		GEO_TURRET,
 		GEO_ALLYSHIP,
+		GEO_TRAPS,
+		GEO_DOOR,
 
 		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
@@ -122,6 +124,13 @@ public:
 private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
+	void RenderDoor();
+	void DoorMovement(double dt);
+	void RenderTraps();
+	void RenderAllyShip();
+	void RenderEnemyShip();
+	void RenderTurrets();
+	void RenderBaseCamp();
 	void RenderPickUpObj();
 	void RenderInternalSkybox();
 	void MazeInteraction(double dt);
@@ -131,7 +140,25 @@ private:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x = 0.f, float y = 0.f);
 	void RenderQuadOnScreen(Mesh* mesh, Color color, float sizeX, float sizeY, float moveX = 0.f, float moveY = 0.f);
 
+	//door
+	float DoorMove;
+	float DoorMove2;
+	float timer;
+	bool timerBool;
+	bool Door;
+	bool Door2;
+	bool doorChk;
+	bool front;
+	bool back;
+
 	Object portal;
+	Object laserTrap;
+	Object laserTrap1;
+	Object laserTrap2;
+	Object frontDoor;
+	Object frontDoor2;
+	Object backDoor;
+	Object backDoor2;
 	void RenderPortal();
 	void UpdatePortal(double dt);
 	void RenderExplosion();
