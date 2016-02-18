@@ -383,11 +383,8 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-<<<<<<< d8ed98f25203f5d1b80fdaa7c752a02fb58d3465
-	GenerateWaypoints(100, 100, 1, 4);
-=======
 	GenerateWaypoints(100, 100, 0.5, 4);
->>>>>>> 2fb44a8009f64a0109a89a3fec743b7a27a785fd
+
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -534,12 +531,28 @@ void SP2::Update(double dt)
 		if (Application::IsKeyPressed(0x34)){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
-<<<<<<< d8ed98f25203f5d1b80fdaa7c752a02fb58d3465
-	}
-	else if (readyToUse_HITBOX < 2.f){
-		readyToUse_HITBOX += (float)(10 * dt);
-	}
+	
+		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+			readyToUse_HITBOX = 0.f;
+			if (showHitBox){
+				showHitBox = false;
+			}
+			else{
+				showHitBox = true;
+			}
+		}
+		else if (readyToUse_HITBOX < 2.f){
+			readyToUse_HITBOX += (float)(10 * dt);
+		}
 }
+	
+
+
+	
+	//RENDER OBJECTS
+	//RenderMesh(meshList[GEO_AXES], false);
+
+		
 
 void SP2::Render()
 {
@@ -592,142 +605,41 @@ void SP2::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
+
+
 	//RENDER OBJECTS
 	//RenderMesh(meshList[GEO_AXES], false);
-=======
 
-		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-			readyToUse_HITBOX = 0.f;
-			if (showHitBox){
-				showHitBox = false;
-			}
-			else{
-				showHitBox = true;
-			}
-		}
-		else if (readyToUse_HITBOX < 2.f){
-			readyToUse_HITBOX += (float)(10 * dt);
-				}
-			}
->>>>>>> 2fb44a8009f64a0109a89a3fec743b7a27a785fd
+	modelStack.PushMatrix();
+	modelStack.Translate(player.position.x, player.position.y, player.position.z);
+	RenderSkybox();
+	modelStack.PopMatrix();
 
-		void SP2::Render()
-		{
-			// Clear color & depth buffer every frame
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	RenderBaseCamp();
 
-			Vector3 camPos, camTar, camUp;
+	RenderEnemyShip();
 
-			camPos = player.camera.position;
-			camTar = player.camera.target;
-			camUp = player.camera.up;
+	RenderTurrets();
 
-			viewStack.LoadIdentity();
-			viewStack.LookAt(
-				camPos.x, camPos.y, camPos.z,
-				camTar.x, camTar.y, camTar.z,
-				camUp.x, camUp.y, camUp.z
-				);
-			modelStack.LoadIdentity();
+	RenderAllyShip();
 
-			if (light[0].type == Light::LIGHT_DIRECTIONAL){
-				Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-				Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-				glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-			}
-			else if (light[0].type == Light::LIGHT_SPOT){
-				Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-				glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-				Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-				glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-			}
-			else{
-				Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-				glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-			}
+	RenderTraps();
 
-			if (light[1].type == Light::LIGHT_DIRECTIONAL){
-				Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
-				Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-				glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-			}
-			else if (light[1].type == Light::LIGHT_SPOT){
-				Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-				glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-				Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-				glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-			}
-			else{
-				Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-				glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-			}
+	RenderSlideDoor();
 
-			//RENDER OBJECTS
-			//RenderMesh(meshList[GEO_AXES], false);
+	RenderPickUpObj();
 
-			modelStack.PushMatrix();
-			modelStack.Translate(player.position.x, player.position.y, player.position.z);
-			RenderSkybox();
-			modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	RenderInternalSkybox();
+	modelStack.PopMatrix();
 
-			RenderBaseCamp();
+	modelStack.PushMatrix();
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(100, 100, 100);
+	RenderMesh(meshList[GEO_FLOOR], true);
+	modelStack.PopMatrix();
 
-			RenderEnemyShip();
-
-			RenderTurrets();
-
-			RenderAllyShip();
-
-			RenderTraps();
-
-			RenderDoor();
-
-			RenderPickUpObj();
-
-			modelStack.PushMatrix();
-			RenderInternalSkybox();
-			modelStack.PopMatrix();
-
-<<<<<<< d8ed98f25203f5d1b80fdaa7c752a02fb58d3465
-	// HIT BOXES
-	if (showHitBox){
-		Vector3 viewy = player.view;
-		viewy.y = 0;
-		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
-=======
->>>>>>> 2fb44a8009f64a0109a89a3fec743b7a27a785fd
-			modelStack.PushMatrix();
-			modelStack.Rotate(-90, 1, 0, 0);
-			modelStack.Scale(100, 100, 100);
-			RenderMesh(meshList[GEO_FLOOR], true);
-			modelStack.PopMatrix();
-
-			for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end(); ++it){
-				modelStack.PushMatrix();
-				modelStack.Translate(
-					(*it)->position.x,
-					(*it)->position.y,
-					(*it)->position.z
-					);
-				modelStack.Scale(0.05, 0.05, 0.05);
-				RenderMesh(meshList[GEO_LIGHTBALL], false);
-				modelStack.PopMatrix();
-			}
-			for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
-				modelStack.PushMatrix();
-				modelStack.Translate(
-					(*it)->position.x,
-					(*it)->position.y,
-					(*it)->position.z
-					);
-				modelStack.Scale(
-					(*it)->scale,
-					(*it)->scale,
-					(*it)->scale
-					);
-				RenderMesh(meshList[GEO_EXPLOSION], false);
-				modelStack.PopMatrix();
-			}
+			
 
 			// OBJs Textures with transparency to be rendered Last
 			modelStack.PushMatrix();
@@ -789,7 +701,17 @@ void SP2::Render()
 			//		modelStack.PopMatrix();
 			//	}
 			//}
-
+			for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end(); ++it){
+				modelStack.PushMatrix();
+				modelStack.Translate(
+					(*it)->position.x,
+					(*it)->position.y,
+					(*it)->position.z
+					);
+				modelStack.Scale(0.05, 0.05, 0.05);
+				RenderMesh(meshList[GEO_LIGHTBALL], false);
+				modelStack.PopMatrix();
+			}
 			// HIT BOXES
 			if (showHitBox){
 
@@ -810,6 +732,7 @@ void SP2::Render()
 					RenderMesh(meshList[GEO_HITBOX], true);
 					modelStack.PopMatrix();
 				}
+
 				//for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.begin()+1; ++it){
 				//	for (map<float, Waypoint*>::iterator it2 = (*it)->reachableWaypoints.begin(); it2 != (*it)->reachableWaypoints.end(); ++it2){
 				//		modelStack.PushMatrix();
@@ -873,53 +796,13 @@ void SP2::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 			RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-
 			if (Application::state2D == true){
 				modelStack.PushMatrix();
 				RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
 				modelStack.PopMatrix();
 			}
 
-<<<<<<< d8ed98f25203f5d1b80fdaa7c752a02fb58d3465
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
-
-
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
-
-	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
-
-	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
-
-
-	//if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
-	//{
-	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-	
-	//	
-	//}
-	if (Application::state2D == true){
-		modelStack.PushMatrix();
-		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
-		modelStack.PopMatrix();
-	}
-
-	modelStack.PushMatrix();
-//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
-	modelStack.PopMatrix();
-=======
-			modelStack.PushMatrix();
-			//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
-			modelStack.PopMatrix();
 		}
->>>>>>> 2fb44a8009f64a0109a89a3fec743b7a27a785fd
-
 
 void SP2::Exit()
 {
@@ -1599,9 +1482,7 @@ void SP2::MazeInteraction(double dt){
 	}
 }
 
-<<<<<<< d8ed98f25203f5d1b80fdaa7c752a02fb58d3465
-=======
-void SP2::RenderDoor()
+void SP2::RenderSlideDoor()
 {
 	//front door
 	modelStack.PushMatrix();
@@ -1716,7 +1597,7 @@ void SP2::DoorMovement(double dt)
 		DoorMove -= (float)(2 * dt);
 		frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
 		frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-		if (DoorMove < 0)
+		if (DoorMove < -0.2)
 		{
 			timerBool = false;
 			Door = false;
@@ -1728,7 +1609,7 @@ void SP2::DoorMovement(double dt)
 		DoorMove2 -= (float)(2 * dt);
 		backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
 		backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-		if (DoorMove2 < 0)
+		if (DoorMove2 < -0.2)
 		{
 			timerBool = false;
 			Door2 = false;
@@ -1797,4 +1678,3 @@ void SP2::RenderBaseCamp()
 	RenderMesh(meshList[GEO_BASECAMP], true);
 	modelStack.PopMatrix();
 }
->>>>>>> 2fb44a8009f64a0109a89a3fec743b7a27a785fd

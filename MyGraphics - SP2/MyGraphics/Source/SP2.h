@@ -124,7 +124,7 @@ public:
 private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
-	void RenderDoor();
+	void RenderSlideDoor();
 	void DoorMovement(double dt);
 	void RenderTraps();
 	void RenderAllyShip();
