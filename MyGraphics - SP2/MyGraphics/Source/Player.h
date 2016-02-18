@@ -20,8 +20,6 @@ public:
 	Camera camera;
 
 	float vSpeed;
-	float sprint1;
-	bool sprint;
 	bool tired;
 	bool crouch = false;
 	bool jump;

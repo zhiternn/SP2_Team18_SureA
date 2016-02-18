@@ -21,7 +21,6 @@ SP2::~SP2()
 
 void SP2::Init()
 {
-
 	// Load vertex and fragment shaders
 	m_programID = LoadShaders(
 		"Shader//Texture.vertexshader",
@@ -157,7 +156,7 @@ void SP2::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//orbital-element_dn.tga");
 	
-	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 15);
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 5, 5);
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//grass.tga");
 
@@ -351,10 +350,7 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-
-
-
-	GenerateWaypoints(100, 100, 1, 1);
+	GenerateWaypoints(100, 100, 1, 4);
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -410,97 +406,94 @@ void SP2::Update(double dt)
 	enemy.Update(dt);
 	MazeInteraction(dt);
 	UpdatePortal(dt);
+
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
 		if ((player.position - portal.position).Length() < 2.f){
 			player.position.Set(0, 50, 0);
 		}
+		enemy.GoTo(player.position);
 	}
-		if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
-			readyToInteract = 0.f;
-			if ((player.position - portal.position).Length() < 2.f){
-				player.position.Set(0, 50, 0);
-			}
-			enemy.GoTo(player.position);
-		}
-		else if (readyToInteract < 2.f){
-			readyToInteract += (float)(10.f * dt);
-		}
-		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && readyToUse_SHOOT >= 2.f){
-			readyToUse_SHOOT = 0.f;
-			bulletsList.push_back(new Projectile(
-				Vector3(player.position.x, player.position.y, player.position.z),
-				Vector3(player.view.x, player.view.y, player.view.z),
-				30,
-				50,
-				5
-				));
-		}
-		else if (readyToUse_SHOOT < 2.f){
-			readyToUse_SHOOT += (float)(10.f * dt);
-		}
-		for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
-			if ((*it)->Update(dt)){
-				it = bulletsList.erase(it);
-			}
-			else{
-				it++;
-			}
-		}
-		for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
-			if ((*it)->Update(dt)){
-				it = Effect_Explosion::explosionList.erase(it);
-			}
-			else{
-				it++;
-			}
-		}
+	else if (readyToInteract < 2.f){
+		readyToInteract += (float)(10.f * dt);
+	}
 
-		if (Application::IsKeyPressed('F'))
-		{
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-				ItemObject::ItemList[i]->PickUp(player.hitbox);
-			}
+	if (Application::IsKeyPressed(VK_LBUTTON) && readyToUse_SHOOT >= 2.f){
+		readyToUse_SHOOT = 0.f;
+		bulletsList.push_back(new Projectile(
+			Vector3(player.position.x, player.position.y, player.position.z),
+			Vector3(player.view.x, player.view.y, player.view.z),
+			100,
+			50,
+			5
+			));
+	}
+	else if (readyToUse_SHOOT < 2.f){
+		readyToUse_SHOOT += (float)(10.f * dt);
+	}
+	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
+		if ((*it)->Update(dt)){
+			it = bulletsList.erase(it);
 		}
+		else{
+			it++;
+		}
+	}
+	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
+		if ((*it)->Update(dt)){
+			it = Effect_Explosion::explosionList.erase(it);
+		}
+		else{
+			it++;
+		}
+	}
 
+	if (Application::IsKeyPressed('F'))
+	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-			ItemObject::ItemList[i]->PickUpAnimation(dt);
+			ItemObject::ItemList[i]->PickUp(player.hitbox);
 		}
+	}
 
-		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-			ItemObject::ItemList[i]->ItemDelay(dt);
-		}
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+		ItemObject::ItemList[i]->PickUpAnimation(dt);
+	}
 
-		Interval(dt);
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+		ItemObject::ItemList[i]->ItemDelay(dt);
+	}
 
-		if (Application::IsKeyPressed(0x31)){
-			glEnable(GL_CULL_FACE);
-		}
-		if (Application::IsKeyPressed(0x32)){
-			glDisable(GL_CULL_FACE);
-		}
-		if (Application::IsKeyPressed(0x35)){
+	Interval(dt);
+	enemy.Update(dt);
+	MazeInteraction(dt);
+	UpdatePortal(dt);
+
+	if (Application::IsKeyPressed(0x31)){
+		glEnable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x32)){
+		glDisable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x35)){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		if (Application::IsKeyPressed(0x34)){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-
-		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-			readyToUse_HITBOX = 0.f;
-			if (showHitBox){
-				showHitBox = false;
-			}
-			else{
-				showHitBox = true;
-			}
-		}
-		else if (readyToUse_HITBOX < 2.f){
-			readyToUse_HITBOX += (float)(10 * dt);
-		}
+	}
+	if (Application::IsKeyPressed(0x34)){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-
+	if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+		readyToUse_HITBOX = 0.f;
+		if (showHitBox){
+			showHitBox = false;
+		}
+		else{
+			showHitBox = true;
+		}
+	}
+	else if (readyToUse_HITBOX < 2.f){
+		readyToUse_HITBOX += (float)(10 * dt);
+	}
+}
 
 
 void SP2::Render()
@@ -513,8 +506,6 @@ void SP2::Render()
 	camPos = player.camera.position;
 	camTar = player.camera.target;
 	camUp = player.camera.up;
-
-
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(
@@ -611,6 +602,21 @@ void SP2::Render()
 		RenderMesh(meshList[GEO_LIGHTBALL], false);
 		modelStack.PopMatrix();
 	}
+	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
+		modelStack.PushMatrix();
+		modelStack.Translate(
+			(*it)->position.x,
+			(*it)->position.y,
+			(*it)->position.z
+			);
+		modelStack.Scale(
+			(*it)->scale,
+			(*it)->scale,
+			(*it)->scale
+			);
+		RenderMesh(meshList[GEO_EXPLOSION], false);
+		modelStack.PopMatrix();
+	}
 
 	// OBJs Textures with transparency to be rendered Last
 	modelStack.PushMatrix();
@@ -692,19 +698,19 @@ void SP2::Render()
 			RenderMesh(meshList[GEO_HITBOX], true);
 			modelStack.PopMatrix();
 		}
-		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.begin()+1; ++it){
-			for (map<float, Waypoint*>::iterator it2 = (*it)->reachableWaypoints.begin(); it2 != (*it)->reachableWaypoints.end(); ++it2){
-				modelStack.PushMatrix();
-				modelStack.Translate(
-					(it2->second->position.x),
-					(it2->second->position.y),
-					(it2->second->position.z)
-					);
-				modelStack.Scale(1, 3, 1);
-				RenderMesh(meshList[GEO_HITBOX], false);
-				modelStack.PopMatrix();
-			}
-		}
+		//for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.begin()+1; ++it){
+		//	for (map<float, Waypoint*>::iterator it2 = (*it)->reachableWaypoints.begin(); it2 != (*it)->reachableWaypoints.end(); ++it2){
+		//		modelStack.PushMatrix();
+		//		modelStack.Translate(
+		//			(it2->second->position.x),
+		//			(it2->second->position.y),
+		//			(it2->second->position.z)
+		//			);
+		//		modelStack.Scale(1, 3, 1);
+		//		RenderMesh(meshList[GEO_HITBOX], false);
+		//		modelStack.PopMatrix();
+		//	}
+		//}
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
 			modelStack.PushMatrix();
@@ -746,19 +752,16 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-
-
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-
-
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'T' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
+
+	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
+
+	//RenderTextOnScreen(meshList[GEO_TEXT], " player.sprint1 " + std::to_string(player.sprint1), Color(1.f, 1.f, 1.f), 2, -55.f, -43.f);
+
 
 	//if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
 	//{
@@ -776,7 +779,7 @@ void SP2::Render()
 	}
 
 	modelStack.PushMatrix();
-	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
+//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
 	modelStack.PopMatrix();
 
 }
@@ -1440,7 +1443,6 @@ void SP2::MazeInteraction(double dt){
 	if (Application::IsKeyPressed('O')){
 		Application::state2D = true;
 		stateChanged = true;
-
 	}
 	else if (Application::IsKeyPressed('P')){
 		Application::state2D = false;
@@ -1480,6 +1482,7 @@ void SP2::MazeInteraction(double dt){
 		}
 		else{
 			Application::state2D = false;
+			Application::SetMousePosition();
 			std::cout << "die" << std::endl;
 		}
 

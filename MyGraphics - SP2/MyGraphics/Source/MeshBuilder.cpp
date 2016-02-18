@@ -63,17 +63,17 @@ Then generate the VBO/IBO and store them in Mesh object
 \return Pointer to mesh storing VBO/IBO of quad
 */
 /******************************************************************************/
-Mesh* MeshBuilder::GenerateQuad(const std::string &meshName, Color color, float repeat)
+Mesh* MeshBuilder::GenerateQuad(const std::string &meshName, Color color, float repeatX, float repeatY)
 {
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 
 	Vertex v;
 
-	v.pos.Set(-0.5f, 0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(0, 1 * repeat);			vertex_buffer_data.push_back(v);
+	v.pos.Set(-0.5f, 0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(0, repeatY);			vertex_buffer_data.push_back(v);
 	v.pos.Set(-0.5f, -0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(0, 0);					vertex_buffer_data.push_back(v);
-	v.pos.Set(0.5f, 0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(1 * repeat, 1 * repeat);	vertex_buffer_data.push_back(v);
-	v.pos.Set(0.5f, -0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(1 * repeat, 0);			vertex_buffer_data.push_back(v);
+	v.pos.Set(0.5f, 0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(repeatX, repeatY);	vertex_buffer_data.push_back(v);
+	v.pos.Set(0.5f, -0.5f, 0);	v.color = color;	v.normal.Set(0, 0, 1);	v.texCoord.Set(repeatX, 0);			vertex_buffer_data.push_back(v);
 
 	for (size_t i = 0; i < 4; ++i){
 		index_buffer_data.push_back(i);

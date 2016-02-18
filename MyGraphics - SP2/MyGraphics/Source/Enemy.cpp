@@ -12,7 +12,7 @@ void Enemy::Init(Vector3 pos, float speed)
 {
 	position = pos;
 	this->speed = speed;
-	checkPoint = path.rbegin();
+	checkPoint = path.rend();
 	checkPointDir.SetZero();
 }
 
@@ -22,11 +22,9 @@ void Enemy::Update(double dt)
 		//MOVE TO
 		position += checkPointDir * speed * dt;
 		checkPointDir = ((*checkPoint)->position - position).Normalized();
+		checkPointDir.y = 0;
 
-		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH/2){
-			if (position != (*checkPoint)->position){
-				
-			}
+		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
 			checkPoint++;
 		}
 	}
@@ -79,9 +77,7 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 		//find lowest movementCost
 		currWaypoint = GetLowestInList(openList);
 
-		//store in result and assign to curr
-
-		//if == end, return
+		//if == end, break
 		if (currWaypoint == end){
 			break;
 		}
@@ -92,7 +88,7 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 
 		//pop lowest movementCost
 		for (vector<Waypoint*>::iterator it = openList.begin(); it != openList.end();){
-			if ((*it)->movementCost == currWaypoint->movementCost){
+			if ((*it) == currWaypoint){
 				it = openList.erase(it);
 			}
 			else{
@@ -106,36 +102,41 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 		currWaypoint = currWaypoint->next;
 	}
 
+	ResetWaypoints(); // resets movementCosts
+
 	return result;
 }
 void Enemy::GoTo(Vector3 destination)
 {
-	Waypoint* currLocation = new Waypoint(position, Waypoint::sizeH, Waypoint::sizeV);
-	Waypoint* targetLocation = new Waypoint(destination, Waypoint::sizeH, Waypoint::sizeV);
-	
-	currLocation->position.y = 0;
-	targetLocation->position.y = 0;
+	path.clear();
+
+	Waypoint *currLocation = new Waypoint(position, Waypoint::sizeH, Waypoint::sizeV);
+	Waypoint *targetLocation = new Waypoint(destination, Waypoint::sizeH, Waypoint::sizeV);
+
+	currLocation->position.y = Waypoint::sizeV / 2;
+	targetLocation->position.y = Waypoint::sizeV / 2;
 
 	currLocation->LinkWaypoints();
 	targetLocation->LinkWaypoints();
 
-	//get waypoint nearest to Target
-	float lowestDistance = 999.f; // supposedly infinity
-	Waypoint* nearestToTarget = nullptr;
-
-	for (map<float, Waypoint*>::iterator it = (targetLocation->reachableWaypoints).begin(); it != (targetLocation->reachableWaypoints).end(); ++it){
-		if (it->first < lowestDistance){
-			lowestDistance = it->first;
-			nearestToTarget = it->second;
-		}
+	if (currLocation->CheckLink(*targetLocation)){//if there is a clear path between location and destination
+		path.push_back(targetLocation);
+		checkPoint = path.rbegin();
 	}
+	else{ //else follow Dijkstra
+		//get waypoint nearest to Target
+		float lowestDistance = 999.f; // supposedly infinity
+		Waypoint* nearestToTarget = nullptr;
 
-	path.clear();
-	path = Dijkstra(currLocation, nearestToTarget);
-	path.pop_back(); // removes the last waypoint - it represents current position
+		for (map<float, Waypoint*>::iterator it = (targetLocation->reachableWaypoints).begin(); it != (targetLocation->reachableWaypoints).end(); ++it){
+			if (it->first < lowestDistance){
+				lowestDistance = it->first;
+				nearestToTarget = it->second;
+			}
+		}
+		path = Dijkstra(currLocation, nearestToTarget);
+		path.pop_back(); // removes the last waypoint - it represents current position
 
-	checkPoint = path.rbegin();
-	delete currLocation;
-	delete targetLocation;
-	ResetWaypoints(); // resets movementCosts
+		checkPoint = path.rbegin();
+	}
 }

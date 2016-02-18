@@ -17,6 +17,7 @@ public:
 
 	void Reset();
 	void LinkWaypoints();
+	bool CheckLink(const Waypoint toBeLinked);
 
 	static vector<Waypoint*> waypointList;
 	static float sizeH;

@@ -19,6 +19,7 @@ private:
 	float range;
 	float speed;
 	float distanceTravelled;
+	float vSpeed;
 
 	int damage;
 

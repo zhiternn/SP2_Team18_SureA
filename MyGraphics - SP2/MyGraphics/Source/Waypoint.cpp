@@ -57,6 +57,31 @@ void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypo
 		}
 	}
 }
+bool Waypoint::CheckLink(const Waypoint toBeLinked)
+{
+	Hitbox collisionChecker;
+	collisionChecker.SetSize(Waypoint::sizeH, Waypoint::sizeV, Waypoint::sizeH);
+
+	if (this->position != toBeLinked.position){//Check if its comparing with itself
+		float distance = (toBeLinked.position - this->position).Length();
+		Vector3 pathDir = (toBeLinked.position - this->position).Normalized();
+		pathDir.y = 0;
+
+		for (float d = 0; d < distance; d += Waypoint::sizeH){
+			if (d > distance){
+				d = distance;
+			}
+			Vector3 pos = (this->position + pathDir * d);
+			pos.y = Waypoint::sizeV / 2;
+			collisionChecker.SetPosition(pos);
+
+			if (Hitbox::CheckHitBox(collisionChecker)){//collided
+				return false;
+			}
+		}
+		return true;
+	}
+}
 void Waypoint::LinkWaypoints()
 {
 	Hitbox collisionChecker;
