@@ -51,7 +51,10 @@ class SP2 : public Scene
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
 
-		GEO_Testitem,//Test for pick up.
+		GEO_Testitem1,//Test for pick up.
+		GEO_Testitem2,
+		GEO_Testitem3,
+		GEO_TestitemExtra,
 		GEO_UIBAR,
 
 		NUM_GEOMETRY,
