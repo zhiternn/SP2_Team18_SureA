@@ -84,6 +84,12 @@
     <ClCompile Include="Source\ItemBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Turret.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera_LockPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -165,6 +171,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ItemBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Turret.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Vehicle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera_LocKPosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

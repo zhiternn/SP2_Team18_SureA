@@ -21,7 +21,7 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 
 	vSpeed = 0.f;
 
-	hitbox.SetSize(0.2f, 3, 0.2f);
+	hitbox.SetSize(1.f, 3, 1.f);
 	hitbox.SetPosition(pos);
 }
 
@@ -117,21 +117,13 @@ void Player::Update(double dt)
 	//	hitbox.sizeY = 3.f;
 	//}
 
-	//vSpeed -= (float)(WV_GRAVITY * dt);
-	//position.y += vSpeed;
-	//hitbox.SetPosition(position);
-
-	//if (Hitbox::CheckHitBox(hitbox, position, oldPos)){
-	//	vSpeed = 0.f;
-	//}
-	//
-		vSpeed -= (float)(WV_GRAVITY * dt);
-		position.y += vSpeed;
-		hitbox.SetPosition(position);
-		if (Hitbox::CheckHitBox(hitbox, position, oldPos))
-		{
-			vSpeed = 0.f;
-		}
+	vSpeed -= (float)(WV_GRAVITY * dt);
+	position.y += vSpeed;
+	hitbox.SetPosition(position);
+	if (Hitbox::CheckHitBox(hitbox, position, oldPos, &hitbox))
+	{
+		vSpeed = 0.f;
+	}
 
 	double mouseX, mouseY;
 	Application::GetMouseMovement(mouseX, mouseY);

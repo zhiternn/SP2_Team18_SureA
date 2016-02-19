@@ -11,6 +11,7 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include "Object.h"
+#include "Turret.h"
 #include "Projectile.h"
 #include "Hitbox.h"
 #include "Enemy.h"
@@ -43,7 +44,8 @@ class SP2 : public Scene
 		GEO_HITBOX,
 		GEO_BASECAMP,
 		GEO_ENEMYSHIP,
-		GEO_TURRET,
+		GEO_TURRET_BASE,
+		GEO_TURRET_HEAD,
 		GEO_ALLYSHIP,
 		GEO_TRAPS,
 		GEO_DOOR,
@@ -59,7 +61,15 @@ class SP2 : public Scene
 		GEO_TestitemExtra,
 		GEO_UIBAR,
 
-		NUM_GEOMETRY,
+		NUM_GEOMETRY
+	};
+	enum PLAYER_STATE
+	{
+		STATE_FPS,
+		STATE_INTERACTING_MAZE,
+		STATE_INTERACTING_TURRET,
+
+		STATE_END
 	};
 	enum UNIFORM_TYPE
 	{
@@ -102,14 +112,7 @@ class SP2 : public Scene
 		U_TEXT_ENABLED,
 		U_TEXT_COLOR,
 
-		U_TOTAL,
-	};
-	enum CONTROLLING
-	{
-		CONTROLLING_PLAYER,
-		CONTROLLING_HELICOPTER,
-
-		CONTROLLING_TOTAL,
+		U_TOTAL
 	};
 
 public:
@@ -166,6 +169,9 @@ private:
 
 	void RenderPortal();
 	void UpdatePortal(double dt);
+	Turret turret;
+	void RenderTurret();
+
 	void RenderExplosion();
 
 	void SP2::Interval(double dt);
@@ -182,7 +188,6 @@ private:
 	Countdown m_timer;
 
 	vector<float> objArrangementData;
-	vector<Projectile*> bulletsList;
 
 	bool enableLight;
 	bool showHitBox;
@@ -191,34 +196,19 @@ private:
 
 	bool itemText;//item pickup
 
-	//bool takeItem;//item pickup (Trigger to get item)
-	//bool growingbool;//item pickup (Growing bigger or smaller)
-	//bool growItem;//item pickup(can grow) if not cannot
-	//bool cangrowItem;
-	//bool haveItem;//item pickup
-	//bool putItem;//Float downwards after growing
-
-	//bool dropItem;//This Triggers to drop item
-
-
-	//int counter;//item pickup
-
-	//float interval;
-	//float fly;//item floats(pickup)
-	//float growing;//item grows.(pickup)
-	//float rotateitem;//itemRotation(pickup)
-
 	bool intervalBool;//Interval for ... anything i guess.
 
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;
-	float readyToUse_SHOOT;
 	float animation_rotatePortal;
 	float animation_scalePortal;
 	float animation_moveDoor;
 
+	float towardsCameraYaw;
+
 	int screenX, screenY;
+	int playerState;
 
 	Player player;
 

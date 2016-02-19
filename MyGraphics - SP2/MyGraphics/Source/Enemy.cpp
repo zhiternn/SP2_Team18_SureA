@@ -19,10 +19,11 @@ void Enemy::Init(Vector3 pos, float speed)
 void Enemy::Update(double dt)
 {
 	if (checkPoint != path.rend()){
+
 		//MOVE TO
-		position += checkPointDir * speed * dt;
 		checkPointDir = ((*checkPoint)->position - position).Normalized();
-		checkPointDir.y = 0;
+		position += checkPointDir * speed * dt;
+		
 
 		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
 			checkPoint++;
@@ -33,10 +34,11 @@ void Enemy::Update(double dt)
 //also assigns parent Node
 void CalculateMovementCost(Waypoint* node, Waypoint* prevNode)
 {
-	for (map<float, Waypoint*>::iterator it = (node->reachableWaypoints).begin(); it != (node->reachableWaypoints).end(); ++it){
-		if (node->movementCost + it->first < (it->second)->movementCost){
-			(it->second)->movementCost = node->movementCost + it->first;// first is distance between curr node
-			(it->second)->next = prevNode;
+	for (vector<Waypoint*>::iterator it = (node->reachableWaypoints).begin(); it != (node->reachableWaypoints).end(); ++it){
+		float totalCost = node->movementCost + ((*it)->position - node->position).Length(); // gets the total cost to get from starting waypoint to curr waypoint
+		if (totalCost < (*it)->movementCost){
+			(*it)->movementCost = totalCost;// first is distance between curr node
+			(*it)->next = prevNode;
 		}
 	}
 }
@@ -72,7 +74,6 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 		openList.push_back(*it);
 	}
 	openList.push_back(currWaypoint);
-	openList.push_back(end);
 
 	while (currWaypoint != end){
 		//find lowest movementCost
@@ -128,13 +129,15 @@ void Enemy::GoTo(Vector3 destination)
 		//get waypoint nearest to Target
 		float lowestDistance = 999.f; // supposedly infinity
 		Waypoint* nearestToTarget = nullptr;
-
-		for (map<float, Waypoint*>::iterator it = (targetLocation->reachableWaypoints).begin(); it != (targetLocation->reachableWaypoints).end(); ++it){
-			if (it->first < lowestDistance){
-				lowestDistance = it->first;
-				nearestToTarget = it->second;
+	
+		for (vector<Waypoint*>::iterator it = (targetLocation->reachableWaypoints).begin(); it != (targetLocation->reachableWaypoints).end(); ++it){
+			float distanceBetweenNodes = ((*it)->position - targetLocation->position).Length(); // gets the total cost to get from starting waypoint to curr waypoint
+			if (distanceBetweenNodes < lowestDistance){
+				lowestDistance = distanceBetweenNodes;
+				nearestToTarget = *it;
 			}
 		}
+
 		path = Dijkstra(currLocation, nearestToTarget);
 		path.pop_back(); // removes the last waypoint - it represents current position
 

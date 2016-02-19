@@ -160,9 +160,8 @@ void SP2::Init()
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//grass.tga");
 
-	//Traps
-	meshList[GEO_TRAPS] = MeshBuilder::GenerateCylinder("traps", Color(1.f, 0.f, 0.f), 1);
-	//door
+	meshList[GEO_TRAPS] = MeshBuilder::GenerateCylinder("traps", Color(1.f, 0.f, 0.f), 1); //door
+
 	meshList[GEO_DOOR] = MeshBuilder::GenerateCube("door", Color(1, 0, 0));
 
 	//INTERNAL SKYBOX
@@ -214,8 +213,10 @@ void SP2::Init()
 	meshList[GEO_ENEMYSHIP] = MeshBuilder::GenerateOBJ("enemyship", "OBJ//enemyShip.obj");
 	meshList[GEO_ENEMYSHIP]->textureID = LoadTGA("Image//enemyTex.tga");
 
-	meshList[GEO_TURRET] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret.obj");
-	meshList[GEO_TURRET]->textureID = LoadTGA("Image//turret.tga");
+	meshList[GEO_TURRET_BASE] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret_base.obj");
+	meshList[GEO_TURRET_BASE]->textureID = LoadTGA("Image//turret.tga");
+	meshList[GEO_TURRET_HEAD] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret_head.obj");
+	meshList[GEO_TURRET_HEAD]->textureID = LoadTGA("Image//turret.tga");
 
 	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
 	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
@@ -232,11 +233,12 @@ void SP2::Init()
 	screenX /= 20;
 	screenY /= 20;
 
+	playerState = STATE_FPS;
+
 	ArrangeObjs(65, 65, 30);
 
 	readyToUse = 2.f;
 	readyToUse_HITBOX = 2.f;
-	readyToUse_SHOOT = 2.f;
 	readyToInteract = 2.f;
 
 	enableLight = true;
@@ -245,8 +247,8 @@ void SP2::Init()
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 
-	player.Init(Vector3(-45, 5, 45), Vector3(0, 0, -1));
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
+
 	enemy.Init(Vector3(0, 0, -3), 5.f);
 
 	portal.hitbox.SetSize(4, 3, 1);
@@ -275,7 +277,9 @@ void SP2::Init()
 	backDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor2.SetPosition(20.9, 2.8, 40.75);
 
-
+	turret.hitbox.SetSize(3.f, 4, 3.f);
+	turret.hitbox.SetPivot(0, 2.f, 0);
+	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 5);
 
 	//BOUNDARIES
 	Object* floor = new Object();
@@ -297,7 +301,6 @@ void SP2::Init()
 	Object* rightWall = new Object();
 	rightWall->hitbox.SetSize(10, 100, 100);
 	rightWall->SetPosition(55.f, 50.f, 0);
-
 
 	//Items
 	ItemObject* item1 = new ItemObject();
@@ -382,16 +385,12 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
-	Object* Turret = new Object();
-	Turret->hitbox.SetSize(5, 5, 2.5);
-	Turret->SetPosition(-46.f, 2.5f, -20.f);
-
 	Object* AllyShip = new Object();
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
 
-	GenerateWaypoints(100, 100, 0.2f, 4);
+	GenerateWaypoints(100, 100, 1, 4);
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -441,25 +440,44 @@ void SP2::RenderMesh(Mesh *mesh, bool enableLight)
 
 void SP2::Update(double dt)
 {
+	if (playerState == STATE_FPS){
+		player.Update(dt);
+	}
+	else if (playerState == STATE_INTERACTING_MAZE){
+		MazeInteraction(dt);
+	}
+	else if (playerState == STATE_INTERACTING_TURRET){
+		turret.Update(dt);
+	}
+
 	Interval(dt);
 	enemy.Update(dt);
-	MazeInteraction(dt);
 	UpdatePortal(dt);
 	UpdateDoor(dt);
 
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
+
+		//PORTAL INTERACTION
 		if ((player.position - portal.position).Length() < 2.f){
 			player.position.Set(0, 19, 0);
 		}
+		//TURRET INTERACTION
+		if (playerState != STATE_INTERACTING_TURRET && (player.position - turret.position).Length() < 4.f){
+			playerState = STATE_INTERACTING_TURRET;
+		}
+		else if (playerState == STATE_INTERACTING_TURRET){
+			playerState = STATE_FPS;
+		}
+
 		enemy.GoTo(player.position);
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
 	}
-	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end();){
+	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end();){
 		if ((*it)->Update(dt)){
-			it = bulletsList.erase(it);
+			it = Projectile::projectileList.erase(it);
 		}
 		else{
 			it++;
@@ -473,27 +491,33 @@ void SP2::Update(double dt)
 			it++;
 		}
 	}
-		if (Application::IsKeyPressed('F'))
-		{
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-				ItemObject::ItemList[i]->PickUp(player.hitbox);
-			}
-		}
-
+	if (Application::IsKeyPressed('F'))
+	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-			ItemObject::ItemList[i]->PickUpAnimation(dt);
+			ItemObject::ItemList[i]->PickUp(player.hitbox);
 		}
+	}
 
-		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
-			ItemObject::ItemList[i]->ItemDelay(dt);
-		}
-	
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+		ItemObject::ItemList[i]->PickUpAnimation(dt);
+	}
 
-		if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
-		{
-			player.position.Set(18, 19, 0);
-		}
-	
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i){
+		ItemObject::ItemList[i]->ItemDelay(dt);
+	}
+	if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
+	{
+		player.position.Set(18, 19, 0);
+	}
+
+
+	if (Application::IsKeyPressed(0x31)){
+		glEnable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x32)){
+		glDisable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x35)){
 
 		if (Application::IsKeyPressed(0x31)){
 			glEnable(GL_CULL_FACE);
@@ -507,7 +531,7 @@ void SP2::Update(double dt)
 		if (Application::IsKeyPressed(0x34)){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
-	
+
 		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
 			readyToUse_HITBOX = 0.f;
 			if (showHitBox){
@@ -520,16 +544,8 @@ void SP2::Update(double dt)
 		else if (readyToUse_HITBOX < 2.f){
 			readyToUse_HITBOX += (float)(10 * dt);
 		}
+	}
 }
-
-	
-
-
-	
-	//RENDER OBJECTS
-	//RenderMesh(meshList[GEO_AXES], false);
-
-		
 
 void SP2::Render()
 {
@@ -538,9 +554,18 @@ void SP2::Render()
 
 	Vector3 camPos, camTar, camUp;
 
-	camPos = player.camera.position;
-	camTar = player.camera.target;
-	camUp = player.camera.up;
+	if (playerState == STATE_FPS){
+		camPos = player.camera.position;
+		camTar = player.camera.target;
+		camUp = player.camera.up;
+	}
+	else if (playerState == STATE_INTERACTING_TURRET){
+		camPos = turret.camera.position;
+		camTar = turret.camera.target;
+		camUp = turret.camera.up;
+	}
+	Vector3 camView = (camTar - camPos).Normalized();
+	float towardsCameraYaw = (float)((camView.x / abs(camView.x)) * Math::RadianToDegree(acos(camView.Dot(Vector3(0, 0, -1)))));
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(
@@ -593,12 +618,17 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	RenderBaseCamp();
-
 	RenderEnemyShip();
-
-	RenderTurrets();
-
 	RenderAllyShip();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(
+		turret.position.x,
+		turret.position.y,
+		turret.position.z
+		);
+	RenderTurret();
+	modelStack.PopMatrix();
 
 	//RenderTraps();
 
@@ -620,8 +650,7 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_FLOOR], true);
 	modelStack.PopMatrix();
 
-			
-	for (vector<Projectile*>::iterator it = bulletsList.begin(); it != bulletsList.end(); ++it){
+	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end(); ++it){
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
@@ -633,28 +662,6 @@ void SP2::Render()
 		modelStack.PopMatrix();
 	}
 
-	float yawAngle = (float)(-player.view.x / abs(player.view.x) * Math::RadianToDegree(acos(player.view.Normalized().Dot(Vector3(0, 0, -1)))));
-	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
-		modelStack.PushMatrix();
-		modelStack.Translate(
-			(*it)->position.x,
-			(*it)->position.y,
-			(*it)->position.z
-			);
-		modelStack.Rotate(
-			yawAngle,
-			0,
-			1,
-			0
-			);
-		modelStack.Scale(
-			(*it)->scale,
-			(*it)->scale,
-			(*it)->scale
-			);
-		RenderExplosion();
-		modelStack.PopMatrix();
-	}
 	// OBJs Textures with transparency to be rendered Last
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -668,7 +675,7 @@ void SP2::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(
 		enemy.position.x,
-		enemy.position.y,
+		enemy.position.y + Waypoint::sizeV / 2,
 		enemy.position.z
 		);
 	modelStack.Scale(
@@ -679,92 +686,109 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_HITBOX], false);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderExplosion();
+	modelStack.PopMatrix();
 
-			// HIT BOXES
-			if (showHitBox){
+	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
+	//	if (Math::RadianToDegree(acos(Waypoint::waypointList[i]->position.Dot(player.view))) < 180.f){
+	//		modelStack.PushMatrix();
+	//		modelStack.Translate(
+	//			Waypoint::waypointList[i]->position.x,
+	//			Waypoint::waypointList[i]->position.y,
+	//			Waypoint::waypointList[i]->position.z
+	//			);
+	//		modelStack.Scale(1, 1, 1);
+	//		RenderMesh(meshList[GEO_HITBOX], true);
+	//		modelStack.PopMatrix();
+	//	}
+	//}
 
-				Vector3 viewy = player.view;
-				viewy.y = 0;
-				for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
-					modelStack.PushMatrix();
-					modelStack.Translate(
-						(*it)->position.x,
-						(*it)->position.y,
-						(*it)->position.z
-						);
-					modelStack.Scale(
-						Waypoint::sizeH,
-						Waypoint::sizeV,
-						Waypoint::sizeH
-						);
-					RenderMesh(meshList[GEO_HITBOX], true);
-					modelStack.PopMatrix();
-				}
+	// HIT BOXES
+	if (showHitBox){
 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
-					modelStack.PushMatrix();
-					modelStack.Translate(
-						(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
-						(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
-						(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
-						);
-					modelStack.Scale(
-						(*it)->hitbox.sizeX,
-						(*it)->hitbox.sizeY,
-						(*it)->hitbox.sizeZ
-						);
-					RenderMesh(meshList[GEO_HITBOX], false);
-					modelStack.PopMatrix();
-				}
-				for (std::vector<ItemObject*>::iterator it = ItemObject::ItemList.begin(); it < ItemObject::ItemList.end(); ++it){
-					modelStack.PushMatrix();
-					modelStack.Translate(
-						(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
-						(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
-						(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
-						);
-					modelStack.Scale(
-						(*it)->hitbox.sizeX,
-						(*it)->hitbox.sizeY,
-						(*it)->hitbox.sizeZ
-						);
-					RenderMesh(meshList[GEO_HITBOX], false);
-					modelStack.PopMatrix();
-				}
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-			// UI STUFF HERE
-			if ((player.position - portal.position).Length() < 2.f){
-				RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
-			}
-			RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+		Vector3 viewy = player.view;
+		viewy.y = 0;
+		for (std::vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
+			modelStack.PushMatrix();
+			modelStack.Translate(
+				(*it)->position.x,
+				(*it)->position.y,
+				(*it)->position.z
+				);
+			modelStack.Scale(
+				Waypoint::sizeH,
+				Waypoint::sizeV,
+				Waypoint::sizeH
+				);
+			RenderMesh(meshList[GEO_HITBOX], true);
+			modelStack.PopMatrix();
+		}
 
-			RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
+			modelStack.PushMatrix();
+			modelStack.Translate(
+				(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
+				(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
+				(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
+				);
+			modelStack.Scale(
+				(*it)->hitbox.sizeX,
+				(*it)->hitbox.sizeY,
+				(*it)->hitbox.sizeZ
+				);
+			RenderMesh(meshList[GEO_HITBOX], false);
+			modelStack.PopMatrix();
+		}
+		for (std::vector<ItemObject*>::iterator it = ItemObject::ItemList.begin(); it < ItemObject::ItemList.end(); ++it){
+			modelStack.PushMatrix();
+			modelStack.Translate(
+				(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
+				(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
+				(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
+				);
+			modelStack.Scale(
+				(*it)->hitbox.sizeX,
+				(*it)->hitbox.sizeY,
+				(*it)->hitbox.sizeZ
+				);
+			RenderMesh(meshList[GEO_HITBOX], false);
+			modelStack.PopMatrix();
+		}
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	// UI STUFF HERE
+	if ((player.position - portal.position).Length() < 2.f){
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 
-			RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-			RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
-			if (Application::state2D == true){
-				modelStack.PushMatrix();
-				RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
-				modelStack.PopMatrix();
-			}
+	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		
+	if (Application::state2D == true){
+		modelStack.PushMatrix();
+		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
+		modelStack.PopMatrix();
+	}
+
+
 	//if (player.camera.position.x <= 2 && player.camera.position.x >= -2 && player.camera.position.z >= -2 && player.camera.position.z <= 2)
 	//{
 	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'F' to pick up", Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-	
+
 	//	
 	//}
 	if (Application::state2D == true){
@@ -782,7 +806,7 @@ void SP2::Render()
 
 
 	modelStack.PushMatrix();
-//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
+	//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
 	modelStack.PopMatrix();
 
 }
@@ -1044,14 +1068,12 @@ void SP2::RenderInternalSkybox(){
 
 	modelStack.PopMatrix();
 
-
 	//top
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 4.5, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(5, 5, 5);
-
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0.f, 0);
@@ -1100,15 +1122,12 @@ void SP2::RenderInternalSkybox(){
 
 	modelStack.PopMatrix();
 
-
 	//bottom
 	modelStack.PushMatrix();
 
-	
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(5, 5, 5);
-
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0,1,0);
@@ -1152,7 +1171,6 @@ void SP2::RenderInternalSkybox(){
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-	
 
 }
 
@@ -1211,10 +1229,9 @@ void SP2::UpdatePortal(double dt)
 void SP2::RenderPortal()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0.35f, 0);
+	modelStack.Translate(0, 0.f, 0);
 	modelStack.Scale(3, 3, 3);
 	RenderMesh(meshList[GEO_PORTAL_BODY], true);
-
 
 	modelStack.PushMatrix();
 
@@ -1287,10 +1304,28 @@ void SP2::RenderDoor(){
 
 void SP2::RenderExplosion()
 {
-	modelStack.PushMatrix();
-	modelStack.Scale(3, 3, 3);
-	RenderMesh(meshList[GEO_EXPLOSION], false);
-	modelStack.PopMatrix();
+	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
+		modelStack.PushMatrix();
+		modelStack.Translate(
+			(*it)->position.x,
+			(*it)->position.y,
+			(*it)->position.z
+			);
+		modelStack.Rotate(
+			towardsCameraYaw,
+			0,
+			1,
+			0
+			);
+		modelStack.Scale(
+			(*it)->scale,
+			(*it)->scale,
+			(*it)->scale
+			);
+		modelStack.Scale(3, 3, 3);
+		RenderMesh(meshList[GEO_EXPLOSION], false);
+		modelStack.PopMatrix();
+	}
 }
 
 void SP2::RenderPickUpObj()
@@ -1644,15 +1679,6 @@ void SP2::RenderEnemyShip()
 	modelStack.PopMatrix();
 }
 
-void SP2::RenderTurrets()
-{
-	modelStack.PushMatrix();
-	modelStack.Translate(-47, -5.5, -20);
-	modelStack.Rotate(180, 0, 1, 0);
-	RenderMesh(meshList[GEO_TURRET], true);
-	modelStack.PopMatrix();
-}
-
 void SP2::RenderBaseCamp()
 {
 	modelStack.PushMatrix();
@@ -1662,3 +1688,22 @@ void SP2::RenderBaseCamp()
 	modelStack.PopMatrix();
 }
 
+void SP2::RenderTurret()
+{
+	modelStack.PushMatrix();
+	modelStack.Rotate(turret.GetYaw(), 0, 1, 0);
+	RenderMesh(meshList[GEO_TURRET_BASE], true);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 2.995f, 0);
+	modelStack.Rotate(
+		turret.GetPitch(),
+		-1,
+		0,
+		0);
+	RenderMesh(meshList[GEO_TURRET_HEAD], true);
+
+
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+}

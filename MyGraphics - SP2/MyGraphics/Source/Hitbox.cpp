@@ -2,7 +2,6 @@
 #include "Object.h"
 #include "ItemBox.h"
 
-
 Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 {
 	pivot.Set(0, 0, 0);
@@ -18,6 +17,7 @@ Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 		-scaleY*0.5 + pos.y,
 		-scaleZ*0.5 + pos.z
 	);
+
 }
 
 Hitbox::~Hitbox()
@@ -145,7 +145,7 @@ bool Hitbox::CheckHitBox(Hitbox lhs)
 	return false;
 }
 
-bool Hitbox::CheckHitBox(Vector3 lhs)
+bool Hitbox::CheckHitBox(Vector3 lhs, int damage)
 {
 	for (size_t i = 0; i < Object::objectList.size(); ++i){
 		if (
@@ -156,7 +156,7 @@ bool Hitbox::CheckHitBox(Vector3 lhs)
 			lhs.z > Object::objectList[i]->hitbox.minPoint.z &&
 			lhs.z < Object::objectList[i]->hitbox.maxPoint.z
 			){
-			Object::objectList[i]->ReceiveDamage(5);
+			Object::objectList[i]->ReceiveDamage(damage);
 
 			return true;
 		}

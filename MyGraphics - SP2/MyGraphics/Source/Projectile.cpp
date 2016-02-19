@@ -2,6 +2,8 @@
 #include "Effect_Explosion.h"
 #include "WorldValues.h"
 
+vector<Projectile*> Projectile::projectileList;
+
 Projectile::Projectile(Vector3 pos, Vector3 dir, float r, float s, int d)
 {
 	position = pos;
@@ -25,11 +27,11 @@ bool Projectile::Update(double dt)
 {
 	distanceTravelled += dt * speed;
 	position += direction * dt * speed;
-	vSpeed -= WV_GRAVITY/3 * dt;
+	vSpeed -= WV_GRAVITY/2 * dt;
 
 	position.y += vSpeed;
 
-	if (Hitbox::CheckHitBox(position)){
+	if (Hitbox::CheckHitBox(position, damage)){
 		deleteBullet = true;
 
 		Effect_Explosion::explosionList.push_back(new Effect_Explosion(position));

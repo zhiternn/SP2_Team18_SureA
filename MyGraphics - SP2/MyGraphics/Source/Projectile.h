@@ -4,6 +4,10 @@
 #include "Vector3.h"
 #include "Hitbox.h"
 
+#include <vector>
+
+using std::vector;
+
 class Projectile
 {
 public:
@@ -11,6 +15,8 @@ public:
 	~Projectile();
 
 	bool Update(double dt);
+
+	static vector<Projectile*> projectileList;
 
 	Vector3 position;
 private:

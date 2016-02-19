@@ -55,7 +55,6 @@ void Helicopter::Update(double dt, bool controlling)
 			float yaw = (float)(TURN_SPEED * dt);
 
 			rotateYaw += yaw;
-			camera.Rotate(yaw, 0, 1, 0);
 
 			Mtx44 rotate;
 			rotate.SetToRotation(yaw, 0, 1, 0);
@@ -68,7 +67,6 @@ void Helicopter::Update(double dt, bool controlling)
 			float yaw = (float)(-TURN_SPEED * dt);
 
 			rotateYaw += yaw;
-			camera.Rotate(yaw, 0, 1, 0);
 
 			Mtx44 rotate;
 			rotate.SetToRotation(yaw, 0, 1, 0);

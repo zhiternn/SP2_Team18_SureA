@@ -57,7 +57,7 @@ void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypo
 		}
 	}
 }
-bool Waypoint::CheckLink(const Waypoint toBeLinked)
+bool Waypoint::CheckLink(Waypoint toBeLinked)
 {
 	Hitbox collisionChecker;
 	collisionChecker.SetSize(Waypoint::sizeH, Waypoint::sizeV, Waypoint::sizeH);
@@ -109,7 +109,7 @@ void Waypoint::LinkWaypoints()
 				}
 			}
 			if (!collided){
-				this->reachableWaypoints.insert(std::pair<float, Waypoint*>(distance, Waypoint::waypointList[j]));
+				this->reachableWaypoints.push_back(Waypoint::waypointList[j]);
 			}
 		}
 
@@ -122,8 +122,6 @@ void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float wa
 	for (vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){
 		(*it)->LinkWaypoints();
 	}
-
-
 }
 
 void ResetWaypoints()

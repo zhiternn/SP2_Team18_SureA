@@ -3,11 +3,9 @@
 
 #include "Hitbox.h"
 
-#include <map>
 #include <vector>
 
 using std::vector;
-using std::map;
 
 class Waypoint
 {
@@ -17,7 +15,7 @@ public:
 
 	void Reset();
 	void LinkWaypoints();
-	bool CheckLink(const Waypoint toBeLinked);
+	bool CheckLink(Waypoint toBeLinked);
 
 	static vector<Waypoint*> waypointList;
 	static float sizeH;
@@ -26,7 +24,7 @@ public:
 	Vector3 position;
 	float movementCost; //cost to move from start node to curr node
 	Waypoint* next;
-	map<float, Waypoint*> reachableWaypoints;
+	vector<Waypoint*> reachableWaypoints;
 private:
 };
 

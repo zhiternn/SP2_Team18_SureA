@@ -1,9 +1,9 @@
-#ifndef CAMERA_LOCKTARGET_H
-#define CAMERA_LOCKTARGET_H
+#ifndef CAMERA_LOCKPOSITION_H
+#define CAMERA_LOCKPOSITION_H
 
 #include "Vector3.h"
 
-class Camera_LockTarget
+class Camera_LockPosition
 {
 public:
 	Vector3 position;
@@ -12,8 +12,8 @@ public:
 	Vector3 view;
 	Vector3 right;
 
-	Camera_LockTarget();
-	~Camera_LockTarget();
+	Camera_LockPosition();
+	~Camera_LockPosition();
 	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
 	void Update(double dt);
 	virtual void Reset();

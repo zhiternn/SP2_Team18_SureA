@@ -36,7 +36,7 @@ void Object::SetPosition(float x, float y, float z)
 		position.x,
 		position.y, 
 		position.z
-		));
+	));
 }
 
 void Object::ReceiveDamage(int amount)
