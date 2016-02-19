@@ -192,17 +192,27 @@ void SP2::Init()
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
 
-	//meshList[GEO_Testitem1] = MeshBuilder::GenerateOBJ("Obj1", "OBJ//ItemObject1.obj");
-	//meshList[GEO_Testitem1]->textureID = LoadTGA("Image//walls3.tga");
+	meshList[GEO_Testitem1] = MeshBuilder::GenerateOBJ("Obj1", "OBJ//ItemObject1.obj");
+	meshList[GEO_Testitem1]->textureID = LoadTGA("Image//walls3.tga");
 
-	//meshList[GEO_Testitem2] = MeshBuilder::GenerateOBJ("Obj2", "OBJ//ItemObject2.obj");
-	//meshList[GEO_Testitem2]->textureID = LoadTGA("Image//walls3.tga");
+	meshList[GEO_Testitem2] = MeshBuilder::GenerateOBJ("Obj2", "OBJ//ItemObject2.obj");
+	meshList[GEO_Testitem2]->textureID = LoadTGA("Image//walls3.tga");
 
-	//meshList[GEO_Testitem3] = MeshBuilder::GenerateOBJ("Obj3", "OBJ//ItemObject3.obj");
-	//meshList[GEO_Testitem3]->textureID = LoadTGA("Image//walls3.tga");
+	meshList[GEO_Testitem3] = MeshBuilder::GenerateOBJ("Obj3", "OBJ//ItemObject3.obj");
+	meshList[GEO_Testitem3]->textureID = LoadTGA("Image//walls3.tga");
 
-	//meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
-	//meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
+	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
+	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
+
+	meshList[GEO_ShipButtonStand] = MeshBuilder::GenerateOBJ("ShipButtonStand", "OBJ//ShipButtonStand.obj");
+	meshList[GEO_ShipButtonStand]->textureID = LoadTGA("Image//floor.tga");
+
+	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("", "OBJ//ShipButton.obj");
+	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
+
+	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
+	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
+
 
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
@@ -243,6 +253,14 @@ void SP2::Init()
 
 	enableLight = true;
 	showHitBox = false;
+
+	buttonCoverBool = false;
+	buttonRiseBool = false;
+	buttonPressBool = false;
+	cbuttonRise = false;
+
+	buttonCover = 0;
+	buttonRise = 0;
 
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
@@ -454,6 +472,7 @@ void SP2::Update(double dt)
 	enemy.Update(dt);
 	UpdatePortal(dt);
 	UpdateDoor(dt);
+	ShipButtonAnimation(dt);
 
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
@@ -493,6 +512,7 @@ void SP2::Update(double dt)
 	}
 	if (Application::IsKeyPressed('F'))
 	{
+		PressButton();
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i){
 			ItemObject::ItemList[i]->PickUp(player.hitbox);
 		}
@@ -635,6 +655,8 @@ void SP2::Render()
 	//RenderSlideDoor();
 
 	//RenderPickUpObj();
+
+	RenderShipButton();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(15, 17.5, 0);
@@ -1259,8 +1281,6 @@ void SP2::RenderPortal()
 	modelStack.PopMatrix();
 }
 
-
-
 void SP2::UpdateDoor(double dt)
 {
 	if (Application::IsKeyPressed('F')){
@@ -1287,6 +1307,7 @@ void SP2::UpdateDoor(double dt)
 		0
 		);
 }
+
 void SP2::RenderDoor(){
 
 	modelStack.PushMatrix();
@@ -1706,4 +1727,68 @@ void SP2::RenderTurret()
 
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
+}
+
+void SP2::RenderShipButton()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(-40, 0, 40);//Edit this to move to your spaceship later.
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0, 0);
+		modelStack.Scale(0.35, 0.35, 0.35);
+		RenderMesh(meshList[GEO_ShipButtonStand], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(0, buttonRise/6 + 0.65, 0);
+		modelStack.Scale(0.35, 0.35, 0.35);
+		RenderMesh(meshList[GEO_ShipButton], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0.93, -0.08);
+		modelStack.Rotate(-buttonCover, 1, 0, 0);
+		modelStack.Scale(0.35, 0.35, 0.35);
+		RenderMesh(meshList[GEO_ShipButonCover], true);
+		modelStack.PopMatrix();
+	modelStack.PopMatrix();
+}
+
+void SP2::PressButton()
+{
+	buttonCoverBool = true;
+	if (cbuttonRise == true)
+	{
+		buttonPressBool = true;
+	}
+}
+
+void SP2::ShipButtonAnimation(double dt)
+{
+	if (buttonCoverBool == true && buttonCover < 90)
+	{
+		buttonCover += (float(50 * dt));
+	}
+	if (buttonCover > 90)
+	{
+		buttonCoverBool = false;
+		buttonRiseBool = true;
+	}
+	if (buttonRiseBool == true && cbuttonRise == false)
+	{
+		buttonRise += (float(1 * dt));
+	}
+	if (buttonRise > 1)
+	{
+		buttonRiseBool = false;
+		cbuttonRise = true;
+	}
+	if (cbuttonRise == true && buttonPressBool == true)
+	{
+		buttonRise -= (float(1 * dt));
+	}
+	if (buttonRise < 0)
+	{
+		buttonPressBool = false;
+	}
 }

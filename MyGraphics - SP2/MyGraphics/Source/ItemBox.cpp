@@ -147,7 +147,7 @@ void ItemObject::ItemDelay(double dt)
 {
 	if (ItemBoolInterval == true)
 	{
-		ItemInterval += (float)(50 * dt);
+		ItemInterval += (float(50 * dt));
 	}
 
 	if (ItemInterval > 50)

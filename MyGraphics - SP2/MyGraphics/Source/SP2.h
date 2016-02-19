@@ -61,6 +61,10 @@ class SP2 : public Scene
 		GEO_TestitemExtra,
 		GEO_UIBAR,
 
+		GEO_ShipButtonStand,
+		GEO_ShipButton,
+		GEO_ShipButonCover,
+
 		NUM_GEOMETRY
 	};
 	enum PLAYER_STATE
@@ -179,6 +183,9 @@ private:
 	void PickUp();
 	void PickUpAnimation(double dt);
 
+	void RenderShipButton();
+	void PressButton();
+	void ShipButtonAnimation(double dt);
 
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
@@ -197,6 +204,14 @@ private:
 	bool itemText;//item pickup
 
 	bool intervalBool;//Interval for ... anything i guess.
+
+	bool buttonCoverBool;
+	bool buttonRiseBool;
+	bool buttonPressBool;
+	bool cbuttonRise;
+
+	float buttonCover;
+	float buttonRise;
 
 	float readyToUse;
 	float readyToInteract;
