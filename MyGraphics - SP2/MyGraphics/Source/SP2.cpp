@@ -544,32 +544,22 @@ void SP2::Update(double dt)
 		glDisable(GL_CULL_FACE);
 	}
 	if (Application::IsKeyPressed(0x35)){
-
-		if (Application::IsKeyPressed(0x31)){
-			glEnable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (Application::IsKeyPressed(0x34)){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+		readyToUse_HITBOX = 0.f;
+		if (showHitBox){
+			showHitBox = false;
 		}
-		if (Application::IsKeyPressed(0x32)){
-			glDisable(GL_CULL_FACE);
+		else{
+			showHitBox = true;
 		}
-		if (Application::IsKeyPressed(0x35)){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		if (Application::IsKeyPressed(0x34)){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-
-		if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-			readyToUse_HITBOX = 0.f;
-			if (showHitBox){
-				showHitBox = false;
-			}
-			else{
-				showHitBox = true;
-			}
-		}
-		else if (readyToUse_HITBOX < 2.f){
-			readyToUse_HITBOX += (float)(10 * dt);
-		}
+	}
+	else if (readyToUse_HITBOX < 2.f){
+		readyToUse_HITBOX += (float)(10 * dt);
 	}
 }
 
@@ -659,15 +649,10 @@ void SP2::Render()
 	RenderTurret();
 
 	modelStack.PopMatrix();
-<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 
-	RenderTraps();
 
-=======
 	RenderTraps();
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -2, 0);
->>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 	RenderSlideDoor();
 
 	RenderPickUpObj();
@@ -815,11 +800,9 @@ void SP2::Render()
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemList.size  " + std::to_string(ItemObject::ItemList.size), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
-=======
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
@@ -828,7 +811,6 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
->>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 
 	if (Application::state2D == true){
 		modelStack.PushMatrix();
@@ -1834,7 +1816,6 @@ void SP2::RenderTurret()
 	modelStack.PopMatrix();
 }
 
-<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 void SP2::RenderShipButton()
 {
 	modelStack.PushMatrix();
@@ -1899,101 +1880,7 @@ void SP2::ShipButtonAnimation(double dt)
 	}
 }
 
-void Maze::GenerateMap(void)
-{
-	int iGeneratePathX = 1;
-	int iGeneratePathY = 1;
-	int igCounter = 0;
-	unsigned int irng = rand() % 4;
-	bool overLap = false;
-	int breakCounter = 0;
 
-	//	clears the map
-	for (size_t y = 0; y < sizeY; ++y){
-		for (size_t x = 0; x < sizeX; ++x){
-			mapLayout[y][x] = MAP_BLOCK;
-		}
-	}
-
-	//
-	//	RANDOMLY GENERATE PATHS STARTING FROM CENTER
-	//
-	srand((unsigned int)time(NULL));
-	int mapSize = static_cast<int>((((sizeY - 2.0)*(sizeX - 2.0))*0.7) + 0.5);
-	//mapLayout[1][1] = MAP_PATH;
-	do{
-		irng = rand() % 4;
-		//UP
-		if (irng == 0){
-			if (iGeneratePathY - 2 >= 1){
-				if (mapLayout[iGeneratePathY - 2][iGeneratePathX] != MAP_PATH || overLap){
-					igCounter += 2;
-					mapLayout[iGeneratePathY - 1][iGeneratePathX] = MAP_PATH;
-					mapLayout[iGeneratePathY - 2][iGeneratePathX] = MAP_PATH;
-					iGeneratePathY -= 2;
-					overLap = false;
-					breakCounter = 0;
-				}
-			}
-		}
-		//DOWN
-		else if (irng == 1){
-			if (iGeneratePathY + 2 <= sizeY - 2){
-				if (mapLayout[iGeneratePathY + 2][iGeneratePathX] != MAP_PATH || overLap){
-					igCounter += 2;
-					mapLayout[iGeneratePathY + 1][iGeneratePathX] = MAP_PATH;
-					mapLayout[iGeneratePathY + 2][iGeneratePathX] = MAP_PATH;
-					iGeneratePathY += 2;
-					overLap = false;
-					breakCounter = 0;
-				}
-			}
-		}
-		//LEFT
-		else if (irng == 2){
-			if (iGeneratePathX - 2 >= 1){
-				if (mapLayout[iGeneratePathY][iGeneratePathX - 2] != MAP_PATH || overLap){
-					igCounter += 2;
-					mapLayout[iGeneratePathY][iGeneratePathX - 1] = MAP_PATH;
-					mapLayout[iGeneratePathY][iGeneratePathX - 2] = MAP_PATH;
-					iGeneratePathX -= 2;
-					overLap = false;
-					breakCounter = 0;
-				}
-			}
-		}
-		//RIGHT
-		else if (irng == 3){
-			if (iGeneratePathX + 2 <= sizeX - 2){
-				if (mapLayout[iGeneratePathY][iGeneratePathX + 2] != MAP_PATH || overLap){
-					igCounter += 2;
-					mapLayout[iGeneratePathY][iGeneratePathX + 1] = MAP_PATH;
-					mapLayout[iGeneratePathY][iGeneratePathX + 2] = MAP_PATH;
-					iGeneratePathX += 2;
-					overLap = false;
-					breakCounter = 0;
-				}
-			}
-		}
-		if (breakCounter >= 5){
-			overLap = true;
-		}
-		breakCounter++;
-	} while (mapLayout[sizeY - 3][sizeX - 2] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
-}
-void Maze::PrintMap(){
-	for (size_t y = 0; y<sizeY - 1; ++y){
-		for (size_t x = 0; x<sizeX; ++x){
-			if (mapLayout[y][x] == MAP_BLOCK){
-				std::cout << (char)219;
-			}
-			else{
-				std::cout << " ";
-			}
-		}
-		std::cout << std::endl;
-	}
-=======
 void SP2::RenderMaze()
 {
 	//for (int i = 0; i > mappy.sizeY-1; ++i){
@@ -2012,5 +1899,4 @@ void SP2::RenderMaze()
 
 		}
 		}
->>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 }
