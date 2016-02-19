@@ -16,6 +16,7 @@
 #include "Hitbox.h"
 #include "Enemy.h"
 #include "Countdown.h"
+#include "MazeInteraction.h"
 
 using std::vector;
 
@@ -150,6 +151,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x = 0.f, float y = 0.f);
 	void RenderQuadOnScreen(Mesh* mesh, Color color, float sizeX, float sizeY, float moveX = 0.f, float moveY = 0.f);
+	
 
 	//door
 	float DoorMove;
@@ -232,6 +234,9 @@ private:
 	int playerState;
 
 	Player player;
+
+	Maze mappy;
+	void RenderMaze();
 
 	Enemy enemy;
 

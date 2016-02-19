@@ -409,6 +409,8 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
+	mappy.GenerateMap();
+	mappy.PrintMap();
 
 	GenerateWaypoints(100, 100, 1, 4);
 }
@@ -657,9 +659,15 @@ void SP2::Render()
 	RenderTurret();
 
 	modelStack.PopMatrix();
+<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 
 	RenderTraps();
 
+=======
+	RenderTraps();
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -2, 0);
+>>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 	RenderSlideDoor();
 
 	RenderPickUpObj();
@@ -700,6 +708,7 @@ void SP2::Render()
 		portal.position.z
 		);
 	RenderPortal();
+
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -718,6 +727,7 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 	RenderExplosion();
+
 	modelStack.PopMatrix();
 
 	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
@@ -792,18 +802,33 @@ void SP2::Render()
 	if ((player.position - portal.position).Length() < 2.f){
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
-	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+	
+		//modelStack.PushMatrix();
+		//modelStack.Rotate(180, 0, 0, 1);
+		modelStack.PushMatrix();
+		modelStack.Scale(1, 1, 1);
+		RenderMaze();
+		modelStack.PopMatrix();
+		//modelStack.PopMatrix();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
+<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemList.size  " + std::to_string(ItemObject::ItemList.size), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+=======
+	//RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION X: " + std::to_string(player.camera.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
+
+	//RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
+>>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 
 	if (Application::state2D == true){
 		modelStack.PushMatrix();
@@ -1301,7 +1326,6 @@ void SP2::UpdateDoor(double dt)
 	}
 	if (DoorReturn == true){
 		animation_moveDoor -= (float)(0.5f * dt);
-		std::cout << animation_moveDoor << std::endl;
 		if (animation_moveDoor <= 0){
 			DoorReturn = false;
 		}
@@ -1810,6 +1834,7 @@ void SP2::RenderTurret()
 	modelStack.PopMatrix();
 }
 
+<<<<<<< 35320914dfa3c07cd6cb034fb60d9babc80a2a2f
 void SP2::RenderShipButton()
 {
 	modelStack.PushMatrix();
@@ -1968,4 +1993,24 @@ void Maze::PrintMap(){
 		}
 		std::cout << std::endl;
 	}
+=======
+void SP2::RenderMaze()
+{
+	//for (int i = 0; i > mappy.sizeY-1; ++i){
+	//	for (int j = 0; j < mappy.sizeX; ++j){
+	//		if (mappy.mapLayout[i][j] == Maze::MAP_PATH){
+	//			RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 1, 1, j, i);
+	//		}
+	//	}
+	//}
+	for (int y = 0; y<mappy.sizeY - 1; ++y){
+		for (int x = 0; x < mappy.sizeX; ++x){
+			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
+			
+				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], (1, 1, 1), 1, 1, x , -y);
+			}
+
+		}
+		}
+>>>>>>> 8ec5b77745e7b60bbb11edc9e61fe48b72420001
 }
