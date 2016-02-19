@@ -88,7 +88,10 @@
     <ClCompile Include="Source\Assignment3.cpp" />
     <ClCompile Include="Source\Camera_LockPosition.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\Friendly.cpp" />
     <ClCompile Include="Source\ItemBox.cpp" />
+    <ClCompile Include="Source\MazeInteraction.cpp" />
+    <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Camera2.cpp" />
@@ -115,7 +118,10 @@
     <ClInclude Include="Source\Camera_LocKPosition.h" />
     <ClInclude Include="Source\Countdown.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\Friendly.h" />
     <ClInclude Include="Source\ItemBox.h" />
+    <ClInclude Include="Source\MazeInteraction.h" />
+    <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Camera2.h" />

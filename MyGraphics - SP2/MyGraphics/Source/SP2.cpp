@@ -269,7 +269,9 @@ void SP2::Init()
 
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
 
-	enemy.Init(Vector3(0, 0, -3), 5.f);
+	NPC::npcList.push_back(new Enemy(Vector3(0, 10, 0)));
+	NPC::npcList.push_back(new Enemy(Vector3(5, 10, 0), 2.f));
+	NPC::npcList.push_back(new Enemy(Vector3(0, 10, 5), 3.f));
 
 	portal.hitbox.SetSize(4, 3, 1);
 	portal.hitbox.SetPivot(0, 1.3f, 0);
@@ -285,16 +287,17 @@ void SP2::Init()
 	laserTrap2.hitbox.SetSize(0.1, 0.1, 5);
 	laserTrap2.SetPosition(2, 18, 0);
 	//front door
-	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
-	frontDoor.SetPosition(-20.3, 2.8, 37.75);
+	//frontDoor.hitbox.SetSize(0.2, 5.5, 3);
+	frontDoor.SetPosition(-20.3, 2.8, 37.75);\
 
-	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
+	//frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
+
 	//back door
-	backDoor.hitbox.SetSize(0.2, 5.5, 3);
+	//backDoor.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor.SetPosition(20.9, 2.8, 37.75);
 
-	backDoor2.hitbox.SetSize(0.2, 5.5, 3);
+	//backDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor2.SetPosition(20.9, 2.8, 40.75);
 
 	turret.hitbox.SetSize(3.f, 4, 3.f);
@@ -475,10 +478,10 @@ void SP2::Update(double dt)
 	TrapsMovement(dt);
 	DoorMovement(dt);
 	Interval(dt);
-	enemy.Update(dt);
 	UpdatePortal(dt);
 	UpdateDoor(dt);
 	ShipButtonAnimation(dt);
+	UpdateNPCs(dt);
 
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
@@ -487,6 +490,7 @@ void SP2::Update(double dt)
 		if ((player.position - portal.position).Length() < 2.f){
 			player.position.Set(0, 25, 0);
 		}
+
 		//TURRET INTERACTION
 		if (playerState != STATE_INTERACTING_TURRET && (player.position - turret.position).Length() < 4.f){
 			playerState = STATE_INTERACTING_TURRET;
@@ -495,7 +499,10 @@ void SP2::Update(double dt)
 			playerState = STATE_FPS;
 		}
 
-		enemy.GoTo(player.position);
+		//NPC INTERACTION
+		for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+			(*it)->GoTo(player.position);
+		}
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
@@ -696,19 +703,7 @@ void SP2::Render()
 
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(
-		enemy.position.x,
-		enemy.position.y + Waypoint::sizeV / 2,
-		enemy.position.z
-		);
-	modelStack.Scale(
-		Waypoint::sizeH,
-		Waypoint::sizeV,
-		Waypoint::sizeH
-		);
-	RenderMesh(meshList[GEO_HITBOX], false);
-	modelStack.PopMatrix();
+	RenderNPCs();
 
 	modelStack.PushMatrix();
 	RenderExplosion();
@@ -1899,4 +1894,30 @@ void SP2::RenderMaze()
 
 		}
 		}
+}
+
+void SP2::UpdateNPCs(double dt)
+{
+	for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+		(*it)->Update(dt);
+	}
+}
+
+void SP2::RenderNPCs()
+{
+	for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+		modelStack.PushMatrix();
+		modelStack.Translate(
+			(*it)->position.x,
+			(*it)->position.y + Waypoint::sizeV / 2,
+			(*it)->position.z
+			);
+		modelStack.Scale(
+			Waypoint::sizeH,
+			Waypoint::sizeV,
+			Waypoint::sizeH
+			);
+		RenderMesh(meshList[GEO_HITBOX], false);
+		modelStack.PopMatrix();
+	}
 }

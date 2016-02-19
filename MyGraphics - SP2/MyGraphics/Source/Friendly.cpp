@@ -1,15 +1,15 @@
-#include "Enemy.h"
+#include "Friendly.h"
 
-Enemy::Enemy(Vector3 pos, float speed) :
+Friendly::Friendly(Vector3 pos, float speed) :
 NPC(pos, speed)
 {
 }
 
-Enemy::~Enemy()
+Friendly::~Friendly()
 {
 }
 
-void Enemy::Update(double dt)
+void Friendly::Update(double dt)
 {
 	if (position.y > Waypoint::sizeV / 2){
 		position.y -= speed * dt;
@@ -19,7 +19,7 @@ void Enemy::Update(double dt)
 		//MOVE TO
 		checkPointDir = ((*checkPoint)->position - position).Normalized();
 		position += checkPointDir * speed * dt;
-		
+
 
 		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
 			checkPoint++;
