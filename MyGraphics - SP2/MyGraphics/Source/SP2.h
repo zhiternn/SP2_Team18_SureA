@@ -48,6 +48,7 @@ class SP2 : public Scene
 		GEO_TURRET_HEAD,
 		GEO_ALLYSHIP,
 		GEO_TRAPS,
+		GEO_SLIDEDOOR,
 		GEO_DOOR,
 
 		GEO_EXPLOSION,
@@ -134,6 +135,7 @@ private:
 	void RenderSlideDoor();
 	void DoorMovement(double dt);
 	void RenderTraps();
+	void TrapsMovement(double dt);
 	void RenderAllyShip();
 	void RenderEnemyShip();
 	void RenderTurrets();
@@ -159,6 +161,10 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
+
+	float trapMove;
+	bool backN;
+	bool forth = true;
 
 	Object portal;
 	Object laserTrap;

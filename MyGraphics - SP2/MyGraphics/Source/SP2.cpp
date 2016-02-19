@@ -162,7 +162,7 @@ void SP2::Init()
 
 	meshList[GEO_TRAPS] = MeshBuilder::GenerateCylinder("traps", Color(1.f, 0.f, 0.f), 1); //door
 
-	meshList[GEO_DOOR] = MeshBuilder::GenerateCube("door", Color(1, 0, 0));
+	meshList[GEO_SLIDEDOOR] = MeshBuilder::GenerateCube("sliding door", Color(1, 0, 0));
 
 	//INTERNAL SKYBOX
 	meshList[GEO_INTERNAL_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1));
@@ -200,6 +200,7 @@ void SP2::Init()
 
 	meshList[GEO_Testitem3] = MeshBuilder::GenerateOBJ("Obj3", "OBJ//ItemObject3.obj");
 	meshList[GEO_Testitem3]->textureID = LoadTGA("Image//walls3.tga");
+<<<<<<< 7ac3d4cf3e0c29c50eae7b3a3bb54a67e659e0cd
 
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
@@ -213,6 +214,11 @@ void SP2::Init()
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
 
+=======
+
+	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
+	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
+>>>>>>> 04a8203400287bdf32e1a92ac2d6732ec927be75
 
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
@@ -468,6 +474,8 @@ void SP2::Update(double dt)
 		turret.Update(dt);
 	}
 
+	TrapsMovement(dt);
+	DoorMovement(dt);
 	Interval(dt);
 	enemy.Update(dt);
 	UpdatePortal(dt);
@@ -479,7 +487,7 @@ void SP2::Update(double dt)
 
 		//PORTAL INTERACTION
 		if ((player.position - portal.position).Length() < 2.f){
-			player.position.Set(0, 19, 0);
+			player.position.Set(0, 25, 0);
 		}
 		//TURRET INTERACTION
 		if (playerState != STATE_INTERACTING_TURRET && (player.position - turret.position).Length() < 4.f){
@@ -638,7 +646,9 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	RenderBaseCamp();
+
 	RenderEnemyShip();
+
 	RenderAllyShip();
 
 	modelStack.PushMatrix();
@@ -648,13 +658,14 @@ void SP2::Render()
 		turret.position.z
 		);
 	RenderTurret();
+
 	modelStack.PopMatrix();
 
-	//RenderTraps();
+	RenderTraps();
 
-	//RenderSlideDoor();
+	RenderSlideDoor();
 
-	//RenderPickUpObj();
+	RenderPickUpObj();
 
 	RenderShipButton();
 
@@ -1439,7 +1450,7 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 		}
-		if (ItemObject::ItemList[1]->haveItem == true)
+		if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
@@ -1531,7 +1542,7 @@ void SP2::RenderSlideDoor()
 		frontDoor.position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 5.5, 0.2);
-	RenderMesh(meshList[GEO_DOOR], true);
+	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -1542,7 +1553,7 @@ void SP2::RenderSlideDoor()
 		);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 5.5, 0.2);
-	RenderMesh(meshList[GEO_DOOR], true);
+	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 	//back door
 	modelStack.PushMatrix();
@@ -1553,7 +1564,7 @@ void SP2::RenderSlideDoor()
 		);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 5.5, 0.2);
-	RenderMesh(meshList[GEO_DOOR], true);
+	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -1564,7 +1575,7 @@ void SP2::RenderSlideDoor()
 		);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 5.5, 0.2);
-	RenderMesh(meshList[GEO_DOOR], true);
+	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
 	
@@ -1661,25 +1672,67 @@ void SP2::RenderTraps()
 {
 	//traps
 	modelStack.PushMatrix();
-	modelStack.Translate(9, 18, 0);
+	//modelStack.Translate(9, 18, 0);
+	modelStack.Translate(
+		laserTrap.position.x,
+		laserTrap.position.y,
+		laserTrap.position.z
+		);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(0.1, 4.9, 0.1);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(5, 18, 0);
+	//modelStack.Translate(5, 18, 0);
+	modelStack.Translate(
+		laserTrap1.position.x,
+		laserTrap1.position.y + 3,
+		laserTrap1.position.z
+		);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(0.1, 4.9, 0.1);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(2, 18, 0);
-	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(0.1, 4.9, 0.1);
+	//modelStack.Translate(5, 19.75, 0);
+	modelStack.Translate(
+		laserTrap2.position.x,
+		laserTrap2.position.y,
+		laserTrap2.position.z
+		);
+	modelStack.Scale(0.1, 4.5, 0.1);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
+}
+
+void SP2::TrapsMovement(double dt)
+{
+	if (forth == true)
+	{
+		trapMove += (float)(2 * dt);
+		laserTrap.SetPosition(9 - trapMove, 18, 0);
+		//laserTrap1.SetPosition(10 - trapMove * 0.5, 21, 0);
+		laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+		if (trapMove > 5)
+		{
+			forth = false;
+			backN = true;
+		}
+	}
+	if (backN == true)
+	{
+		trapMove -= (float)(2 * dt);
+		laserTrap.SetPosition(9 - trapMove, 18, 0);
+		//laserTrap1.SetPosition(10 - trapMove * 0.5, 21, 0);
+		laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+		if (trapMove < 0)
+		{
+			forth = true;
+			backN = false;
+		}
+	}
 }
 
 void SP2::RenderAllyShip()
