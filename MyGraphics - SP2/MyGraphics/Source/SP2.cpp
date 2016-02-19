@@ -641,6 +641,7 @@ void SP2::Render()
 	RenderSkybox();
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix(); 
 	RenderBaseCamp();
 
 	RenderEnemyShip();
@@ -1070,18 +1071,25 @@ void SP2::RenderInternalSkybox(){
 
 
 	//right
+
 	modelStack.PushMatrix();
 	modelStack.Translate(0,0,1.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+
 	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(1.f, 0, 1.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+
 	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-1.f, 0, 1.5f);
+	modelStack.Rotate(180, 0, 1, 0);
+
 	RenderMesh(meshList[GEO_INTERNAL_RIGHT], false);
 	modelStack.PopMatrix();
 
@@ -1863,5 +1871,101 @@ void SP2::ShipButtonAnimation(double dt)
 	if (buttonRise < 0)
 	{
 		buttonPressBool = false;
+	}
+}
+
+void Maze::GenerateMap(void)
+{
+	int iGeneratePathX = 1;
+	int iGeneratePathY = 1;
+	int igCounter = 0;
+	unsigned int irng = rand() % 4;
+	bool overLap = false;
+	int breakCounter = 0;
+
+	//	clears the map
+	for (size_t y = 0; y < sizeY; ++y){
+		for (size_t x = 0; x < sizeX; ++x){
+			mapLayout[y][x] = MAP_BLOCK;
+		}
+	}
+
+	//
+	//	RANDOMLY GENERATE PATHS STARTING FROM CENTER
+	//
+	srand((unsigned int)time(NULL));
+	int mapSize = static_cast<int>((((sizeY - 2.0)*(sizeX - 2.0))*0.7) + 0.5);
+	//mapLayout[1][1] = MAP_PATH;
+	do{
+		irng = rand() % 4;
+		//UP
+		if (irng == 0){
+			if (iGeneratePathY - 2 >= 1){
+				if (mapLayout[iGeneratePathY - 2][iGeneratePathX] != MAP_PATH || overLap){
+					igCounter += 2;
+					mapLayout[iGeneratePathY - 1][iGeneratePathX] = MAP_PATH;
+					mapLayout[iGeneratePathY - 2][iGeneratePathX] = MAP_PATH;
+					iGeneratePathY -= 2;
+					overLap = false;
+					breakCounter = 0;
+				}
+			}
+		}
+		//DOWN
+		else if (irng == 1){
+			if (iGeneratePathY + 2 <= sizeY - 2){
+				if (mapLayout[iGeneratePathY + 2][iGeneratePathX] != MAP_PATH || overLap){
+					igCounter += 2;
+					mapLayout[iGeneratePathY + 1][iGeneratePathX] = MAP_PATH;
+					mapLayout[iGeneratePathY + 2][iGeneratePathX] = MAP_PATH;
+					iGeneratePathY += 2;
+					overLap = false;
+					breakCounter = 0;
+				}
+			}
+		}
+		//LEFT
+		else if (irng == 2){
+			if (iGeneratePathX - 2 >= 1){
+				if (mapLayout[iGeneratePathY][iGeneratePathX - 2] != MAP_PATH || overLap){
+					igCounter += 2;
+					mapLayout[iGeneratePathY][iGeneratePathX - 1] = MAP_PATH;
+					mapLayout[iGeneratePathY][iGeneratePathX - 2] = MAP_PATH;
+					iGeneratePathX -= 2;
+					overLap = false;
+					breakCounter = 0;
+				}
+			}
+		}
+		//RIGHT
+		else if (irng == 3){
+			if (iGeneratePathX + 2 <= sizeX - 2){
+				if (mapLayout[iGeneratePathY][iGeneratePathX + 2] != MAP_PATH || overLap){
+					igCounter += 2;
+					mapLayout[iGeneratePathY][iGeneratePathX + 1] = MAP_PATH;
+					mapLayout[iGeneratePathY][iGeneratePathX + 2] = MAP_PATH;
+					iGeneratePathX += 2;
+					overLap = false;
+					breakCounter = 0;
+				}
+			}
+		}
+		if (breakCounter >= 5){
+			overLap = true;
+		}
+		breakCounter++;
+	} while (mapLayout[sizeY - 3][sizeX - 2] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
+}
+void Maze::PrintMap(){
+	for (size_t y = 0; y<sizeY - 1; ++y){
+		for (size_t x = 0; x<sizeX; ++x){
+			if (mapLayout[y][x] == MAP_BLOCK){
+				std::cout << (char)219;
+			}
+			else{
+				std::cout << " ";
+			}
+		}
+		std::cout << std::endl;
 	}
 }
