@@ -90,6 +90,7 @@
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Friendly.cpp" />
     <ClCompile Include="Source\ItemBox.cpp" />
+    <ClCompile Include="Source\mainMenu.cpp" />
     <ClCompile Include="Source\MazeInteraction.cpp" />
     <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Friendly.h" />
     <ClInclude Include="Source\ItemBox.h" />
+    <ClInclude Include="Source\mainMenu.h" />
     <ClInclude Include="Source\MazeInteraction.h" />
     <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Projectile.h" />
@@ -139,6 +141,7 @@
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\SharedData.h" />
     <ClInclude Include="Source\SP2.h" />
     <ClInclude Include="Source\Turret.h" />
     <ClInclude Include="Source\Utility.h" />

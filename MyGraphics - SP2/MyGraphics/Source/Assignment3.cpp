@@ -170,7 +170,7 @@ void Assignment3::Init()
 	meshList[GEO_BOUNDARY] = MeshBuilder::GenerateOBJ("boundary", "OBJ//boundary.obj");
 	meshList[GEO_BOUNDARY]->textureID = LoadTGA("Image//mars_floor.tga");
 	meshList[GEO_PORTAL_BODY] = MeshBuilder::GenerateOBJ("model_air", "OBJ//portal.obj");
-	meshList[GEO_PORTAL_BODY]->material.SetToChrome();
+	//meshList[GEO_PORTAL_BODY]->material.SetToChrome();
 	meshList[GEO_PORTAL_BODY]->textureID = LoadTGA("Image//portal_Body.tga");
 	meshList[GEO_PORTAL_FRONT] = MeshBuilder::GenerateQuad("portal_front", Color(1, 1, 1));
 	meshList[GEO_PORTAL_FRONT]->textureID = LoadTGA("Image//portal_Front.tga");
@@ -179,7 +179,7 @@ void Assignment3::Init()
 	meshList[GEO_LAMP] = MeshBuilder::GenerateOBJ("lamp", "OBJ//lamp.obj");
 	meshList[GEO_LAMP]->textureID = LoadTGA("Image//lamp.tga");
 	meshList[GEO_BOX] = MeshBuilder::GenerateOBJ("model_land", "OBJ//Box.obj");
-	meshList[GEO_BOX]->material.SetToPlastic();
+	//meshList[GEO_BOX]->material.SetToPlastic();
 	meshList[GEO_BOX]->textureID = LoadTGA("Image//Box.tga");
 	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
 	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");

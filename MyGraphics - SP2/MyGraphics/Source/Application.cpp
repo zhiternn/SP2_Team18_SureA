@@ -11,6 +11,8 @@
 #include <stdlib.h>
 
 #include "SP2.h"
+#include "SharedData.h"
+#include "mainMenu.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -155,18 +157,18 @@ void Application::Init()
 
 	glfwSetInputMode(m_window,
 		GLFW_CURSOR,
-		GLFW_CURSOR_HIDDEN
+		GLFW_CURSOR_NORMAL
 		);
 }
 
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new SP2();
+	Scene *scene = new mainMenu();
 	scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	while (!glfwWindowShouldClose(m_window) && SharedData::GetInstance()->gameState != SharedData::G_EXIT && !IsKeyPressed(VK_ESCAPE))
 	{
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
@@ -174,7 +176,39 @@ void Application::Run()
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
+
+		//glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwGetCursorPos(m_window, &SharedData::GetInstance()->m_newX, &SharedData::GetInstance()->m_newY);
+
+		//limit cursor to the resolution of the window
+		if (SharedData::GetInstance()->gameState == SharedData::G_MENU) {
+			if (SharedData::GetInstance()->m_newX <= 0)
+				glfwSetCursorPos(m_window, 0, SharedData::GetInstance()->m_newY);
+
+			if (SharedData::GetInstance()->m_newX >= 1920)
+				glfwSetCursorPos(m_window, 1920, SharedData::GetInstance()->m_newY);
+
+			if (SharedData::GetInstance()->m_newY <= 0)
+				glfwSetCursorPos(m_window, SharedData::GetInstance()->m_newX, 0);
+
+			if (SharedData::GetInstance()->m_newY >= 1080)
+				glfwSetCursorPos(m_window, SharedData::GetInstance()->m_newX, 1080);
+		}
+
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+
+		if (SharedData::GetInstance()->stateChange) {
+			delete scene;
+			SharedData::GetInstance()->stateChange = false;
+			switch (SharedData::GetInstance()->gameState)
+			{
+			case SharedData::G_MENU: scene = new mainMenu();
+				break;
+			case SharedData::G_GAME: scene = new SP2();
+				break;
+			}
+			scene->Init();
+		}
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 	scene->Exit();

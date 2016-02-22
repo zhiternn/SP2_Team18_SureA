@@ -1,3 +1,6 @@
+#ifndef MATERIAL_H
+#define MATERIAL_H
+
 struct Component
 {
 	float r, g, b;
@@ -61,3 +64,4 @@ struct Material
 		kShininess = 10.f;
 	}
 };
+#endif
