@@ -469,7 +469,9 @@ void SP2::Update(double dt)
 		player.Update(dt);
 	}
 	else if (playerState == STATE_INTERACTING_MAZE){
+
 		MazeInteraction(dt);
+
 	}
 	else if (playerState == STATE_INTERACTING_TURRET){
 		turret.Update(dt);
@@ -488,8 +490,12 @@ void SP2::Update(double dt)
 		playerState = STATE_INTERACTING_MAZE;
 		Application::state2D = true;
 		stateChanged = true;
-		//m_timer.StartCountdown(15);  
+		m_timer.StartCountdown(15);  
+
+
 		mappy = Maze(10, 10, screenX, screenY);
+		Application::SetMousePosition(screenX * 10 + mappy.gridSizeX, screenY * 10 + mappy.gridSizeY * 11);
+
 	}
 	else if (Application::IsKeyPressed('P')){
 		playerState = STATE_FPS;
@@ -841,14 +847,23 @@ void SP2::Render()
 	}
 
 	if (playerState == STATE_INTERACTING_MAZE){
+		
 		RenderMaze();
+
+
+
 		Application::ShowCursor();
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 2, -50.f, 0.f);
+
+		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
+			Application::SetMousePosition(0, 0);
+			playerState = STATE_FPS;
+			Application::HideCursor();
+		}
+
 	}
 
-	if (m_timer.GetTimeLeft() <= 0 && m_timer.isCountingDown == false && Application::state2D == true){
-		Application::state2D = false;
-		Application::SetMousePosition(0, 0);
-	}
+	
 
 
 
@@ -1552,6 +1567,8 @@ void SP2::MazeInteraction(double dt){
 
 	
 
+
+
 	//if (Application::state2D == false){
 	//	player.Update(dt);
 	//	//std::cout << "testies" << std::endl;
@@ -1911,6 +1928,7 @@ void SP2::RenderMaze()
 	//		}
 	//	}
 	//}
+
 	for (int y = 0; y<mappy.colNumber; ++y){
 		for (int x = 0; x < mappy.rowNumber; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){

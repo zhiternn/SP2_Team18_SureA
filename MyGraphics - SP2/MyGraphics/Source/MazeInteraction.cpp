@@ -79,7 +79,7 @@ Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 		startingPointY = 1;
 		rowNumber = numberOfRows;
 		colNumber = numberOfCols;
-		
+
 
 		GenerateMap();
 		

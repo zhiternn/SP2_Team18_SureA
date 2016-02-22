@@ -24,6 +24,7 @@ public:
 	}
 	double GetTimeLeft() // true when times up
 	{
+		//
 		std::cout << duration << std::endl;
 
 		if (isCountingDown){
