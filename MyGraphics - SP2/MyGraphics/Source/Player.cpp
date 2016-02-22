@@ -28,47 +28,11 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 
 void Player::Update(double dt)
 {
-	static const float CAMERA_SPEED = 20.f;
-	static const float MOVEMENT_SPEED = 10.f;
-	float SPRINT_MULTIPLIER = 3.f;
+	static const float CAMERA_SPEED = 5.f;
+	static const float MOVEMENT_SPEED = 5.f;
+	float SPRINT_MULTIPLIER = 2.f;
 
 	Vector3 oldPos = position;
-	/*if (Application::IsKeyPressed('C'))
-	{
-		crouch = true;
-	}
-	else
-	{
-		crouch = false;
-	}
-
-	if (crouch == true)
-	{
-		position.y = 0.5;
-		hitbox.SetSize(0.2f, 1.5, 0.2f);
-		speedMultiplier = 0.5;
-	}
-	if (crouch == false)
-	{
-		position.y = 1.5;
-		hitbox.SetSize(0.2f, 3, 0.2f);
-		speedMultiplier = 2;
-	}
-
-
-
-
-	if (Application::IsKeyPressed(VK_SHIFT)){
-		if (tired == false && crouch == false){
-			speedMultiplier = 10;
-		}
-	}
-	if (crouch == false)
-	{
-		position.y = 1.5;
-		hitbox.SetSize(0.2f, 3, 0.2f);
-		speedMultiplier = 2;
-	}*/
 
 	// if not pressed, no speed increase
 	if (!Application::IsKeyPressed(VK_SHIFT)){
@@ -120,9 +84,12 @@ void Player::Update(double dt)
 	vSpeed -= (float)(WV_GRAVITY * dt);
 	position.y += vSpeed;
 	hitbox.SetPosition(position);
+
 	if (Hitbox::CheckHitBox(hitbox, position, oldPos, &hitbox))
 	{
-		vSpeed = 0.f;
+		if (position.y == oldPos.y){
+			vSpeed = 0.f;
+		}
 	}
 
 	double mouseX, mouseY;

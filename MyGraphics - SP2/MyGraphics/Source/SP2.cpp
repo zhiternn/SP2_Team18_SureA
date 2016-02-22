@@ -119,20 +119,19 @@ void SP2::Init()
 	light[1].type = Light::LIGHT_SPOT;
 	light[1].position.Set(0, 5, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 0.f;
+	light[1].power = 10.f;
 	light[1].kC = 1.f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
 	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[1].cosInner = cos(Math::DegreeToRadian(30));
 	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+	light[1].spotDirection.Set(0.f, 0.f, 1.f);
 	//pass uniform parameters ( MUST BE AFTER glUseProgram() )
 	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
 	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
 	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
 	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
-
 	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
 	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
 	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
@@ -243,6 +242,11 @@ void SP2::Init()
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//door.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
 
+	meshList[GEO_LIGHTSLIDER] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
+	meshList[GEO_LIGHTSLIDER]->textureID = LoadTGA("Image//lightslider_ui.tga");
+
+	meshList[GEO_BASE_SPOTLIGHT] = MeshBuilder::GenerateOBJ("spotlight", "OBJ//spotlight_obj.obj");
+	meshList[GEO_BASE_SPOTLIGHT]->textureID = LoadTGA("Image//spotlight_uv.tga");
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -251,11 +255,10 @@ void SP2::Init()
 
 	playerState = STATE_FPS;
 
-	ArrangeObjs(65, 65, 30);
-
 	readyToUse = 2.f;
 	readyToUse_HITBOX = 2.f;
 	readyToInteract = 2.f;
+	towardsCameraYaw = 0.f;
 
 	enableLight = true;
 	showHitBox = false;
@@ -270,12 +273,16 @@ void SP2::Init()
 
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
+	animation_moveDoor = 0.f;
+
+	// Base spotlight
+	baseSpotlight_maxLength = screenX * 0.6;
+	baseSpotlight_startingX = -screenX + screenX * 0.2;
+	baseSpotlight_power = 1;
 
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
 
-	NPC::npcList.push_back(new Enemy(Vector3(0, 10, 0)));
-	NPC::npcList.push_back(new Enemy(Vector3(5, 10, 0), 2.f));
-	NPC::npcList.push_back(new Enemy(Vector3(0, 10, 5), 3.f));
+	//ArrangeObjs(65, 65, 30);
 
 	portal.hitbox.SetSize(4, 3, 1);
 	portal.hitbox.SetPivot(0, 1.3f, 0);
@@ -290,23 +297,32 @@ void SP2::Init()
 	laserTrap2.hitbox.SetSize(0.05, 5, 0.05);
 	laserTrap2.SetPosition(2, 18, 0);
 
-	//front door
-	//frontDoor.hitbox.SetSize(0.2, 5.5, 3);
+	//front 
+	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);\
 
-	//frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
+	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
 
 	//back door
-	//backDoor.hitbox.SetSize(0.2, 5.5, 3);
+	backDoor.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor.SetPosition(20.9, 2.8, 37.75);
 
-	//backDoor2.hitbox.SetSize(0.2, 5.5, 3);
+	backDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor2.SetPosition(20.9, 2.8, 40.75);
 
 	turret.hitbox.SetSize(3.f, 4, 3.f);
 	turret.hitbox.SetPivot(0, 2.f, 0);
-	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 5);
+	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 3);
+
+	baseSpotlight.hitbox.SetSize(1, 1, 0.75f);
+	baseSpotlight.hitbox.SetPivot(0, 0.5f, 0);
+	baseSpotlight.SetPosition(0, 0, 26.f);
+	light[1].position.Set(
+		baseSpotlight.position.x,
+		baseSpotlight.position.y + baseSpotlight.hitbox.sizeY*0.9f,
+		baseSpotlight.position.z
+		);
 
 	//BOUNDARIES
 	Object* floor = new Object();
@@ -349,7 +365,7 @@ void SP2::Init()
 
 	trapdoor.hitbox.SetPivot(-2, 0, 0);
 	trapdoor.hitbox.SetSize(5.5, 0.2, 5);
-	trapdoor.SetPosition(2, 1, 0);
+	trapdoor.SetPosition(2, 17.5, 0);
 
 	Object* internalWall_Ground2 = new Object();
 	internalWall_Ground2->hitbox.SetSize(10.5f, 1, 15);
@@ -412,55 +428,16 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
+	// SHIPS
 	Object* AllyShip = new Object();
-	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
+	AllyShip->hitbox.SetSize(17, 3, 20);
+	AllyShip->hitbox.SetPivot(0, 1, 0);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
 	GenerateWaypoints(100, 100, 1, 4);
-}
 
-void SP2::RenderMesh(Mesh *mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-
-	if (enableLight && this->enableLight){
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE,
-			&modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-
-	mesh->Render();
-
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+	for (int i = 0; i < 1; ++i){
+		NPC::npcList.push_back(new Enemy(Vector3(0, Waypoint::sizeV / 2, 0), 5.f));
 	}
 }
 
@@ -470,13 +447,15 @@ void SP2::Update(double dt)
 		player.Update(dt);
 	}
 	else if (playerState == STATE_INTERACTING_MAZE){
-
 		MazeInteraction(dt);
-
 	}
 	else if (playerState == STATE_INTERACTING_TURRET){
 		turret.Update(dt);
 	}
+	else if (playerState == STATE_INTERACTING_LIGHTSLIDER){
+		UpdateLightSlider();
+	}
+
 	TrapsMovement(dt);
 	DoorMovement(dt);
 	Interval(dt);
@@ -509,7 +488,6 @@ void SP2::Update(double dt)
 	}
 	else{}
 
-
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
 
@@ -519,7 +497,7 @@ void SP2::Update(double dt)
 		}
 
 		//TURRET INTERACTION
-		if (playerState != STATE_INTERACTING_TURRET && (player.position - turret.position).Length() < 4.f){
+		if (playerState == STATE_FPS && (player.position - turret.position).Length() < 4.f){
 			playerState = STATE_INTERACTING_TURRET;
 		}
 		else if (playerState == STATE_INTERACTING_TURRET){
@@ -529,6 +507,17 @@ void SP2::Update(double dt)
 		//NPC INTERACTION
 		for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
 			(*it)->GoTo(player.position);
+		}
+
+		//BASE SPOTLIGHT INTERACTION
+		if (playerState == STATE_FPS && (baseSpotlight.position - player.position).Length() < 2.f){
+			playerState = STATE_INTERACTING_LIGHTSLIDER;
+			Application::ShowCursor();
+		}
+		else if (playerState == STATE_INTERACTING_LIGHTSLIDER){
+			playerState = STATE_FPS;
+			Application::HideCursor();
+			Application::SetMousePosition();
 		}
 	}
 	else if (readyToInteract < 2.f){
@@ -604,18 +593,19 @@ void SP2::Render()
 
 	Vector3 camPos, camTar, camUp;
 
-	if (playerState == STATE_FPS || playerState == STATE_INTERACTING_MAZE){
-		camPos = player.camera.position;
-		camTar = player.camera.target;
-		camUp = player.camera.up;
-	}
-	else if (playerState == STATE_INTERACTING_TURRET){
+	if (playerState == STATE_INTERACTING_TURRET){
 		camPos = turret.camera.position;
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
 	}
+	else{
+		camPos = player.camera.position;
+		camTar = player.camera.target;
+		camUp = player.camera.up;
+	}
+
 	Vector3 camView = (camTar - camPos).Normalized();
-	float towardsCameraYaw = (float)((camView.x / abs(camView.x)) * Math::RadianToDegree(acos(camView.Dot(Vector3(0, 0, -1)))));
+	towardsCameraYaw = (float)((camView.x / abs(camView.x)) * Math::RadianToDegree(acos(camView.Dot(Vector3(0, 0, -1)))));
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(
@@ -681,9 +671,17 @@ void SP2::Render()
 		turret.position.z
 		);
 	RenderTurret();
-
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(
+		baseSpotlight.position.x,
+		baseSpotlight.position.y,
+		baseSpotlight.position.z
+		);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
+	modelStack.PopMatrix();
 
 	RenderTraps();
 	modelStack.PushMatrix();
@@ -773,32 +771,17 @@ void SP2::Render()
 		}
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		for (std::vector<Object*>::iterator it = Object::objectList.begin(); it < Object::objectList.end(); ++it){
+		for (std::vector<Hitbox*>::iterator it = Hitbox::hitboxList.begin(); it < Hitbox::hitboxList.end(); ++it){
 			modelStack.PushMatrix();
 			modelStack.Translate(
-				(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
-				(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
-				(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
+				(*it)->position.x + (*it)->pivot.x,
+				(*it)->position.y + (*it)->pivot.y,
+				(*it)->position.z + (*it)->pivot.z
 				);
 			modelStack.Scale(
-				(*it)->hitbox.sizeX,
-				(*it)->hitbox.sizeY,
-				(*it)->hitbox.sizeZ
-				);
-			RenderMesh(meshList[GEO_HITBOX], false);
-			modelStack.PopMatrix();
-		}
-		for (std::vector<ItemObject*>::iterator it = ItemObject::ItemList.begin(); it < ItemObject::ItemList.end(); ++it){
-			modelStack.PushMatrix();
-			modelStack.Translate(
-				(*it)->hitbox.position.x + (*it)->hitbox.pivot.x,
-				(*it)->hitbox.position.y + (*it)->hitbox.pivot.y,
-				(*it)->hitbox.position.z + (*it)->hitbox.pivot.z
-				);
-			modelStack.Scale(
-				(*it)->hitbox.sizeX,
-				(*it)->hitbox.sizeY,
-				(*it)->hitbox.sizeZ
+				(*it)->sizeX,
+				(*it)->sizeY,
+				(*it)->sizeZ
 				);
 			RenderMesh(meshList[GEO_HITBOX], false);
 			modelStack.PopMatrix();
@@ -809,12 +792,11 @@ void SP2::Render()
 	if ((player.position - portal.position).Length() < 2.f){
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -30.f, 25.f);
 	}
-	
+	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
+		RenderLightSlider();
+	}
 		//modelStack.PushMatrix();
 		//modelStack.Rotate(180, 0, 0, 1);
-		modelStack.PushMatrix();
-		
-		modelStack.PopMatrix();
 		//modelStack.PopMatrix();
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
@@ -851,8 +833,6 @@ void SP2::Render()
 		
 		RenderMaze();
 
-
-
 		Application::ShowCursor();
 		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 2, -50.f, 0.f);
 
@@ -864,12 +844,8 @@ void SP2::Render()
 
 	}
 
-	
-
-
-
 	modelStack.PushMatrix();
-	//	RenderQuadOnScreen(meshList[GEO_UIBAR], (1, 1, 1), -player.sprint1 * 40 + 80, 7, -95, 48);
+	//	RenderQuadOnScreen(meshList[GEO_UIBAR], -player.sprint1 * 40 + 80, 7, -95, 48);
 	modelStack.PopMatrix();
 
 }
@@ -879,6 +855,51 @@ void SP2::Exit()
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
+}
+
+void SP2::RenderMesh(Mesh *mesh, bool enableLight)
+{
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	modelView = viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+
+	if (enableLight && this->enableLight){
+		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+
+		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE,
+			&modelView_inverse_transpose.a[0]);
+
+		//load material
+		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
+		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
+		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+	}
+	else{
+		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	}
+	if (mesh->textureID > 0)
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	}
+	else
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
+	}
+
+	mesh->Render();
+
+	if (mesh->textureID > 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void SP2::RenderText(Mesh* mesh, std::string text, Color color)
@@ -950,7 +971,7 @@ void SP2::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float si
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SP2::RenderQuadOnScreen(Mesh* mesh, Color color, float sizeX, float sizeY, float moveX, float moveY)
+void SP2::RenderQuadOnScreen(Mesh* mesh, float sizeX, float sizeY, float moveX, float moveY)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -1336,7 +1357,6 @@ void SP2::UpdateDoor(double dt)
 	}
 	if (DoorMoveTrue == true){
 		animation_moveDoor += (float)(0.5f * dt);
-
 		if (animation_moveDoor >= 5.2f){
 			DoorMoveTrue = false;
 			DoorReturn = true;
@@ -1350,7 +1370,7 @@ void SP2::UpdateDoor(double dt)
 	}
 	trapdoor.SetPosition(
 		2 - animation_moveDoor,
-		17.5,
+		17.5f,
 		0
 		);
 }
@@ -1379,8 +1399,9 @@ void SP2::RenderExplosion()
 			(*it)->position.y,
 			(*it)->position.z
 			);
+		std::cout << towardsCameraYaw << std::endl;
 		modelStack.Rotate(
-			towardsCameraYaw,
+			-towardsCameraYaw,
 			0,
 			1,
 			0
@@ -1565,10 +1586,6 @@ void SP2::Interval(double dt)
 }
 
 void SP2::MazeInteraction(double dt){
-
-	
-
-
 
 	//if (Application::state2D == false){
 	//	player.Update(dt);
@@ -1925,7 +1942,7 @@ void SP2::RenderMaze()
 	//for (int i = 0; i > mappy.sizeY-1; ++i){
 	//	for (int j = 0; j < mappy.sizeX; ++j){
 	//		if (mappy.mapLayout[i][j] == Maze::MAP_PATH){
-	//			RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 1, 1, j, i);
+	//			RenderQuadOnScreen(meshList[GEO_TEST], 1, 1, j, i);
 	//		}
 	//	}
 	//}
@@ -1934,7 +1951,7 @@ void SP2::RenderMaze()
 		for (int x = 0; x < mappy.rowNumber; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
 			
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], (1, 1, 1), mappy.gridSizeX, mappy.gridSizeY, (x*mappy.gridSizeX) - mappy.gridSizeX / 2, (-y*mappy.gridSizeY) - mappy.gridSizeY / 2);
+				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], mappy.gridSizeX, mappy.gridSizeY, (x*mappy.gridSizeX) - mappy.gridSizeX / 2, (-y*mappy.gridSizeY) - mappy.gridSizeY / 2);
 			}
 
 		}
@@ -1954,7 +1971,7 @@ void SP2::RenderNPCs()
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
-			(*it)->position.y + Waypoint::sizeV / 2,
+			(*it)->position.y,
 			(*it)->position.z
 			);
 		modelStack.Scale(
@@ -1965,4 +1982,33 @@ void SP2::RenderNPCs()
 		RenderMesh(meshList[GEO_HITBOX], false);
 		modelStack.PopMatrix();
 	}
+}
+
+void SP2::UpdateLightSlider()
+{
+	double x, y;
+	Application::GetMouseMovement(x, y);
+
+	x /= -10;
+	y /= 10;
+
+	if (Application::IsKeyPressed(VK_LBUTTON)){
+		baseSpotlight_power = (float)((x - baseSpotlight_startingX) / baseSpotlight_maxLength);
+
+		if (baseSpotlight_power > 2.5f)
+			baseSpotlight_power = 2.5f;
+		if (baseSpotlight_power < 0)
+			baseSpotlight_power = 0;
+
+		light[1].power = baseSpotlight_power * 10;
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
+	}
+}
+
+void SP2::RenderLightSlider()
+{
+	RenderQuadOnScreen(meshList[GEO_LIGHTSLIDER], 
+		baseSpotlight_power * baseSpotlight_maxLength, 5,
+		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength)/2, 0
+		);
 }

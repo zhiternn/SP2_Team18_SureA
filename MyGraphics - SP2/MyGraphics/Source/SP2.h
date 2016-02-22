@@ -51,6 +51,8 @@ class SP2 : public Scene
 		GEO_TRAPS,
 		GEO_SLIDEDOOR,
 		GEO_DOOR,
+		GEO_LIGHTSLIDER,
+		GEO_BASE_SPOTLIGHT,
 
 		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
@@ -75,6 +77,7 @@ class SP2 : public Scene
 		STATE_FPS,
 		STATE_INTERACTING_MAZE,
 		STATE_INTERACTING_TURRET,
+		STATE_INTERACTING_LIGHTSLIDER,
 
 		STATE_END
 	};
@@ -135,25 +138,32 @@ private:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderSlideDoor();
-	void DoorMovement(double dt);
 	void RenderTraps();
-	void TrapsMovement(double dt);
 	void RenderAllyShip();
 	void RenderEnemyShip();
 	void RenderTurrets();
 	void RenderBaseCamp();
 	void RenderDoor();
-	void UpdateDoor(double dt);
 	void RenderPickUpObj();
 	void RenderInternalSkybox();
-	void MazeInteraction(double dt);
-	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderObjs(Mesh* mesh, bool light);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x = 0.f, float y = 0.f);
-	void RenderQuadOnScreen(Mesh* mesh, Color color, float sizeX, float sizeY, float moveX = 0.f, float moveY = 0.f);
-	void UpdateNPCs(double dt);
+	void RenderQuadOnScreen(Mesh* mesh, float sizeX = 1, float sizeY = 1, float moveX = 0.f, float moveY = 0.f);
 	void RenderNPCs();
+	void RenderPortal();
+	void RenderMaze();
+	void RenderLightSlider();
+
+	void UpdatePortal(double dt);
+	void DoorMovement(double dt);
+	void TrapsMovement(double dt);
+	void UpdateDoor(double dt);
+	void MazeInteraction(double dt);
+	void UpdateNPCs(double dt);
+	void UpdateLightSlider();
+
+	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 
 	//door
 	float DoorMove;
@@ -165,6 +175,11 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
+
+	//base spotlight
+	float baseSpotlight_maxLength;
+	float baseSpotlight_startingX;
+	float baseSpotlight_power; //calculates in percentage
 
 	float trapMove;
 	bool backN;
@@ -178,11 +193,9 @@ private:
 	Object frontDoor2;
 	Object backDoor;
 	Object backDoor2;
-
 	Object trapdoor;
+	Object baseSpotlight;
 
-	void RenderPortal();
-	void UpdatePortal(double dt);
 	Turret turret;
 	void RenderTurret();
 
@@ -210,35 +223,31 @@ private:
 	bool showHitBox;
 	bool DoorMoveTrue;
 	bool DoorReturn;
-
 	bool itemText;//item pickup
-
 	bool intervalBool;//Interval for ... anything i guess.
-
 	bool buttonCoverBool;
 	bool buttonRiseBool;
 	bool buttonPressBool;
 	bool cbuttonRise;
+	bool runningScenario;
 
 	float buttonCover;
 	float buttonRise;
-
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;
 	float animation_rotatePortal;
 	float animation_scalePortal;
 	float animation_moveDoor;
-
 	float towardsCameraYaw;
 
 	int screenX, screenY;
 	int playerState;
+	int gameState;
 
 	Player player;
 
 	Maze mappy;
-	void RenderMaze();
 
 	Mtx44 MVP;
 

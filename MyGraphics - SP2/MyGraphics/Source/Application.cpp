@@ -205,6 +205,8 @@ void Application::Run()
 			case SharedData::G_MENU: scene = new mainMenu();
 				break;
 			case SharedData::G_GAME: scene = new SP2();
+				Application::HideCursor();
+				Application::SetMousePosition();
 				break;
 			}
 			scene->Init();

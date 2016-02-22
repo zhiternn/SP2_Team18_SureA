@@ -3,6 +3,8 @@
 #include "ItemBox.h"
 #include "NPC.h"
 
+vector<Hitbox*> Hitbox::hitboxList;
+
 Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 {
 	pivot.Set(0, 0, 0);
@@ -19,6 +21,7 @@ Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 		-scaleZ*0.5 + pos.z
 	);
 
+	Hitbox::hitboxList.push_back(this);
 }
 
 Hitbox::~Hitbox()

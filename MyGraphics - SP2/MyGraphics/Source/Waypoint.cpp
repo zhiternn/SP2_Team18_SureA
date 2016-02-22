@@ -117,6 +117,9 @@ void Waypoint::LinkWaypoints()
 }
 void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)
 {
+	Waypoint::sizeH = waypointSizeH;
+	Waypoint::sizeV = waypointSizeV;
+
 	StoreWaypoints(mapSizeX, mapSizeZ, waypointSizeH, waypointSizeV);
 	//iterates through each waypoint and create a link to all reachable waypoints from curr waypoint
 	for (vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){

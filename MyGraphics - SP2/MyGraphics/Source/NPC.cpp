@@ -11,9 +11,9 @@ NPC::NPC(Vector3 pos, float speed)
 	isDead = false;
 	HP = 15;
 	hitbox.SetSize(
-		5,
-		5,
-		5
+		1,
+		4,
+		1
 		);
 }
 
@@ -53,8 +53,6 @@ Waypoint* GetLowestInList(vector<Waypoint*> vec)
 
 	return belongingWaypoint;
 }
-
-
 list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 {
 	Waypoint* parentWaypoint = nullptr;

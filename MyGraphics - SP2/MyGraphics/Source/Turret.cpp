@@ -91,6 +91,7 @@ void Turret::Update(double dt)
 		readyToShoot += (float)(dt);
 	}
 
+	camera.position.y = seatPos.y + abs(view.y);
 	camera.Update(dt);
 }
 

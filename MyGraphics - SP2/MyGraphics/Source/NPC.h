@@ -28,6 +28,7 @@ public:
 	Vector3 position;
 	Hitbox hitbox;
 protected:
+
 	float speed;
 
 	Vector3 checkPointDir;
@@ -39,8 +40,5 @@ private:
 	bool isDead;
 	
 };
-
-void UpdateNPCs(double dt);
-void RenderNPCs();
 
 #endif
