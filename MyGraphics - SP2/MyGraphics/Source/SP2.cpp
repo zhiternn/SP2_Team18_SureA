@@ -277,15 +277,15 @@ void SP2::Init()
 	portal.hitbox.SetPivot(0, 1.3f, 0);
 	portal.SetPosition(0, 0, 48);
 
-	laserTrap.hitbox.SetSize(0.1, 0.1, 5);
+	laserTrap.hitbox.SetSize(0.05, 0.05, 5);
 	laserTrap.SetPosition(9, 18, 0);
-	//laserTrap.hitbox.SetPivot(0, 1.3f, 0);
 	
-	laserTrap1.hitbox.SetSize(0.1, 0.1, 5);
+	laserTrap1.hitbox.SetSize(0.05, 0.05, 5);
 	laserTrap1.SetPosition(5, 18, 0);
 
-	laserTrap2.hitbox.SetSize(0.1, 0.1, 5);
+	laserTrap2.hitbox.SetSize(0.05, 5, 0.05);
 	laserTrap2.SetPosition(2, 18, 0);
+
 	//front door
 	//frontDoor.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);\
@@ -1708,7 +1708,7 @@ void SP2::RenderTraps()
 		laserTrap.position.z
 		);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(0.1, 4.9, 0.1);
+	modelStack.Scale(0.05, 4.9, 0.05);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
 
@@ -1716,11 +1716,11 @@ void SP2::RenderTraps()
 	//modelStack.Translate(5, 18, 0);
 	modelStack.Translate(
 		laserTrap1.position.x,
-		laserTrap1.position.y + 3,
+		laserTrap1.position.y,
 		laserTrap1.position.z
 		);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(0.1, 4.9, 0.1);
+	modelStack.Scale(0.05, 4.9, 0.05);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
 
@@ -1731,7 +1731,7 @@ void SP2::RenderTraps()
 		laserTrap2.position.y,
 		laserTrap2.position.z
 		);
-	modelStack.Scale(0.1, 4.5, 0.1);
+	modelStack.Scale(0.05, 4.5, 0.05);
 	RenderMesh(meshList[GEO_TRAPS], true);
 	modelStack.PopMatrix();
 }
@@ -1742,7 +1742,7 @@ void SP2::TrapsMovement(double dt)
 	{
 		trapMove += (float)(2 * dt);
 		laserTrap.SetPosition(9 - trapMove, 18, 0);
-		//laserTrap1.SetPosition(10 - trapMove * 0.5, 21, 0);
+		laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
 		laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
 		if (trapMove > 5)
 		{
@@ -1754,7 +1754,7 @@ void SP2::TrapsMovement(double dt)
 	{
 		trapMove -= (float)(2 * dt);
 		laserTrap.SetPosition(9 - trapMove, 18, 0);
-		//laserTrap1.SetPosition(10 - trapMove * 0.5, 21, 0);
+		laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
 		laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
 		if (trapMove < 0)
 		{
@@ -1874,7 +1874,6 @@ void SP2::ShipButtonAnimation(double dt)
 		buttonPressBool = false;
 	}
 }
-
 
 void SP2::RenderMaze()
 {

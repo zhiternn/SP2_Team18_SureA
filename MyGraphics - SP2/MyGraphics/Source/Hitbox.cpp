@@ -1,6 +1,7 @@
 #include "Hitbox.h"
 #include "Object.h"
 #include "ItemBox.h"
+#include "NPC.h"
 
 Hitbox::Hitbox(Vector3 pos, float scaleX, float scaleY, float scaleZ)
 {
@@ -157,6 +158,20 @@ bool Hitbox::CheckHitBox(Vector3 lhs, int damage)
 			lhs.z < Object::objectList[i]->hitbox.maxPoint.z
 			){
 			Object::objectList[i]->ReceiveDamage(damage);
+
+			return true;
+		}
+	}
+	for (size_t i = 0; i <NPC::npcList.size(); ++i){
+		if (
+			lhs.x > NPC::npcList[i]->hitbox.minPoint.x &&
+			lhs.x < NPC::npcList[i]->hitbox.maxPoint.x &&
+			lhs.y > NPC::npcList[i]->hitbox.minPoint.y &&
+			lhs.y < NPC::npcList[i]->hitbox.maxPoint.y &&
+			lhs.z > NPC::npcList[i]->hitbox.minPoint.z &&
+			lhs.z < NPC::npcList[i]->hitbox.maxPoint.z
+			){
+			NPC::npcList[i]->ReceiveDamage(damage);
 
 			return true;
 		}

@@ -8,10 +8,25 @@ NPC::NPC(Vector3 pos, float speed)
 	checkPoint = path.rend();
 	checkPointDir.SetZero();
 	this->speed = speed;
+	isDead = false;
+	HP = 15;
+	hitbox.SetSize(
+		5,
+		5,
+		5
+		);
 }
 
 NPC::~NPC()
 {
+	for (std::vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end();){
+		if ((*it)->isDead){
+			it = NPC::npcList.erase(it);
+		}
+		else{
+			++it;
+		}
+	}
 }
 
 void CalculateMovementCost(Waypoint* node, Waypoint* prevNode)
@@ -126,4 +141,18 @@ void NPC::GoTo(Vector3 destination)
 		}
 		checkPoint = path.rbegin();
 	}
+}
+void NPC::SetHealth(int amount)
+{
+	HP = amount;
+}
+void NPC::ReceiveDamage(int amount)
+{
+	HP -= amount;
+
+	if (HP <= 0){
+		isDead = true;
+		delete this;
+	}
+	
 }

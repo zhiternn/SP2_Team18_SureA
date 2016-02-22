@@ -11,6 +11,8 @@ Enemy::~Enemy()
 
 void Enemy::Update(double dt)
 {
+	hitbox.SetPosition(position);
+	
 	if (position.y > Waypoint::sizeV / 2){
 		position.y -= speed * dt;
 	}
