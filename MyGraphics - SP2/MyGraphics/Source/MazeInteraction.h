@@ -17,22 +17,22 @@ public:
 		MAP_BLOCK,
 		MAP_PATH
 	};
-
-	Maze(int limitX = 31, int limitY = 30)
-	{
-		sizeX = limitX;
-		sizeY = limitY;
-	}
-
+	Maze(){}
+	Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY);
 	~Maze(){}
 	
 	void PrintMap();
 	void GenerateMap();
+	void Collision();
 	
-	int sizeX;
-	int sizeY;
+	float gridSizeX;
+	float gridSizeY;
+	int rowNumber;
+	int colNumber;
+	int startingPointX;
+	int startingPointY;
 
-	int mapLayout[30][31];
+	int mapLayout[10][10];
 private:
 
 	int generatePathX;

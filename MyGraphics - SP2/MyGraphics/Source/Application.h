@@ -17,6 +17,8 @@ public:
 	static void SetMousePosition(double x = 0, double y = 0);
 	static void GetScreenSize(int& x, int& y);
 	static bool state2D;
+	static void ShowCursor();
+	static void HideCursor();
 
 private:
 

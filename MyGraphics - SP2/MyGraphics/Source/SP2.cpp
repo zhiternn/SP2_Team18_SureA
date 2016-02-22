@@ -412,9 +412,6 @@ void SP2::Init()
 	AllyShip->hitbox.SetSize(3.5, 2, 3.5);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-	mappy.GenerateMap();
-	mappy.PrintMap();
-
 	GenerateWaypoints(100, 100, 1, 4);
 }
 
@@ -474,7 +471,6 @@ void SP2::Update(double dt)
 	else if (playerState == STATE_INTERACTING_TURRET){
 		turret.Update(dt);
 	}
-
 	TrapsMovement(dt);
 	DoorMovement(dt);
 	Interval(dt);
@@ -482,6 +478,27 @@ void SP2::Update(double dt)
 	UpdateDoor(dt);
 	ShipButtonAnimation(dt);
 	UpdateNPCs(dt);
+
+
+	bool stateChanged = false;
+	if (Application::IsKeyPressed('O')){
+		playerState = STATE_INTERACTING_MAZE;
+		Application::state2D = true;
+		stateChanged = true;
+		//m_timer.StartCountdown(15);  
+		mappy = Maze(10, 10, screenX, screenY);
+	}
+	else if (Application::IsKeyPressed('P')){
+		playerState = STATE_FPS;
+		Application::state2D = false;
+		stateChanged = true;
+	}
+	if (stateChanged && Application::state2D == false){
+		Application::SetMousePosition(0, 0);
+		Application::HideCursor();
+	}
+	else{}
+
 
 	if (Application::IsKeyPressed('E') && readyToInteract >= 2.f){
 		readyToInteract = 0.f;
@@ -577,7 +594,7 @@ void SP2::Render()
 
 	Vector3 camPos, camTar, camUp;
 
-	if (playerState == STATE_FPS){
+	if (playerState == STATE_FPS || playerState == STATE_INTERACTING_MAZE){
 		camPos = player.camera.position;
 		camTar = player.camera.target;
 		camUp = player.camera.up;
@@ -786,8 +803,7 @@ void SP2::Render()
 		//modelStack.PushMatrix();
 		//modelStack.Rotate(180, 0, 0, 1);
 		modelStack.PushMatrix();
-		modelStack.Scale(1, 1, 1);
-		RenderMaze();
+		
 		modelStack.PopMatrix();
 		//modelStack.PopMatrix();
 
@@ -807,17 +823,11 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-	if (Application::state2D == true){
-		modelStack.PushMatrix();
-		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
-		modelStack.PopMatrix();
-	}
 
-	if (Application::state2D == true){
-		modelStack.PushMatrix();
-		RenderQuadOnScreen(meshList[GEO_TEST], (1, 1, 1), 100, 100, 1, 1);
-		modelStack.PopMatrix();
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
+
+	if (playerState == STATE_INTERACTING_MAZE){
+		RenderMaze();
+		Application::ShowCursor();
 	}
 
 	if (m_timer.GetTimeLeft() <= 0 && m_timer.isCountingDown == false && Application::state2D == true){
@@ -1510,55 +1520,43 @@ void SP2::Interval(double dt)
 }
 
 void SP2::MazeInteraction(double dt){
-	bool stateChanged = false;
-	if (Application::IsKeyPressed('O')){
-		Application::state2D = true;
-		stateChanged = true;
-		m_timer.StartCountdown(15);
-	}
-	else if (Application::IsKeyPressed('P')){
-		Application::state2D = false;
-		stateChanged = true;
-	}
-	if (stateChanged && Application::state2D){
-		Application::SetMousePosition(500, 950);
-	}
-	else{}
 
-	if (Application::state2D == false){
-		player.Update(dt);
-		//std::cout << "testies" << std::endl;
+	
 
-	}
-	else{
-		double mouseX, mouseY;
-		Application::GetMouseMovement(mouseX, mouseY);
-		//std::cout << mouseX << "-----------|" << mouseY << std::endl;
-		if (mouseX > 45 && mouseX<483 && mouseY >-461 && mouseY < -350){
-			//std::cout << "test" << std::endl;
-		}
-		else if (mouseX>42 && mouseX< 149&& mouseY<-25 && mouseY>-351){
-			//std::cout << "test2" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
-			//std::cout << "test3" << std::endl;
-		}
-		else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
-			//std::cout << "test4" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>291){
-			//std::cout << "test5" << std::endl;
-		}
-		else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
-			//std::cout << "test6" << std::endl;
-		}
-		else{
-			Application::state2D = false;
-			Application::SetMousePosition(0,0);
-			//std::cout << "die" << std::endl;
-		}
+	//if (Application::state2D == false){
+	//	player.Update(dt);
+	//	//std::cout << "testies" << std::endl;
 
-	}
+	//}
+	//else{
+	//	double mouseX, mouseY;
+	//	Application::GetMouseMovement(mouseX, mouseY);
+	//	//std::cout << mouseX << "-----------|" << mouseY << std::endl;
+	//	if (mouseX > 45 && mouseX<483 && mouseY >-461 && mouseY < -350){
+	//		//std::cout << "test" << std::endl;
+	//	}
+	//	else if (mouseX>42 && mouseX< 149&& mouseY<-25 && mouseY>-351){
+	//		//std::cout << "test2" << std::endl;
+	//	}
+	//	else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
+	//		//std::cout << "test3" << std::endl;
+	//	}
+	//	else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
+	//		//std::cout << "test4" << std::endl;
+	//	}
+	//	else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>291){
+	//		//std::cout << "test5" << std::endl;
+	//	}
+	//	else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
+	//		//std::cout << "test6" << std::endl;
+	//	}
+	//	else{
+	//		Application::state2D = false;
+	//		Application::SetMousePosition(0,0);
+	//		//std::cout << "die" << std::endl;
+	//	}
+	//}
+	mappy.Collision();
 }
 
 void SP2::RenderSlideDoor()
@@ -1884,15 +1882,15 @@ void SP2::RenderMaze()
 	//		}
 	//	}
 	//}
-	for (int y = 0; y<mappy.sizeY - 1; ++y){
-		for (int x = 0; x < mappy.sizeX; ++x){
+	for (int y = 0; y<mappy.colNumber; ++y){
+		for (int x = 0; x < mappy.rowNumber; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
 			
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], (1, 1, 1), 1, 1, x , -y);
+				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], (1, 1, 1), mappy.gridSizeX, mappy.gridSizeY, (x*mappy.gridSizeX) - mappy.gridSizeX / 2, (-y*mappy.gridSizeY) - mappy.gridSizeY / 2);
 			}
 
 		}
-		}
+	}
 }
 
 void SP2::UpdateNPCs(double dt)

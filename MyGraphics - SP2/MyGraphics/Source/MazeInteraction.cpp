@@ -1,5 +1,7 @@
 #include "MazeInteraction.h"
+#include "Application.h"
 #include <ctime>
+#include <iostream>
 
 //void MazeInteraction::GenerateMap(){
 //	unsigned int MapRNG = rand() % 4;
@@ -69,20 +71,32 @@
 //	while (overallSize<mapSize)
 //}
 
+Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
+{
+		gridSizeY = (float)(screenSizeY*0.75) / numberOfRows;
+		gridSizeX = (float)(screenSizeX*0.8) / numberOfCols;
+		startingPointX = 1;
+		startingPointY = 1;
+		rowNumber = numberOfRows;
+		colNumber = numberOfCols;
+		
 
+		GenerateMap();
+		
+}
 
 void Maze::GenerateMap(void)
 {
-	int iGeneratePathX = 1;
-	int iGeneratePathY = 1;
+	int iGeneratePathX = 1; // STARTING POINT
+	int iGeneratePathY = 1; // STARTING POINT 
 	int igCounter = 0;
 	unsigned int irng = rand() % 4;
 	bool overLap = false;
 	int breakCounter = 0;
 
 	//	clears the map
-	for (size_t y = 0; y < sizeY; ++y){
-		for (size_t x = 0; x < sizeX; ++x){
+	for (size_t y = 0; y < colNumber; ++y){
+		for (size_t x = 0; x < rowNumber; ++x){
 			mapLayout[y][x] = MAP_BLOCK;
 		}
 	}
@@ -91,8 +105,7 @@ void Maze::GenerateMap(void)
 	//	RANDOMLY GENERATE PATHS STARTING FROM CENTER
 	//
 	srand((unsigned int)time(NULL));
-	int mapSize = static_cast<int>((((sizeY - 2.0)*(sizeX - 2.0))*0.7) + 0.5);
-	//mapLayout[1][1] = MAP_PATH;
+	mapLayout[1][1] = MAP_PATH;
 	do{
 		irng = rand() % 4;
 		//UP
@@ -110,7 +123,7 @@ void Maze::GenerateMap(void)
 		}
 		//DOWN
 		else if (irng == 1){
-			if (iGeneratePathY + 2 <= sizeY - 2){
+			if (iGeneratePathY + 2 <= colNumber - 2){
 				if (mapLayout[iGeneratePathY + 2][iGeneratePathX] != MAP_PATH || overLap){
 					igCounter += 2;
 					mapLayout[iGeneratePathY + 1][iGeneratePathX] = MAP_PATH;
@@ -136,7 +149,7 @@ void Maze::GenerateMap(void)
 		}
 		//RIGHT
 		else if (irng == 3){
-			if (iGeneratePathX + 2 <= sizeX - 2){
+			if (iGeneratePathX + 2 <= rowNumber - 2){
 				if (mapLayout[iGeneratePathY][iGeneratePathX + 2] != MAP_PATH || overLap){
 					igCounter += 2;
 					mapLayout[iGeneratePathY][iGeneratePathX + 1] = MAP_PATH;
@@ -151,12 +164,12 @@ void Maze::GenerateMap(void)
 			overLap = true;
 		}
 		breakCounter++;
-	} while (mapLayout[sizeY -3][sizeX - 2] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
+	} while (mapLayout[colNumber - 3][rowNumber - 3] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
 }			 
-#include <iostream>
+
 void Maze::PrintMap(){
-	for (size_t y = 0; y<sizeY-1; ++y){
-		for (size_t x = 0; x<sizeX; ++x){
+	for (size_t y = 0; y<colNumber; ++y){
+		for (size_t x = 0; x<rowNumber; ++x){
 			if (mapLayout[y][x] == MAP_BLOCK){
 				std::cout << (char)219;
 			}
@@ -166,4 +179,18 @@ void Maze::PrintMap(){
 		}
 		std::cout << std::endl;
 	}
+}
+
+void Maze::Collision(){
+	double mouseX, mouseY;
+	Application::GetMouseMovement(mouseX, mouseY);
+	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5)) / 10 + 1;
+	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5)) / 10;
+
+	std::cout << xGrid << ", " << yGrid << std::endl;
+
+	if (mapLayout[yGrid][xGrid] != MAP_PATH){
+		std::cout << " LANGAED " << std::endl;
+	}
+	
 }

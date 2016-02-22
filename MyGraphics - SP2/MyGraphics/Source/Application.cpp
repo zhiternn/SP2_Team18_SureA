@@ -65,21 +65,21 @@ void Application::GetMouseMovement(double& x, double& y)
 
 	x = (sizeX / 2) - x;
 	y = (sizeY / 2) - y;
+}
 
-	if (!state2D){
-		glfwSetCursorPos(m_window, sizeX / 2, sizeY / 2);
-
-		glfwSetInputMode(m_window,
-			GLFW_CURSOR,
-			GLFW_CURSOR_HIDDEN
-			);
-	}
-	else{
-		glfwSetInputMode(m_window,
-			GLFW_CURSOR,
-			GLFW_CURSOR_NORMAL
-			);
-	}
+void Application::ShowCursor()
+{
+	glfwSetInputMode(m_window,
+		GLFW_CURSOR,
+		GLFW_CURSOR_NORMAL
+		);
+}
+void Application::HideCursor()
+{
+	glfwSetInputMode(m_window,
+		GLFW_CURSOR,
+		GLFW_CURSOR_HIDDEN
+		);
 }
 
 void Application::GetScreenSize(int& x, int& y)
