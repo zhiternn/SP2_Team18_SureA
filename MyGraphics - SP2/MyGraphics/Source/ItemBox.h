@@ -27,8 +27,10 @@ public:
 	bool cangrowItem;
 	bool haveItem;//item pickup
 	bool putItem;//Float downwards after growing
-
+	bool RotationBool;
 	bool dropItem;//This Triggers to drop item
+	bool canPut;
+	bool oneTimeThing; 
 
 	bool ItemBoolInterval;
 	float ItemInterval;

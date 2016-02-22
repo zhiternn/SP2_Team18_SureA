@@ -14,11 +14,14 @@ ItemObject::ItemObject()
 	haveItem = false;//item
 	putItem = false;
 	ItemBoolInterval = false;
+	dropItem = false;
+	canPut = false;
+	oneTimeThing = false;
 
 	counter = 0;
 
 	ItemInterval = 0;
-	fly = 0;//item
+	fly = 0.001;//item
 	growing = 0;//item grows.
 	rotateitem = 0;//item rotation
 
@@ -32,9 +35,9 @@ ItemObject::~ItemObject()
 void ItemObject::SetPosition(float x, float y, float z)
 {
 	position.Set(
-		position.x + x,
-		position.y + y,
-		position.z + z
+		x,
+		y,
+		z
 		);
 	hitbox.SetPosition(Vector3(
 		position.x,
@@ -67,6 +70,7 @@ void ItemObject::PickUpAnimation(double dt)
 	{
 		putItem = false;
 		dropItem = false;
+		oneTimeThing = true;
 	}
 
 	if (cangrowItem == true && takeItem == false || dropItem == true)//
@@ -108,12 +112,14 @@ void ItemObject::PickUpAnimation(double dt)
 		}
 		else
 			haveItem = true;
+		RotationBool = true;
+		canPut = true;
 		counter = 0;
 	}
 
-	if (haveItem == true)
+	if (RotationBool == true)
 	{
-		rotateitem += (float(300 * dt));
+		rotateitem += (float(300 * dt));		
 	}
 
 	//////////////////
@@ -126,13 +132,13 @@ void ItemObject::PickUp(Hitbox hitbox)
 	if (Hitbox::CheckItems(this->hitbox, hitbox))
 	{
 		//std::cout << " TeSTTESTESTSEST " << std::endl;
-		if (haveItem == false && ItemBoolInterval == false)
+		if (haveItem == false && ItemBoolInterval == false && oneTimeThing == false)
 		{
 			takeItem = true;
 			ItemBoolInterval = true;
 			ItemInterval = 0;
 		}
-		if (haveItem == true && ItemBoolInterval == false)
+		if (haveItem == true && ItemBoolInterval == false && oneTimeThing == false)
 		{
 			haveItem = false;
 			dropItem = true;

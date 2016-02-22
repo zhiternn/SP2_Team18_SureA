@@ -61,6 +61,7 @@ class SP2 : public Scene
 		GEO_Testitem2,
 		GEO_Testitem3,
 		GEO_TestitemExtra,
+		GEO_TestItemStand,
 		GEO_UIBAR,
 
 		GEO_ShipButtonStand,

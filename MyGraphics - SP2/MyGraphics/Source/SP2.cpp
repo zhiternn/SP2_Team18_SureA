@@ -204,6 +204,9 @@ void SP2::Init()
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
 
+	meshList[GEO_TestItemStand] = MeshBuilder::GenerateOBJ("ObjStad", "OBJ//ObjStand.obj");
+	meshList[GEO_TestItemStand]->textureID = LoadTGA("Image//walls3.tga");
+
 	meshList[GEO_ShipButtonStand] = MeshBuilder::GenerateOBJ("ShipButtonStand", "OBJ//ShipButtonStand.obj");
 	meshList[GEO_ShipButtonStand]->textureID = LoadTGA("Image//floor.tga");
 
@@ -328,15 +331,15 @@ void SP2::Init()
 	//Items
 	ItemObject* item1 = new ItemObject();
 	item1->hitbox.SetSize(2, 2, 2);
-	item1->SetPosition(0, 0.5, 0);
+	item1->SetPosition(0, 1, 0);
 
 	ItemObject* item2 = new ItemObject();
 	item2->hitbox.SetSize(2, 2, 2);
-	item2->SetPosition(-10, 0.7, 0);
+	item2->SetPosition(-10, 1, 0);
 
 	ItemObject* item3 = new ItemObject();
 	item3->hitbox.SetSize(2, 2, 2);
-	item3->SetPosition(-5, 0.5, 0);
+	item3->SetPosition(-5, 1, 0);
 
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
@@ -811,8 +814,8 @@ void SP2::Render()
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "X " + std::to_string(player.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Z " + std::to_string(player.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemList.size  " + std::to_string(ItemObject::ItemList.size), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
@@ -824,6 +827,18 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
 
+	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
+	{
+		if (player.position.x > 3 && player.position.x < 7 && player.position.z > 42 && player.position.z < 47)
+		{
+			if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES. PRESS F TO PLACE CORE", Color(1.f, 1.f, 1.f), 3, -75.f, 0.f);
+			}
+			else
+				RenderTextOnScreen(meshList[GEO_TEXT], "COLLECT ALL CORES TO ACTIVATE PORTAL!", Color(1.f, 1.f, 1.f), 3, -75, 0.f);
+		}
+	}
 
 	if (playerState == STATE_INTERACTING_MAZE){
 		RenderMaze();
@@ -1367,9 +1382,15 @@ void SP2::RenderExplosion()
 
 void SP2::RenderPickUpObj()
 {
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 0, 47);
+	modelStack.Scale(0.35, 0.45, 0.35);
+	RenderMesh(meshList[GEO_TestItemStand], true);
+	modelStack.PopMatrix();
+
 	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 	{
-		if (ItemObject::ItemList[0]->haveItem == false)
+		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == false)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(0, ItemObject::ItemList[0]->fly, 0);
@@ -1384,7 +1405,7 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 		}
-		if (ItemObject::ItemList[1]->haveItem == false)
+		if (ItemObject::ItemList[1]->haveItem == false && ItemObject::ItemList[1]->canPut == false)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly, 0);
@@ -1399,7 +1420,8 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 		}
-		if (ItemObject::ItemList[2]->haveItem == false)
+
+		if (ItemObject::ItemList[2]->haveItem == false && ItemObject::ItemList[2]->canPut == false)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(0, ItemObject::ItemList[2]->fly, 0);
@@ -1415,10 +1437,41 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 		}
 
+		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(0, -ItemObject::ItemList[1]->fly * 2 + 2, -ItemObject::ItemList[1]->fly * 2 + 2) ;
+				modelStack.PushMatrix();
+					modelStack.Translate(
+						ItemObject::ItemList[0]->position.x,
+						ItemObject::ItemList[0]->position.y,
+						ItemObject::ItemList[0]->position.z
+						);
+					modelStack.Scale(ItemObject::ItemList[0]->growing / 70 + 1, ItemObject::ItemList[0]->growing / 70 + 1, ItemObject::ItemList[0]->growing / 70 + 1);
+						modelStack.PushMatrix();
+						modelStack.Rotate(ItemObject::ItemList[0]->rotateitem, 1, 1, 0);
+						RenderMesh(meshList[GEO_Testitem1], true);
+						modelStack.PopMatrix();
+						modelStack.PushMatrix();
+						modelStack.Rotate(ItemObject::ItemList[1]->rotateitem, 1, 1, 1);
+						RenderMesh(meshList[GEO_Testitem2], true);
+						modelStack.PopMatrix();
+						modelStack.PushMatrix();
+						modelStack.Rotate(-ItemObject::ItemList[2]->rotateitem, 0, 1, 0);
+						RenderMesh(meshList[GEO_Testitem3], true);
+						modelStack.PopMatrix();
+						modelStack.PushMatrix();
+						modelStack.Rotate(ItemObject::ItemList[1]->rotateitem, 1, 1, 1);
+						RenderMesh(meshList[GEO_TestitemExtra], true);
+						modelStack.PopMatrix();
+				modelStack.PopMatrix();
+			modelStack.PopMatrix();
+		}
+
 		if (ItemObject::ItemList[0]->haveItem == true)
 		{
-			ItemObject::ItemList[0]->SetPosition(0, 10, 0);
 			modelStack.PushMatrix();
+			ItemObject::ItemList[0]->SetPosition(0, 1000, 0);
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
 			modelStack.Scale(0.1, 0.1, 0.1);
 			modelStack.PushMatrix();
@@ -1434,6 +1487,7 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[1]->haveItem == true)
 		{
 			modelStack.PushMatrix();
+			ItemObject::ItemList[1]->SetPosition(0, 1000, 0);
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
 			modelStack.Scale(0.1, 0.1, 0.1);
 			modelStack.PushMatrix();
@@ -1448,6 +1502,7 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[2]->haveItem == true)
 		{
 			modelStack.PushMatrix();
+			ItemObject::ItemList[2]->SetPosition(0, 1000, 0);
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
 			modelStack.Scale(0.1, 0.1, 0.1);
 			modelStack.PushMatrix();
@@ -1463,44 +1518,18 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true)
 		{
 			modelStack.PushMatrix();
+			ItemObject::ItemList[0]->SetPosition(5, 1, 45);
+			ItemObject::ItemList[1]->SetPosition(5, 1, 45);
+			ItemObject::ItemList[2]->SetPosition(5, 1, 45);
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
 			modelStack.Scale(0.1, 0.1, 0.1);
 			modelStack.PushMatrix();
 			modelStack.Translate(-player.right.x * 4.3, -player.right.y * 4.3, -player.right.z * 4.3);
 			modelStack.PushMatrix();
-			modelStack.Rotate(ItemObject::ItemList[1]->rotateitem, 0, 1, 0);
+			modelStack.Rotate(ItemObject::ItemList[1]->rotateitem, 1, 1, 0);
 			RenderMesh(meshList[GEO_TestitemExtra], true);
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
-			modelStack.PopMatrix();
-		}
-		
-		if (ItemObject::ItemList[0]->dropItem == true && ItemObject::ItemList[1]->dropItem == true && ItemObject::ItemList[2]->dropItem == true)
-		{
-			modelStack.PushMatrix();
-				modelStack.Translate(0, 0, 0);
-				modelStack.Scale(2, 2, 2);
-
-						modelStack.PushMatrix();
-							modelStack.Rotate(ItemObject::ItemList[1]->rotateitem, 0, 1, 0);
-							RenderMesh(meshList[GEO_TestitemExtra], true);
-						modelStack.PopMatrix();
-
-						modelStack.PushMatrix();
-							modelStack.Rotate(ItemObject::ItemList[0]->rotateitem, 1, 1, 0);
-							RenderMesh(meshList[GEO_Testitem1], true);
-						modelStack.PopMatrix();
-
-						modelStack.PushMatrix();
-							modelStack.Rotate(-ItemObject::ItemList[1]->rotateitem, 1, 1, 1);
-							RenderMesh(meshList[GEO_Testitem2], true);
-						modelStack.PopMatrix();
-
-						modelStack.PushMatrix();
-							modelStack.Rotate(-ItemObject::ItemList[2]->rotateitem, 0, 1, 0);
-							RenderMesh(meshList[GEO_Testitem3], true);
-						modelStack.PopMatrix();
-
 			modelStack.PopMatrix();
 		}
 	}
