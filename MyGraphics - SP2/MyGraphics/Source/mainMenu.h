@@ -12,7 +12,7 @@ class mainMenu : public Scene
 {
 	enum MAINMENU_STATE
 	{
-		M_MAIN,
+		M_MAIN = 0,
 		M_PLAY,
 		M_OPTION,
 		M_INSTRUCTION,
@@ -35,9 +35,9 @@ class mainMenu : public Scene
 		GEO_PLAYBUTTONHOVER, 
 		GEO_PLAYBUTTONSELECTED,
 
-		GEO_BUTTONRED, 
-		GEO_BUTTONREDHOVER, 
-		GEO_MOUSECUSTOM,
+		GEO_EXITBUTTON, 
+		GEO_EXITBUTTONHOVER, 
+		GEO_EXITBUTTONSELECTED,
 
 		GEO_TOTAL
 	};
@@ -93,8 +93,8 @@ public:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x = 0.f, float y = 0.f);
 	void RenderButtonOnScreen(Mesh* mesh, Color color, float size, float borderX, float borderY);
+	void RenderTitleOnScreen(Mesh* mesh, Color color, float size, float borderX, float borderY);
 	void RenderBackgroundOnScreen(Mesh* mesh, Color color, float size, float borderX, float borderY);
-	void RenderUI();
 	void UpdateButton(double dt);
 
 	void MainMenuState();
@@ -104,6 +104,10 @@ public:
 
 	bool clickChk;
 	bool onClicked;
+
+	bool instructions;
+	bool options;
+	bool credits;
 
 	double bufferTime;
 	double elapsedTime;

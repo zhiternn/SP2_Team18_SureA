@@ -21,6 +21,8 @@ SP2::~SP2()
 
 void SP2::Init()
 {
+	Application::HideCursor();
+
 	//Application::SetMousePosition();
 	// Load vertex and fragment shaders
 	m_programID = LoadShaders(
@@ -183,7 +185,7 @@ void SP2::Init()
 	meshList[GEO_HITBOX]->material.kAmbient.Set(0, 0, 0);
 
 	meshList[GEO_PORTAL_BODY] = MeshBuilder::GenerateOBJ("model_air", "OBJ//portal.obj");
-	//meshList[GEO_PORTAL_BODY]->material.SetToChrome();
+	meshList[GEO_PORTAL_BODY]->material.SetToChrome();
 	meshList[GEO_PORTAL_BODY]->textureID = LoadTGA("Image//portal_Body.tga");
 	meshList[GEO_PORTAL_FRONT] = MeshBuilder::GenerateQuad("portal_front", Color(1, 1, 1));
 	meshList[GEO_PORTAL_FRONT]->textureID = LoadTGA("Image//portal_Front.tga");
