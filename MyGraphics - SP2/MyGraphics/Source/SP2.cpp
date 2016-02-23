@@ -768,6 +768,7 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	RenderNPCs();
+	RenderFriendlyNPC();
 
 	modelStack.PushMatrix();
 	RenderExplosion();
@@ -2072,8 +2073,16 @@ void SP2::UpdateLightSlider()
 
 void SP2::RenderLightSlider()
 {
-	RenderQuadOnScreen(meshList[GEO_LIGHTSLIDER], 
+	RenderQuadOnScreen(meshList[GEO_LIGHTSLIDER],
 		baseSpotlight_power * baseSpotlight_maxLength, 5,
-		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength)/2, 0
+		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength) / 2, 0
 		);
+}
+void SP2::RenderFriendlyNPC()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 10);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[GEO_NPC1], true);
+	modelStack.PopMatrix();
 }

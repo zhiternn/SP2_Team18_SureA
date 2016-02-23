@@ -76,6 +76,9 @@ class SP2 : public Scene
 		GEO_ShipButton,
 		GEO_ShipButonCover,
 
+		//NPCS
+		GEO_NPC1,
+
 		NUM_GEOMETRY
 	};
 	enum PLAYER_STATE
@@ -170,6 +173,7 @@ private:
 	void UpdateLightSlider();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
+	void RenderFriendlyNPC();
 
 	//door
 	float DoorMove;
