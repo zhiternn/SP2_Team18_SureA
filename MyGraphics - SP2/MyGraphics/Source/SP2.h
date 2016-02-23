@@ -76,9 +76,6 @@ class SP2 : public Scene
 		GEO_ShipButton,
 		GEO_ShipButonCover,
 
-		//NPCS
-		GEO_NPC1,
-
 		NUM_GEOMETRY
 	};
 	enum PLAYER_STATE
@@ -198,8 +195,14 @@ private:
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderFriendlyNPC();
+	void AlarmUpdate();
+	void DeleteAfter();
+
+
 	bool ItemCheckPosition(Vector3 pos, float degree);
-	void Lights();
+
+	bool alarmLights;
+	float interval; // can delete after alarmlight has been set to button
 
 	//door
 	float DoorMove;
@@ -294,7 +297,7 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 
-	Light light[3];
+	Light light[4];
 };
 
 #endif
