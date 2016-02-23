@@ -51,13 +51,22 @@ class SP2 : public Scene
 		GEO_TRAPS,
 		GEO_SLIDEDOOR,
 		GEO_DOOR,
+<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
 		GEO_LIGHTSLIDER,
 		GEO_BASE_SPOTLIGHT,
+=======
+		GEO_TEXTBOX,
+>>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 
 		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
+
+		GEO_HEADNPC1,
+		GEO_BODYNPC1,
+		GEO_RIGHTLEGNPC1,
+		GEO_LEFTLEGNPC1,
 
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,
@@ -175,15 +184,23 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
+	bool portalChk;
+	bool mazeSuccess;
+	bool onGround;
 
+<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
 	//base spotlight
 	float baseSpotlight_maxLength;
 	float baseSpotlight_startingX;
 	float baseSpotlight_power; //calculates in percentage
 
+=======
+	int mazeChk;
+>>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 	float trapMove;
 	bool backN;
 	bool forth = true;
+	
 
 	Object portal;
 	Object laserTrap;
