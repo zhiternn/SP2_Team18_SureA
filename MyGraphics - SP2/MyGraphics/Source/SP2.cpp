@@ -242,13 +242,11 @@ void SP2::Init()
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//door.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
 
-<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
 	meshList[GEO_LIGHTSLIDER] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_LIGHTSLIDER]->textureID = LoadTGA("Image//lightslider_ui.tga");
 
 	meshList[GEO_BASE_SPOTLIGHT] = MeshBuilder::GenerateOBJ("spotlight", "OBJ//spotlight_obj.obj");
 	meshList[GEO_BASE_SPOTLIGHT]->textureID = LoadTGA("Image//spotlight_uv.tga");
-=======
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("Textbox", Color(1, 1, 1));
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//textbox.tga");
 
@@ -266,7 +264,6 @@ void SP2::Init()
 
 
 
->>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -702,7 +699,6 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
 	modelStack.Translate(
 		baseSpotlight.position.x,
 		baseSpotlight.position.y,
@@ -710,13 +706,11 @@ void SP2::Render()
 		);
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
-=======
 	modelStack.Scale(0.1, 0.1, 0.1);
 	RenderMesh(meshList[GEO_HEADNPC1], true);
 	RenderMesh(meshList[GEO_BODYNPC1], true);
 	RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
 	RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
->>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 	modelStack.PopMatrix();
 
 	
@@ -833,21 +827,18 @@ void SP2::Render()
 	}
 	// UI STUFF HERE
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], (1, 1, 1), 150, 25, 0, -25.f);
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  150, 25, 0, -25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -37.f, -25.f);
 	}
-<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
 	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
 		RenderLightSlider();
 	}
-=======
 	if ((player.position - portal.position).Length() < 2.f && portalChk == false){
 		
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], (1, 1, 1), 150,25, 0, -25.f);
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  150,25, 0,-25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 4, -40.f, -25.f);
 	}
 
->>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 		//modelStack.PushMatrix();
 		//modelStack.Rotate(180, 0, 0, 1);
 		//modelStack.PopMatrix();
@@ -1418,12 +1409,8 @@ void SP2::UpdateDoor(double dt)
 	}
 	if (DoorMoveTrue == true){
 		animation_moveDoor += (float)(0.5f * dt);
-<<<<<<< e03a36dab12a59009f27024e3f81d93a223b1d89
-		if (animation_moveDoor >= 5.2f){
-=======
 
 		if (animation_moveDoor >= 5.f){
->>>>>>> 8288d78479a13d03b5d4a52a356e01196c77bead
 			DoorMoveTrue = false;
 			DoorReturn = true;
 		}
