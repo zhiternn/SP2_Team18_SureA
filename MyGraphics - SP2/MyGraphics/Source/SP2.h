@@ -64,6 +64,10 @@ class SP2 : public Scene
 		GEO_BODYNPC1,
 		GEO_RIGHTLEGNPC1,
 		GEO_LEFTLEGNPC1,
+		GEO_HEADNPC2,
+		GEO_BODYNPC2,
+		GEO_RIGHTLEGNPC2,
+		GEO_LEFTLEGNPC2,
 
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,

@@ -332,6 +332,24 @@ void SP2::Init()
 	meshList[GEO_RIGHTLEGNPC1] = MeshBuilder::GenerateOBJ("right", "OBJ//legRight.obj");
 	meshList[GEO_RIGHTLEGNPC1]->textureID = LoadTGA("Image//leg.tga");
 
+<<<<<<< 950c4d9d8963a751e64c185e849818aa0e6865c7
+=======
+	meshList[GEO_HEADNPC2] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
+	meshList[GEO_HEADNPC2]->textureID = LoadTGA("Image//headnpc2.tga");
+
+	meshList[GEO_BODYNPC2] = MeshBuilder::GenerateOBJ("body", "OBJ//bodynpc2.obj");
+	meshList[GEO_BODYNPC2]->textureID = LoadTGA("Image//bodynpc2.tga");
+
+	meshList[GEO_LEFTLEGNPC2] = MeshBuilder::GenerateOBJ("left", "OBJ//legleftnpc2.obj");
+	meshList[GEO_LEFTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
+
+	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
+	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
+
+
+
+
+>>>>>>> 71550cad7e208cd7edab5cb990ad650f43d8d8d6
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 	screenX /= 20;
@@ -832,8 +850,11 @@ void SP2::Render()
 		);
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
+<<<<<<< 950c4d9d8963a751e64c185e849818aa0e6865c7
 	modelStack.Scale(0.1, 0.1, 0.1);
 
+=======
+>>>>>>> 71550cad7e208cd7edab5cb990ad650f43d8d8d6
 	modelStack.PopMatrix();
 	modelStack.PushMatrix();
 	modelStack.Scale(0.2, 0.2, 0.2);
@@ -841,6 +862,12 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_BODYNPC1], true);
 	RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
 	RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
+
+	modelStack.Translate(5, 0, 0);
+	RenderMesh(meshList[GEO_HEADNPC2], true);
+	RenderMesh(meshList[GEO_BODYNPC2], true);
+	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
+	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
 	modelStack.PopMatrix();
 
 	
