@@ -929,6 +929,10 @@ void SP2::Render()
 
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	RenderQuadOnScreen(meshList[GEO_UIBAR], player.SprintDuration * 50, 7, -95, 48);
+	modelStack.PopMatrix();
+
 	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
 	//	if (Math::RadianToDegree(acos(Waypoint::waypointList[i]->position.Dot(player.view))) < 180.f){
 	//		modelStack.PushMatrix();
@@ -1016,7 +1020,9 @@ void SP2::Render()
 		//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "AlarmLights:  " + std::to_string(alarmLights), Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "SprintDuration:  " + std::to_string(player.SprintDuration), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1053,9 +1059,7 @@ void SP2::Render()
 
 	}
 
-	modelStack.PushMatrix();
-	//	RenderQuadOnScreen(meshList[GEO_UIBAR], -player.sprint1 * 40 + 80, 7, -95, 48);
-	modelStack.PopMatrix();
+
 
 }
 
@@ -1654,6 +1658,7 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[0]->position.y,
 				ItemObject::ItemList[0]->position.z
 				);
+			modelStack.Rotate(ItemObject::ItemList[0]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[0]->growing / 100 + 1, ItemObject::ItemList[0]->growing / 100 + 1, ItemObject::ItemList[0]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem1], true);
 			modelStack.PopMatrix();
@@ -1669,6 +1674,7 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[1]->position.y,
 				ItemObject::ItemList[1]->position.z
 				);
+			modelStack.Rotate(ItemObject::ItemList[1]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[1]->growing / 100 + 1, ItemObject::ItemList[1]->growing / 100 + 1, ItemObject::ItemList[1]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem2], true);
 			modelStack.PopMatrix();
@@ -1685,6 +1691,8 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[2]->position.y,
 				ItemObject::ItemList[2]->position.z
 				);
+
+			modelStack.Rotate(ItemObject::ItemList[2]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[2]->growing / 100 + 1, ItemObject::ItemList[2]->growing / 100 + 1, ItemObject::ItemList[2]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem3], true);
 			modelStack.PopMatrix();

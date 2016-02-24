@@ -23,6 +23,7 @@ public:
 	int sprintMeter = 0;
 
 	bool isSprinting;
+	float SprintDuration;
 	bool tired;
 	bool crouch = false;
 	bool jump;
