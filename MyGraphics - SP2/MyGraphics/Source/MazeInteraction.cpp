@@ -75,8 +75,8 @@ Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 {
 		gridSizeY = (float)(screenSizeY*0.75) / numberOfRows;
 		gridSizeX = (float)(screenSizeX*0.8) / numberOfCols;
-		startingPointX = 1;
-		startingPointY = 1;
+		startingPointX = (float)screenSizeX / 2.f;
+		startingPointY = (float)screenSizeY / 2.f;
 		rowNumber = numberOfRows;
 		colNumber = numberOfCols;
 
@@ -184,13 +184,13 @@ void Maze::PrintMap(){
 void Maze::Collision(){
 	double mouseX, mouseY;
 	Application::GetMouseMovement(mouseX, mouseY);
-	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5)) / 10 + 1;
-	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5)) / 10;
+	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
+	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
 
-	std::cout << xGrid << ", " << yGrid << std::endl;
+	std::cout << xGrid << ", " << yGrid << "     ";
 
 	if (mapLayout[yGrid][xGrid] != MAP_PATH){
-		std::cout << " LANGAED " << std::endl;
+		std::cout << " LANGAED ";
 	}
-
+	std::cout << std::endl;
 }

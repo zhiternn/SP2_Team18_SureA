@@ -30,40 +30,56 @@ void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 5.f;
 	static const float MOVEMENT_SPEED = 5.f;
-	float SPRINT_MULTIPLIER = 2.f;
+	float SPRINT_MULTIPLIER = 5.f;
 
 	Vector3 oldPos = position;
 
 	// if not pressed, no speed increase
 	if (!Application::IsKeyPressed(VK_SHIFT)){
-		SPRINT_MULTIPLIER = 2.f;
+		if (tired == true)
+		//not sprinting
+		SPRINT_MULTIPLIER = 3.f;
+		
 	}
-	if (Application::IsKeyPressed('W'))
-	{
-		position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+	else if (tired == false){
+		//sprinting
+		sprintMeter += 0.3 * dt;
+		std::cout << sprintMeter << std::endl;
 	}
-	if (Application::IsKeyPressed('S'))
-	{
-		position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
+		if (Application::IsKeyPressed('W'))
+		{
+			position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			
+		}
+		if (Application::IsKeyPressed('S'))
+		{
+			position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+	
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
 		if (vSpeed == 0.f){
 			vSpeed = 6.f * dt;
 		}
 	}
+	
+	if (sprintMeter >= 0){
+		tired = false;
+		sprintMeter -= 0.5 * dt;
+	}
+
 	//if (sprint1 >= 0)
 	//{
 	//	sprint1 -= 0.3 * dt;

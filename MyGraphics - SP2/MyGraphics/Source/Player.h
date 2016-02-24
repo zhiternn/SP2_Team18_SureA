@@ -20,6 +20,9 @@ public:
 	Camera camera;
 
 	float vSpeed;
+	int sprintMeter = 0;
+
+	bool isSprinting;
 	bool tired;
 	bool crouch = false;
 	bool jump;
