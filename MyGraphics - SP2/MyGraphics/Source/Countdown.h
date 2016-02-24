@@ -32,7 +32,7 @@ public:
 			}
 		}
 
-			return duration;
+		return duration;
 	}
 
 	bool isCountingDown;

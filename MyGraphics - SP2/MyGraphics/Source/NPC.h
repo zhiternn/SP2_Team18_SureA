@@ -21,7 +21,6 @@ public:
 	static vector<NPC*> npcList;
 
 	void GoTo(Vector3 destination);
-	//list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end);
 	void SetHealth(int amount);
 	void ReceiveDamage(int amount);
 

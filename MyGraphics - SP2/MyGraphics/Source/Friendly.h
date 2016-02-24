@@ -19,17 +19,7 @@ public:
 
 	virtual void Update(double dt);
 
-	short state;
 private:
-	enum STATE
-	{
-		IDLE,
-		ROAM,
-		PANIC,
-		CHAT,
-		EVACUATE
-	};
-
 	string dialogue;
 };
 

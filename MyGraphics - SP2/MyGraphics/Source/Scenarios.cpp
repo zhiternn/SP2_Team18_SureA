@@ -32,11 +32,6 @@ ScenarioDefend::~ScenarioDefend()
 
 void ScenarioDefend::Update(double dt)
 {
-	std::cout << "DEFENDING AGAINST: " << std::endl;
-	std::cout << amountToSpawn <<" ENEMIES" << std::endl;
-	std::cout << "SIZE OF NPC LIST: " << NPC::npcList.size() << std::endl;
-	std::cout << "SIZE OF ENEMY LIST: " << Enemy::enemyList.size() << std::endl;
-	
 	if (timer.GetTimeLeft() > 0){
 		std::cout << timer.GetTimeLeft() << std::endl;
 		if (Enemy::enemyList.size() <= 0){
@@ -48,7 +43,6 @@ void ScenarioDefend::Update(double dt)
 		}
 	}
 	else{
-		std::cout << "TIMES UP" << std::endl;
 		stopScenario = true;
 	}
 }

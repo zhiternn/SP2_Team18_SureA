@@ -68,7 +68,6 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 	Waypoint* parentWaypoint = nullptr;
 	Waypoint* currWaypoint = start;
 
-	list<Waypoint*> result; // closed list
 	vector<Waypoint*> openList;
 
 	//Store all waypoints into openList
@@ -103,6 +102,8 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 		}
 	}
 
+	list<Waypoint*> result; // closed list
+
 	while (currWaypoint != nullptr){
 		result.push_back(currWaypoint);
 		currWaypoint = currWaypoint->next;
@@ -130,11 +131,12 @@ void NPC::GoTo(Vector3 destination)
 		currLocation->LinkWaypoints();
 		targetLocation->LinkWaypoints();
 
-		for (vector<Waypoint*>::iterator it = targetLocation->reachableWaypoints.begin(); it != targetLocation->reachableWaypoints.end(); ++it){
+		for (vector<Waypoint*>::iterator it = (targetLocation->reachableWaypoints).begin(); it != (targetLocation->reachableWaypoints).end(); ++it){
 			(*it)->target = targetLocation;
 		}
 
 		path = Dijkstra(currLocation, targetLocation);
+
 		if (path.size() > 0){
 			path.pop_back(); // removes the last waypoint - it represents current position
 		}

@@ -11,21 +11,18 @@ Friendly::~Friendly()
 
 void Friendly::Update(double dt)
 {
-	switch (state)
-	{
-	case IDLE:
-		break;
-	case ROAM:
-		break;
-	case PANIC:
-		//static float panic_speed = speed * 2;
-		//speed = panic_speed;
-		break;
-	case CHAT:
-		break;
-	case EVACUATE:
-		break;
-	default:
-		break;
+	if (position.y > Waypoint::sizeV / 2){
+		position.y -= speed * dt;
+	}
+	else if (checkPoint != path.rend()){
+
+		//MOVE TO
+		checkPointDir = ((*checkPoint)->position - position).Normalized();
+		position += checkPointDir * speed * dt;
+
+
+		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
+			checkPoint++;
+		}
 	}
 }
