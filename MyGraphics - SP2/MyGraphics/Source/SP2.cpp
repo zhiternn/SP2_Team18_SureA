@@ -289,6 +289,15 @@ void SP2::Init()
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
 
+	meshList[GEO_AlienBody] = MeshBuilder::GenerateOBJ("AlienBody", "OBJ//AlienBody.obj");
+	meshList[GEO_AlienBody]->textureID = LoadTGA("Image//AlienBody.tga");
+
+	meshList[GEO_AlienHands] = MeshBuilder::GenerateOBJ("AlienHands", "OBJ//AlienHands.obj");
+	meshList[GEO_AlienHands]->textureID = LoadTGA("Image//DirtyYellow.tga");
+
+	meshList[GEO_AlienLegs] = MeshBuilder::GenerateOBJ("AlienLegs", "OBJ//AlienLegs.obj");
+	meshList[GEO_AlienLegs]->textureID = LoadTGA("Image//DirtyYellow.tga");
+
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
 
@@ -371,6 +380,11 @@ void SP2::Init()
 	alarmLights = false;
 	interval = 0;
 	intervalBool = false;
+
+	AlienSpawn = false;
+	AlienMovementsBool = false;
+	AlienMovementDirections = false;
+	AlienAnimate = 0;
 
 	buttonCover = 0;
 	buttonRise = 0;
@@ -571,6 +585,7 @@ void SP2::Update(double dt)
 	UpdateDoor(dt);
 	ShipButtonAnimation(dt);
 	UpdateNPCs(dt);
+	AlienAnimation(dt);
 	//AlarmUpdate();
 
 	bool stateChanged = false;
@@ -652,6 +667,7 @@ void SP2::Update(double dt)
 		light[2].spotDirection = rotate * light[2].spotDirection;
 		light[3].spotDirection = rotate * light[3].spotDirection;
 		//DeleteAfter();
+		AlienSpawn = true;
 	}
 		if (Application::IsKeyPressed('F'))
 		{
@@ -862,7 +878,7 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 	RenderSlideDoor();
-
+	RenderAlien();
 	RenderPickUpObj();
 
 	if (onGround == false){
@@ -2222,6 +2238,7 @@ void SP2::RenderLightSlider()
 		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength) / 2, 0
 		);
 }
+
 void SP2::RenderFriendlyNPC()
 {
 	double x, y;
@@ -2243,7 +2260,6 @@ void SP2::RenderFriendlyNPC()
 	}
 }
 
-
 bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 {
 	Vector3 view = (pos - player.position).Normalized();
@@ -2260,6 +2276,70 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 	{
 		return false;
 	}
+}
+
+void SP2::AlienAnimation(double dt)
+{
+	if (AlienSpawn == true)
+	{
+		AlienMovementsBool = true;
+	}
+	if (AlienMovementsBool == true)
+	{
+		if (AlienMovementDirections == true)
+		{
+			AlienAnimate += (float(10 * dt));
+		}
+
+		if (AlienMovementDirections == false)
+		{
+			AlienAnimate -= (float(10 * dt));
+		}
+	}
+
+	if (AlienAnimate > 12)
+	{
+		AlienMovementDirections = false;
+	}
+
+	if (AlienAnimate < -12.3)
+	{
+		AlienMovementDirections = true;
+	}
+
+}
+
+void SP2::RenderAlien()
+{
+	modelStack.PushMatrix();
+		modelStack.Translate(-40, 3,30);//blahbalhblah
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0, 0);
+			modelStack.Scale(1, 1,2);
+			RenderMesh(meshList[GEO_AlienBody], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(AlienAnimate/2, 0, 0, 1);
+			modelStack.Scale(1,1,2);
+			RenderMesh(meshList[GEO_AlienHands], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(AlienAnimate, 0, 0, 1);
+			modelStack.Scale(1, 1, 2);
+			RenderMesh(meshList[GEO_AlienLegs], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(-AlienAnimate, 0, 0, 1);
+			modelStack.Scale(-1, 1, -2);
+			RenderMesh(meshList[GEO_AlienLegs], true);
+			modelStack.PopMatrix();
+	modelStack.PopMatrix();
 }
 
 //void SP2::AlarmUpdate()
@@ -2292,3 +2372,4 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 //		alarmLights = true;
 //	}
 //}
+
