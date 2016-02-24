@@ -332,8 +332,6 @@ void SP2::Init()
 	meshList[GEO_RIGHTLEGNPC1] = MeshBuilder::GenerateOBJ("right", "OBJ//legRight.obj");
 	meshList[GEO_RIGHTLEGNPC1]->textureID = LoadTGA("Image//leg.tga");
 
-<<<<<<< 950c4d9d8963a751e64c185e849818aa0e6865c7
-=======
 	meshList[GEO_HEADNPC2] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
 	meshList[GEO_HEADNPC2]->textureID = LoadTGA("Image//headnpc2.tga");
 
@@ -349,7 +347,6 @@ void SP2::Init()
 
 
 
->>>>>>> 71550cad7e208cd7edab5cb990ad650f43d8d8d6
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 	screenX /= 20;
@@ -617,10 +614,6 @@ void SP2::Update(double dt)
 			playerState = STATE_FPS;
 		}
 
-		//NPC INTERACTION
-		for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
-			(*it)->GoTo(player.position);
-		}
 
 		//BASE SPOTLIGHT INTERACTION
 		if (playerState == STATE_FPS && (baseSpotlight.position - player.position).Length() < 2.f){
@@ -850,11 +843,8 @@ void SP2::Render()
 		);
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
-<<<<<<< 950c4d9d8963a751e64c185e849818aa0e6865c7
 	modelStack.Scale(0.1, 0.1, 0.1);
 
-=======
->>>>>>> 71550cad7e208cd7edab5cb990ad650f43d8d8d6
 	modelStack.PopMatrix();
 	modelStack.PushMatrix();
 	modelStack.Scale(0.2, 0.2, 0.2);
@@ -869,10 +859,6 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
 	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
 	modelStack.PopMatrix();
-
-	
-
-	RenderTraps();
 
 	modelStack.PushMatrix();
 	RenderSlideDoor();
@@ -2056,12 +2042,14 @@ void SP2::RenderAllyShip()
 
 void SP2::RenderEnemyShip()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(20, 17.5, 0);
-	modelStack.Scale(2, 2, 2);
-	modelStack.Rotate(180, 0, 1, 0);
-	RenderMesh(meshList[GEO_ENEMYSHIP], true);
-	modelStack.PopMatrix();
+	if (onGround == true){
+		modelStack.PushMatrix();
+		modelStack.Translate(20, 17.5, 0);
+		modelStack.Scale(2, 2, 2);
+		modelStack.Rotate(180, 0, 1, 0);
+		RenderMesh(meshList[GEO_ENEMYSHIP], true);
+		modelStack.PopMatrix();
+	}
 }
 
 void SP2::RenderBaseCamp()
