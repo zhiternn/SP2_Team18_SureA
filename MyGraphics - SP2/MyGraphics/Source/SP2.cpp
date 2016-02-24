@@ -284,6 +284,8 @@ void SP2::Init()
 
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
 
+	NPC::npcList.push_back(new Enemy(Vector3(0, 0, 0), 10.f));
+
 	//ArrangeObjs(65, 65, 30);
 
 	portal.hitbox.SetSize(4, 3, 1);
@@ -503,9 +505,9 @@ void SP2::Update(double dt)
 		}
 
 		//NPC INTERACTION
-		//for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
-		//	(*it)->GoTo(player.position);
-		//}
+		for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+			(*it)->GoTo(player.position);
+		}
 
 		//BASE SPOTLIGHT INTERACTION
 		if (playerState == STATE_FPS && (baseSpotlight.position - player.position).Length() < 2.f){
@@ -518,15 +520,14 @@ void SP2::Update(double dt)
 			Application::SetMousePosition();
 		}
 	}
-	if (Application::IsKeyPressed('L')){
+	if (Application::IsKeyPressed('P')){
 		if (runningScenario == nullptr){
-			runningScenario = new ScenarioDefend(1, 60);
+			runningScenario = new ScenarioDefend(3, 60);
 		}
 	}
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
 			delete runningScenario;
-
 			runningScenario = nullptr;
 		}
 		else{

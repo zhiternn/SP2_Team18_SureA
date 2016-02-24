@@ -26,8 +26,8 @@ Waypoint::~Waypoint()
 void Waypoint::Reset()
 {
 	movementCost = 999.f;
-	target = nullptr;
 	next = nullptr;
+	target = nullptr;
 }
 
 void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)

@@ -31,7 +31,7 @@ void Turret::Init(Vector3 pos, Vector3 dir, int atkSpeed)
 void Turret::Update(double dt)
 {
 	static float readyToShoot = 0.f;
-	static float TURN_SPEED = 25.f;
+	static float TURN_SPEED = 15.f;
 
 	if (Application::IsKeyPressed('W')){
 		if (view.y > -0.5f){
