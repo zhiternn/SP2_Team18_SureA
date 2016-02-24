@@ -14,7 +14,7 @@ class NPC
 {
 public:
 	NPC(Vector3 pos, float speed);
-	~NPC();
+	virtual ~NPC();
 
 	virtual void Update(double dt) = 0;
 
@@ -34,8 +34,7 @@ protected:
 	Vector3 checkPointDir;
 	list<Waypoint*>::reverse_iterator checkPoint;//determines at which waypoint of the path it is at
 	list<Waypoint*> path;
-	
-private:
+
 	int HP;
 	bool isDead;
 	

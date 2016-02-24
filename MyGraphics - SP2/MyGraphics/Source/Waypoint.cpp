@@ -14,6 +14,9 @@ Waypoint::Waypoint(Vector3 pos, float hSize, float vSize)
 	sizeH = hSize;
 	sizeV = vSize;
 
+	next = nullptr;
+	target = nullptr;
+
 	movementCost = 999.f; // supposedly required to be an infinite value
 }
 Waypoint::~Waypoint()
@@ -23,7 +26,7 @@ Waypoint::~Waypoint()
 void Waypoint::Reset()
 {
 	movementCost = 999.f;
-
+	target = nullptr;
 	next = nullptr;
 }
 

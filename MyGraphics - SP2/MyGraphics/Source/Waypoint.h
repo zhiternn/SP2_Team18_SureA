@@ -23,8 +23,10 @@ public:
 
 	Vector3 position;
 	float movementCost; //cost to move from start node to curr node
-	Waypoint* next;
-	vector<Waypoint*> reachableWaypoints;
+	Waypoint* next; // points to parenting node
+	Waypoint* target; // nullptr if target is not reachable from this waypoint
+	vector<Waypoint*> reachableWaypoints; // stores all reachable pre-generated waypoints
+
 private:
 };
 

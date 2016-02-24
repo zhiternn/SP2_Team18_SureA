@@ -13,9 +13,20 @@ class Enemy : public NPC
 {
 public:
 	Enemy(Vector3 pos = Vector3(0, 0, 0), float speed = 1.f);
-	virtual  ~Enemy();
+	virtual ~Enemy();
+
+	static vector<Enemy*> enemyList;
 
 	virtual void Update(double dt);
+
+	short state;
+private:
+	enum STATE
+	{
+		MOVE,
+		HIT,
+		FALL
+	};
 };
 
 #endif

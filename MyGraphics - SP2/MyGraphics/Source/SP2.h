@@ -17,6 +17,7 @@
 #include "Enemy.h"
 #include "Countdown.h"
 #include "MazeInteraction.h"
+#include "Scenarios.h"
 
 using std::vector;
 
@@ -53,21 +54,11 @@ class SP2 : public Scene
 		GEO_DOOR,
 		GEO_LIGHTSLIDER,
 		GEO_BASE_SPOTLIGHT,
-		GEO_TEXTBOX,
 
 		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
-
-		GEO_HEADNPC1,
-		GEO_BODYNPC1,
-		GEO_RIGHTLEGNPC1,
-		GEO_LEFTLEGNPC1,
-		GEO_HEADNPC2,
-		GEO_BODYNPC2,
-		GEO_RIGHTLEGNPC2,
-		GEO_LEFTLEGNPC2,
 
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,
@@ -125,30 +116,6 @@ class SP2 : public Scene
 		U_LIGHT1_COSINNER,
 		U_LIGHT1_EXPONENT,
 
-		U_LIGHT2_POSITION,
-		U_LIGHT2_COLOR,
-		U_LIGHT2_POWER,
-		U_LIGHT2_KC,
-		U_LIGHT2_KL,
-		U_LIGHT2_KQ,
-		U_LIGHT2_TYPE,
-		U_LIGHT2_SPOTDIRECTION,
-		U_LIGHT2_COSCUTOFF,
-		U_LIGHT2_COSINNER,
-		U_LIGHT2_EXPONENT,
-
-		U_LIGHT3_POSITION,
-		U_LIGHT3_COLOR,
-		U_LIGHT3_POWER,
-		U_LIGHT3_KC,
-		U_LIGHT3_KL,
-		U_LIGHT3_KQ,
-		U_LIGHT3_TYPE,
-		U_LIGHT3_SPOTDIRECTION,
-		U_LIGHT3_COSCUTOFF,
-		U_LIGHT3_COSINNER,
-		U_LIGHT3_EXPONENT,
-
 		U_LIGHTENABLED,
 		U_NUMLIGHTS,
 		U_COLOR_TEXTURE_ENABLED,
@@ -197,16 +164,9 @@ private:
 	void UpdateNPCs(double dt);
 	void UpdateLightSlider();
 
+	Scenario* runningScenario; // nullptr if no scene is running
+
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
-	void RenderFriendlyNPC();
-	void AlarmUpdate();
-	void DeleteAfter();
-
-
-	bool ItemCheckPosition(Vector3 pos, float degree);
-
-	bool alarmLights;
-	float interval; // can delete after alarmlight has been set to button
 
 	//door
 	float DoorMove;
@@ -218,20 +178,15 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
-	bool portalChk;
-	bool mazeSuccess;
-	bool onGround;
 
 	//base spotlight
 	float baseSpotlight_maxLength;
 	float baseSpotlight_startingX;
 	float baseSpotlight_power; //calculates in percentage
 
-	int mazeChk;
 	float trapMove;
 	bool backN;
 	bool forth = true;
-	
 
 	Object portal;
 	Object laserTrap;
@@ -277,7 +232,6 @@ private:
 	bool buttonRiseBool;
 	bool buttonPressBool;
 	bool cbuttonRise;
-	bool runningScenario;
 
 	float buttonCover;
 	float buttonRise;
@@ -301,7 +255,7 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 
-	Light light[4];
+	Light light[2];
 };
 
 #endif

@@ -192,5 +192,5 @@ void Maze::Collision(){
 	if (mapLayout[yGrid][xGrid] != MAP_PATH){
 		std::cout << " LANGAED " << std::endl;
 	}
-
+	
 }
