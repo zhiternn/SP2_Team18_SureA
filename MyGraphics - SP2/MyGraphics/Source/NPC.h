@@ -19,8 +19,6 @@ public:
 	virtual void Update(double dt) = 0;
 
 	void GoTo(Vector3 destination);
-	void SetHealth(int amount);
-	void ReceiveDamage(int amount);
 
 	Vector3 position;
 	Hitbox hitbox;
@@ -33,9 +31,6 @@ protected:
 	const Vector3 defaultDirection;
 	list<Waypoint*>::reverse_iterator checkPoint;//determines at which waypoint of the path it is at
 	list<Waypoint*> path;
-
-	int HP;
-	bool isDead;
 
 };
 

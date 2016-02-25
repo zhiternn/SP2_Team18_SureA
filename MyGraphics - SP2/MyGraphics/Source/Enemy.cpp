@@ -7,11 +7,17 @@ NPC(pos, dir, speed)
 {
 	state = FALL;
 
+	isDead = false;
+	HP = 15;
+
 	hitbox.SetSize(
 		1.5f,
 		2.f,
 		1.5f
 	);
+
+	isHit = false;
+	reachedDestination = false;
 
 	Enemy::enemyList.push_back(this);
 }
@@ -38,15 +44,23 @@ void Enemy::Update(double dt)
 		if (checkPoint != path.rend()){
 			//MOVE TO
 			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			facingYaw = (defaultDirection.Cross(checkPointDir)).Dot(Vector3(0, 1, 0) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
 			if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
 				 checkPoint++;
 			}
 		}
+		else{
+			state = FINISH;
+		}
 		break;
 
 	case HIT:
+		std::cout << " HIT" << std::endl;
+		speed *= 1.5f;
+		isHit = true;
+		state = FALL;
 		break;
 
 	case FALL:
@@ -59,7 +73,26 @@ void Enemy::Update(double dt)
 		}
 		break;
 
+	case FINISH:
+		reachedDestination = true;
+		break;
+
 	default:
 		break;
+	}
+}
+
+void Enemy::SetHealth(int amount)
+{
+	HP = amount;
+}
+
+void Enemy::ReceiveDamage(int amount)
+{
+	HP -= amount;
+	state = HIT;
+
+	if (HP <= 0){
+		isDead = true;
 	}
 }

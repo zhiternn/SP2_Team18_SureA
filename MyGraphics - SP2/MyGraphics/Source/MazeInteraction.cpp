@@ -3,74 +3,6 @@
 #include <ctime>
 #include <iostream>
 
-//void MazeInteraction::GenerateMap(){
-//	unsigned int MapRNG = rand() % 4;
-//
-//	srand((unsigned int)time(NULL));
-//	
-//
-//	do{
-//		MapRNG = rand() % 4;
-//		//Move up
-//		if (MapRNG == 0){
-//			if (generatePathY-2>=1){
-//				if (){
-//					overallSize += 2;
-//					//map stuff
-//
-//					generatePathY -= 2;
-//					overlap = false;
-//					overlapCounter = 0;
-//				}
-//			}
-//		}
-//		//Move Down
-//		else if (MapRNG == 1){
-//			if (generatePathY + 2 <= ){
-//				if (){
-//					overallSize += 2;
-//					//map stuff
-//
-//					generatePathY += 2;
-//					overlap = false;
-//					overlapCounter = 0;
-//				}
-//			}
-//		}
-//
-//
-//		//Move Left
-//		else if (MapRNG == 2){
-//			if (generatePathX - 2 >= 1){
-//				if (){
-//					overallSize += 2;
-//
-//					generatePathX -= 2;
-//					overlap = false;
-//					overlapCounter = 0;
-//				}
-//			}
-//		}
-//		//Move Right
-//		else if (MapRNG == 3){
-//			if (generatePathX + 2 <= ){
-//				if (){
-//					overallSize += 2;
-//					generatePathX += 2;
-//					overlap = false;
-//					overlapCounter = 0;
-//				}
-//			}
-//		}
-//
-//		if (overlapCounter >= 5){
-//			overlap = true;
-//		}
-//		overlapCounter++;
-//	}
-//	while (overallSize<mapSize)
-//}
-
 Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 {
 		gridSizeY = (float)(screenSizeY*0.75) / numberOfRows;
@@ -165,6 +97,10 @@ void Maze::GenerateMap(void)
 		}
 		breakCounter++;
 	} while (mapLayout[colNumber - 3][rowNumber - 3] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
+
+	mapLayout[1][1] = MAP_START;
+	mapLayout[7][7] = MAP_END;
+
 }			 
 
 void Maze::PrintMap(){
@@ -187,17 +123,12 @@ void Maze::Collision(){
 	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
 	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
 
-	std::cout << xGrid << ", " << yGrid << "     ";
-
-	if (mapLayout[yGrid][xGrid] != MAP_PATH){
+	if (mapLayout[yGrid][xGrid] == MAP_BLOCK){
 		Application::SetMousePosition(gridSizeX + gridSizeX/2, gridSizeY + gridSizeY/2);
 	}
 
 	if (yGrid == 7 && xGrid == 7){
 		mazeSuccess = true;
-		std::cout << "success" << std::endl;
-
 	}
 	
-	std::cout << std::endl;
 }

@@ -57,7 +57,6 @@ class SP2 : public Scene
 		GEO_BASE_SPOTLIGHT,
 		GEO_TEXTBOX,
 
-		GEO_EXPLOSION,
 		GEO_PORTAL_BODY,
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
@@ -85,6 +84,9 @@ class SP2 : public Scene
 		GEO_AlienBody,
 		GEO_AlienHands,
 		GEO_AlienLegs,
+
+		GEO_EFFECT_EXPLOSION,
+		GEO_EFFECT_BEAM,
 
 		NUM_GEOMETRY
 	};
@@ -194,6 +196,7 @@ private:
 	void RenderPortal();
 	void RenderMaze();
 	void RenderLightSlider();
+	void RenderEffect();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
@@ -201,6 +204,7 @@ private:
 	void UpdateDoor(double dt);
 	void MazeInteraction(double dt);
 	void UpdateNPCs(double dt);
+	void UpdateEffect(double dt);
 	void UpdateLightSlider();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
@@ -257,11 +261,10 @@ private:
 	Object backDoor2;
 	Object trapdoor;
 	Object baseSpotlight;
+	Object allyShip;
 
 	Turret turret;
 	void RenderTurret();
-
-	void RenderExplosion();
 
 	void SP2::Interval(double dt);
 

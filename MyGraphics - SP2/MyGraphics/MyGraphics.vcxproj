@@ -85,8 +85,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
-    <ClCompile Include="Source\Assignment3.cpp" />
     <ClCompile Include="Source\Camera_LockPosition.cpp" />
+    <ClCompile Include="Source\Effect.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Friendly.cpp" />
     <ClCompile Include="Source\ItemBox.cpp" />
@@ -116,9 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
-    <ClInclude Include="Source\Assignment3.h" />
     <ClInclude Include="Source\Camera_LocKPosition.h" />
     <ClInclude Include="Source\Countdown.h" />
+    <ClInclude Include="Source\Effect.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Friendly.h" />
     <ClInclude Include="Source\ItemBox.h" />

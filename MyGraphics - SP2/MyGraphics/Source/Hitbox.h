@@ -11,7 +11,7 @@ using std::vector;
 class Hitbox{
 public:
 	Hitbox(Vector3 pos = Vector3(0, 0, 0), float scaleX = 1, float scaleY = 1, float scaleZ = 1);
-	~Hitbox();
+	virtual ~Hitbox();
 	
 	static vector<Hitbox*> hitboxList;
 

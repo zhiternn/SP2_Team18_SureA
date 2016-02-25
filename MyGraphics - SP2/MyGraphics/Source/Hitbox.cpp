@@ -179,6 +179,7 @@ bool Hitbox::CheckHitBox(Vector3 lhs, int damage)
 			return true;
 		}
 	}
+
 	return false;
 }
 

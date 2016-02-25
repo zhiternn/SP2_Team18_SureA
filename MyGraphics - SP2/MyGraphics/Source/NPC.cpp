@@ -8,8 +8,6 @@ defaultDirection(dir)
 	checkPointDir.SetZero();
 
 	this->speed = speed;
-	isDead = false;
-	HP = 15;
 	facingYaw = 0.f;
 }
 
@@ -128,18 +126,4 @@ void NPC::GoTo(Vector3 destination)
 	}
 
 	checkPoint = path.rbegin();
-}
-void NPC::SetHealth(int amount)
-{
-	HP = amount;
-}
-void NPC::ReceiveDamage(int amount)
-{
-	HP -= amount;
-
-	if (HP <= 0){
-		isDead = true;
-		delete this;
-	}
-	
 }

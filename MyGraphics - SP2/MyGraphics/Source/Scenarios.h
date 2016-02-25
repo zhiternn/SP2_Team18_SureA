@@ -19,7 +19,7 @@ protected:
 class ScenarioDefend : public Scenario
 {
 public:
-	ScenarioDefend(int increment, double duration);
+	ScenarioDefend(int health, double duration, int increment);
 	virtual ~ScenarioDefend();
 
 	virtual void Update(double dt);
@@ -28,6 +28,7 @@ private:
 	int wave;
 	int increment;
 	int amountToSpawn;
+	int HP;
 
 	void SpawnEnemies();
 	void MoveEnemies();

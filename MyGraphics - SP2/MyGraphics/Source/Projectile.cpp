@@ -20,7 +20,6 @@ Projectile::Projectile(Vector3 pos, Vector3 dir, float r, float s, int d)
 
 Projectile::~Projectile()
 {
-	delete this;
 }
 
 bool Projectile::Update(double dt)
@@ -34,7 +33,7 @@ bool Projectile::Update(double dt)
 	if (Hitbox::CheckHitBox(position, damage)){
 		deleteBullet = true;
 
-		Effect_Explosion::explosionList.push_back(new Effect_Explosion(position));
+		Effect::effectList.push_back(new Effect_Explosion(position));
 	}
 	if (distanceTravelled >= range){
 		deleteBullet = true;

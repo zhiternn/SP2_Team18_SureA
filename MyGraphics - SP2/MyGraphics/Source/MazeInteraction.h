@@ -15,7 +15,9 @@ public:
 	enum MAP_STUFF
 	{
 		MAP_BLOCK,
-		MAP_PATH
+		MAP_PATH,
+		MAP_START,
+		MAP_END
 	};
 	Maze(){}
 	Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY);

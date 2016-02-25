@@ -7,7 +7,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "Camera.h"
-#include "Effect_Explosion.h"
+#include "Effect.h"
 #include "ItemBox.h"
 #include "Countdown.h"
 
@@ -259,8 +259,11 @@ void SP2::Init()
 	meshList[GEO_PORTAL_FRONT]->textureID = LoadTGA("Image//portal_Front.tga");
 	meshList[GEO_PORTAL_BACK] = MeshBuilder::GenerateQuad("portal_back", Color(1, 1, 1));
 	meshList[GEO_PORTAL_BACK]->textureID = LoadTGA("Image//portal_Back.tga");
-	meshList[GEO_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
-	meshList[GEO_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
+
+	meshList[GEO_EFFECT_EXPLOSION] = MeshBuilder::GenerateQuad("kaBoom", Color(1, 1, 1));
+	meshList[GEO_EFFECT_EXPLOSION]->textureID = LoadTGA("Image//explosion.tga");
+	meshList[GEO_EFFECT_BEAM] = MeshBuilder::GenerateOBJ("beambeam", "OBJ//beam.obj");
+	meshList[GEO_EFFECT_BEAM]->textureID = LoadTGA("Image//beam.tga");
 
 	meshList[GEO_Testitem1] = MeshBuilder::GenerateOBJ("Obj1", "OBJ//ItemObject1.obj");
 	meshList[GEO_Testitem1]->textureID = LoadTGA("Image//walls3.tga");
@@ -355,9 +358,6 @@ void SP2::Init()
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
-
-	std::cout <<"screenX: " << screenX << "   ScreenY: " << screenY << std::endl;
-	std::cout << screenX/2 << "   " << (double)screenY/2 << std::endl;
 
 	playerState = STATE_FPS;
 
@@ -546,17 +546,15 @@ void SP2::Init()
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
 	// SHIPS
-	Object* AllyShip = new Object();
-	AllyShip->hitbox.SetSize(17, 3, 20);
-	AllyShip->hitbox.SetPivot(0, 1, 0);
-	AllyShip->SetPosition(25.f, 1.f, -25.f);
+	allyShip.hitbox.SetSize(8.f, 1.5, 10);
+	allyShip.hitbox.SetPivot(0, 0.5f, 0);
+	allyShip.SetPosition(40.f, 0.f, 35.f);
 
 	GenerateWaypoints(100, 100, 1, 4);
 }
 
 void SP2::Update(double dt)
 {
-	std::cout << ItemObject::ItemList[3] << std::endl;
 	if (playerState == STATE_FPS){
 		player.Update(dt);
 	}
@@ -575,11 +573,11 @@ void SP2::Update(double dt)
 	Interval(dt);
 	UpdatePortal(dt);
 	UpdateDoor(dt);
-	//ShipButtonAnimation(dt);
 	UpdateNPCs(dt);
 	AlienAnimation(dt);
+	UpdateEffect(dt);
 	//AlarmUpdate();
-	
+
 
 	bool stateChanged = false;
 	if (ItemObject::ItemList[3]->mazeCheck == 1){
@@ -591,7 +589,7 @@ void SP2::Update(double dt)
 
 
 		mappy = Maze(10, 10, screenX, screenY);
-		Application::SetMousePosition(mappy.gridSizeX,mappy.gridSizeY);
+		Application::SetMousePosition(mappy.gridSizeX, mappy.gridSizeY);
 		ItemObject::ItemList[3]->mazeCheck = 0;
 	}
 	else if (Application::IsKeyPressed('P')){
@@ -599,6 +597,7 @@ void SP2::Update(double dt)
 		Application::state2D = false;
 		stateChanged = true;
 	}
+
 	if (stateChanged && Application::state2D == false){
 		Application::SetMousePosition(0, 0);
 		Application::HideCursor();
@@ -609,7 +608,7 @@ void SP2::Update(double dt)
 
 		//PORTAL INTERACTION
 		if ((player.position - portal.position).Length() < 2.f && portalChk == true){
-			player.position.Set(0, 25, 0);
+			player.Init(Vector3(0, 21, 0), Vector3(1, 0, 0));
 			onGround = false;
 		}
 
@@ -638,7 +637,7 @@ void SP2::Update(double dt)
 
 	if (Application::IsKeyPressed('L')){
 		if (runningScenario == nullptr){
-			runningScenario = new ScenarioDefend(5, 30);
+			runningScenario = new ScenarioDefend(3, 60, 10);
 		}
 	}
 	if (runningScenario != nullptr){
@@ -648,6 +647,12 @@ void SP2::Update(double dt)
 			runningScenario = nullptr;
 		}
 		else{
+			Mtx44 rotate;
+			rotate.SetToRotation(100.f * dt, 0, 1, 0);
+			light[2].spotDirection = rotate * light[2].spotDirection;
+			light[3].spotDirection = rotate * light[3].spotDirection;
+			AlienSpawn = true;
+
 			runningScenario->Update(dt);
 		}
 	}
@@ -660,17 +665,7 @@ void SP2::Update(double dt)
 			it++;
 		}
 	}
-	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end();){
-		if ((*it)->Update(dt)){
-			it = Effect_Explosion::explosionList.erase(it);
-		}
-		else{
-			it++;
-		}
-	}
-	Mtx44 rotate1, rotate2;
-	rotate1.SetToRotation(12, 0, 1, 0);
-	rotate2.SetToRotation(12, 0, 1, 0);   
+
 	if (Application::IsKeyPressed('Y'))
 	{
 		Mtx44 rotate;
@@ -680,16 +675,15 @@ void SP2::Update(double dt)
 		//DeleteAfter();
 		AlienSpawn = true;
 	}
-		if (Application::IsKeyPressed('F'))
-		{
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
-			{
-				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
-				{
-					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}		
 
-			}
+	if (Application::IsKeyPressed('F'))
+	{
+		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+		{
+			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
+			{
+				ItemObject::ItemList[i]->PickUp(player.hitbox);
+			}		
 		}
 			
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
@@ -715,34 +709,48 @@ void SP2::Update(double dt)
 			}
 
 
-
-
-
-			if (Application::IsKeyPressed(0x31)){
-				glEnable(GL_CULL_FACE);
-			}
-			if (Application::IsKeyPressed(0x32)){
-				glDisable(GL_CULL_FACE);
-			}
-			if (Application::IsKeyPressed(0x35)){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-			if (Application::IsKeyPressed(0x34)){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			}
-			if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
-				readyToUse_HITBOX = 0.f;
-				if (showHitBox){
-					showHitBox = false;
-				}
-				else{
-					showHitBox = true;
-				}
-			}
-			else if (readyToUse_HITBOX < 2.f){
-				readyToUse_HITBOX += (float)(10 * dt);
-			}
+	}
 		
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	{
+		ItemObject::ItemList[i]->PickUpAnimation(dt);
+		ItemObject::ItemList[i]->ShipButtonAnimation(dt);
+	}
+	
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	{
+		ItemObject::ItemList[i]->ItemDelay(dt);
+	}
+
+	if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
+	{
+		player.position.Set(18, 19, 0);
+	}
+
+	if (Application::IsKeyPressed(0x31)){
+		glEnable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x32)){
+		glDisable(GL_CULL_FACE);
+	}
+	if (Application::IsKeyPressed(0x35)){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (Application::IsKeyPressed(0x34)){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (Application::IsKeyPressed('Q') && readyToUse_HITBOX >= 2.f){
+		readyToUse_HITBOX = 0.f;
+		if (showHitBox){
+			showHitBox = false;
+		}
+		else{
+			showHitBox = true;
+		}
+	}
+	else if (readyToUse_HITBOX < 2.f){
+		readyToUse_HITBOX += (float)(10 * dt);
+	}
 }
 
 void SP2::Render()
@@ -753,6 +761,7 @@ void SP2::Render()
 	Vector3 camPos, camTar, camUp;
 
 	if (playerState == STATE_INTERACTING_TURRET){
+
 		camPos = turret.camera.position;
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
@@ -844,14 +853,14 @@ void SP2::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(player.position.x, player.position.y, player.position.z);
 	RenderSkybox();
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();	
 
-	modelStack.PushMatrix(); 
 	RenderBaseCamp();
-
 	RenderEnemyShip();
-
 	RenderAllyShip();
+	RenderNPCs();
+	RenderSlideDoor();
+	RenderPickUpObj();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -860,7 +869,7 @@ void SP2::Render()
 		turret.position.z
 		);
 	RenderTurret();
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();	
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -870,9 +879,8 @@ void SP2::Render()
 		);
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
-	modelStack.Scale(0.1, 0.1, 0.1);
-
 	modelStack.PopMatrix();
+
 	modelStack.PushMatrix();
 	modelStack.Scale(0.2, 0.2, 0.2);
 	RenderMesh(meshList[GEO_HEADNPC1], true);
@@ -887,10 +895,6 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	RenderSlideDoor();
-	RenderPickUpObj();
-
 	if (onGround == false){
 		modelStack.PushMatrix();
 		modelStack.Translate(15, 17.5, 0);
@@ -903,7 +907,7 @@ void SP2::Render()
 		modelStack.PopMatrix();
 		if (player.position.y <= 16.5){
 			onGround = true;
-		
+			mappy.mazeSuccess = false;
 		}
 	}
 
@@ -926,6 +930,13 @@ void SP2::Render()
 	}
 
 	// OBJs Textures with transparency to be rendered Last
+	RenderEffect();
+
+	//modelStack.PushMatrix();
+	//modelStack.Scale(2, 10, 2);
+	//RenderMesh(meshList[GEO_EFFECT_BEAM], false);
+	//modelStack.PopMatrix();
+
 	modelStack.PushMatrix();
 	modelStack.Translate(
 		portal.position.x,
@@ -933,33 +944,11 @@ void SP2::Render()
 		portal.position.z
 		);
 	RenderPortal();
-
-	modelStack.PopMatrix();
-
-	RenderNPCs();
-
-	modelStack.PushMatrix();
-	RenderExplosion();
-
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	RenderQuadOnScreen(meshList[GEO_UIBAR], player.SprintDuration * 50, 7, -95, 48);
 	modelStack.PopMatrix();
-
-	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
-	//	if (Math::RadianToDegree(acos(Waypoint::waypointList[i]->position.Dot(player.view))) < 180.f){
-	//		modelStack.PushMatrix();
-	//		modelStack.Translate(
-	//			Waypoint::waypointList[i]->position.x,
-	//			Waypoint::waypointList[i]->position.y,
-	//			Waypoint::waypointList[i]->position.z
-	//			);
-	//		modelStack.Scale(1, 1, 1);
-	//		RenderMesh(meshList[GEO_HITBOX], true);
-	//		modelStack.PopMatrix();
-	//	}
-	//}
 
 	// HIT BOXES
 	if (showHitBox){
@@ -1064,8 +1053,6 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 		RenderMaze();
 
-
-
 		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
@@ -1073,6 +1060,7 @@ void SP2::Render()
 			ItemObject::ItemList[3]->mazeCheck = 0;
 		}
 	}
+
 		if (mappy.mazeSuccess == true){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
@@ -1097,10 +1085,19 @@ void SP2::Render()
 				}
 			}
 		}
-	
 
+	if (mappy.mazeSuccess == true){
+		Application::SetMousePosition(0, 0);
+		playerState = STATE_FPS;
+		Application::HideCursor();
 
-
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		counter++;
+		if (counter <=200){
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+		}
+	}
 }
 
 void SP2::Exit()
@@ -1652,10 +1649,25 @@ void SP2::RenderDoor(){
 	
 }
 
-void SP2::RenderExplosion()
+void SP2::UpdateEffect(double dt)
 {
-	for (vector<Effect_Explosion*>::iterator it = Effect_Explosion::explosionList.begin(); it != Effect_Explosion::explosionList.end(); ++it){
+	for (vector<Effect*>::iterator it = Effect::effectList.begin(); it != Effect::effectList.end();){
+		if ((*it)->effectOver){
+			it = Effect::effectList.erase(it);
+		}
+		else{
+			(*it)->Update(dt);
+			it++;
+		}
+	}
+}
+
+void SP2::RenderEffect()
+{
+	for (vector<Effect*>::iterator it = Effect::effectList.begin(); it != Effect::effectList.end(); ++it){
+		
 		modelStack.PushMatrix();
+
 		modelStack.Translate(
 			(*it)->position.x,
 			(*it)->position.y,
@@ -1668,12 +1680,13 @@ void SP2::RenderExplosion()
 			0
 			);
 		modelStack.Scale(
-			(*it)->scale,
-			(*it)->scale,
-			(*it)->scale
+			(*it)->scale.x,
+			(*it)->scale.y,
+			(*it)->scale.z
 			);
-		modelStack.Scale(3, 3, 3);
-		RenderMesh(meshList[GEO_EXPLOSION], false);
+
+		RenderMesh(meshList[GEO_EFFECT_EXPLOSION], false);
+
 		modelStack.PopMatrix();
 	}
 }
@@ -2099,8 +2112,12 @@ void SP2::TrapsMovement(double dt)
 void SP2::RenderAllyShip()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(25, 0, -25);
-	modelStack.Scale(4, 4, 4);
+	modelStack.Translate(
+		allyShip.position.x,
+		allyShip.position.y,
+		allyShip.position.z
+		);
+	modelStack.Scale(2, 2, 2);
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 }
@@ -2143,7 +2160,6 @@ void SP2::RenderTurret()
 
 
 	modelStack.PopMatrix();
-
 	modelStack.PopMatrix();
 }
 
@@ -2191,15 +2207,27 @@ void SP2::RenderMaze()
 					((x*mappy.gridSizeX) - mappy.gridSizeX /2) - screenX/2.f + mappy.gridSizeX,
 					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
-
+			else if (mappy.mapLayout[y][x] == Maze::MAP_START){
+				RenderQuadOnScreen(meshList[GEO_INTERNAL_TOP],
+				mappy.gridSizeX,
+				mappy.gridSizeY,
+				((x*mappy.gridSizeX) - mappy.gridSizeX / 2) - screenX / 2.f + mappy.gridSizeX,
+				(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
+			}
 		}
 	}
 }
 
 void SP2::UpdateNPCs(double dt)
 {
-	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
-		(*it)->Update(dt);
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){
+		if ((*it)->isDead){
+			it = Enemy::enemyList.erase(it);
+		}
+		else{
+			(*it)->Update(dt);
+			it++;
+		}
 	}
 	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
 		(*it)->Update(dt);
@@ -2208,7 +2236,18 @@ void SP2::UpdateNPCs(double dt)
 
 void SP2::RenderNPCs()
 {
-	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){	
+		if ((*it)->isHit){
+			meshList[GEO_AlienBody]->material.kAmbient.Set(1, 0, 0);
+			meshList[GEO_AlienHands]->material.kAmbient.Set(1, 0, 0);
+			meshList[GEO_AlienLegs]->material.kAmbient.Set(1, 0, 0);
+		}
+		else{
+			meshList[GEO_AlienBody]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
+			meshList[GEO_AlienHands]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
+			meshList[GEO_AlienLegs]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
+		}
+		
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
@@ -2319,7 +2358,7 @@ void SP2::RenderAlien()
 			modelStack.PushMatrix();
 			modelStack.Translate(0, 0.5, 0);
 			modelStack.Rotate(AlienAnimate/2, 0, 0, 1);
-			modelStack.Scale(1,1,2);
+			modelStack.Scale(1, 1, 2);
 			RenderMesh(meshList[GEO_AlienHands], true);
 			modelStack.PopMatrix();
 

@@ -1,26 +1,18 @@
 #ifndef EFFECT_EXPLOSION_H
 #define EFFECT_EXPLOSION_H
 
-#include "Vector3.h"
+#include "Effect.h"
 
-#include <Vector>
-using std::vector;
-
-class Effect_Explosion
+class Effect_Explosion : public Effect
 {
 public:
-	Effect_Explosion(Vector3 pos);
-	~Effect_Explosion();
+	Effect_Explosion(Vector3 pos = Vector3(0, 0, 0));
+	virtual ~Effect_Explosion();
 
-	static vector<Effect_Explosion*> explosionList;
+	virtual void Update(double dt);
 
-	bool Update(double dt);
-
-	Vector3 position;
-	float scale;
 private:
-	
-	bool deleteExplosion;
+	float explosionScale;
 };
 
 #endif
