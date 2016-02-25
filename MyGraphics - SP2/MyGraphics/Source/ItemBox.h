@@ -20,6 +20,8 @@ public:
 	void PickUp(Hitbox hitbox);
 	void PickUpAnimation(double dt);
 	void ItemDelay(double dt);
+	void PressButton();
+	void ShipButtonAnimation(double dt);
 
 	bool takeItem;//item pickup (Trigger to get item)
 	bool growingbool;//item pickup (Growing bigger or smaller)
@@ -31,11 +33,20 @@ public:
 	bool dropItem;//This Triggers to drop item
 	bool canPut;
 	bool oneTimeThing; 
+	bool buttonCoverBool;
+	bool buttonRiseBool;
+	bool buttonPressBool;
+	bool cbuttonRise;
+
+	int mazeCheck;
 
 	bool ItemBoolInterval;
 	float ItemInterval;
 
 	int counter;//item pickup
+
+	float buttonCover;
+	float buttonRise;
 
 	float fly;//item floats(pickup)
 	float growing;//item grows.(pickup)

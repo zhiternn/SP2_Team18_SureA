@@ -18,6 +18,14 @@ ItemObject::ItemObject()
 	canPut = false;
 	oneTimeThing = false;
 
+	buttonCoverBool = false;
+	buttonRiseBool = false;
+	buttonPressBool = false;
+	cbuttonRise = false;
+
+	mazeCheck = 0;
+	buttonCover = 0;
+	buttonRise = 0;
 	counter = 0;
 
 	ItemInterval = 0;
@@ -145,6 +153,12 @@ void ItemObject::PickUp(Hitbox hitbox)
 			ItemBoolInterval = true;
 			ItemInterval = 0;
 		}
+		buttonCoverBool = true;
+		mazeCheck = 1;
+		if (cbuttonRise == true)
+		{
+			buttonPressBool = true;
+		}
 	}
 }
 
@@ -159,5 +173,34 @@ void ItemObject::ItemDelay(double dt)
 	{
 		ItemBoolInterval = false;
 	}
+}
 
+void ItemObject::ShipButtonAnimation(double dt)
+{
+	if (buttonCoverBool == true && buttonCover < 90)
+	{
+		buttonCover += (float(50 * dt));
+	}
+	if (buttonCover > 90)
+	{
+		buttonCoverBool = false;
+		buttonRiseBool = true;
+	}
+	if (buttonRiseBool == true && cbuttonRise == false)
+	{
+		buttonRise += (float(1 * dt));
+	}
+	if (buttonRise > 1)
+	{
+		buttonRiseBool = false;
+		cbuttonRise = true;
+	}
+	if (cbuttonRise == true && buttonPressBool == true)
+	{
+		buttonRise -= (float(1 * dt));
+	}
+	if (buttonRise < 0)
+	{
+		buttonPressBool = false;
+	}
 }

@@ -369,10 +369,6 @@ void SP2::Init()
 	enableLight = true;
 	showHitBox = false;
 
-	buttonCoverBool = false;
-	buttonRiseBool = false;
-	buttonPressBool = false;
-	cbuttonRise = false;
 	onGround = true;
 
 	alarmLights = false;
@@ -384,8 +380,7 @@ void SP2::Init()
 	AlienMovementDirections = false;
 	AlienAnimate = 0;
 
-	buttonCover = 0;
-	buttonRise = 0;
+
 
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
@@ -464,17 +459,21 @@ void SP2::Init()
 	rightWall->SetPosition(55.f, 50.f, 0);
 
 	//Items
-	ItemObject* item1 = new ItemObject();
+	ItemObject* item1 = new ItemObject();//Obj1 
 	item1->hitbox.SetSize(2, 2, 2);
 	item1->SetPosition(0, 1, 0);
 
-	ItemObject* item2 = new ItemObject();
+	ItemObject* item2 = new ItemObject();//Obj2 
 	item2->hitbox.SetSize(2, 2, 2);
 	item2->SetPosition(-10, 1, 0);
 
-	ItemObject* item3 = new ItemObject();
+	ItemObject* item3 = new ItemObject();//Obj3 
 	item3->hitbox.SetSize(2, 2, 2);
 	item3->SetPosition(-5, 1, 0);
+
+	ItemObject* item4 = new ItemObject();//Button
+	item4->hitbox.SetSize(2, 2, 2);
+	item4->SetPosition(20, 17.5, 0);
 
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
@@ -552,15 +551,12 @@ void SP2::Init()
 	AllyShip->hitbox.SetPivot(0, 1, 0);
 	AllyShip->SetPosition(25.f, 1.f, -25.f);
 
-	Object* ButtonStand = new Object();
-	ButtonStand->hitbox.SetSize(1.f, 2, 1.f);
-	ButtonStand->SetPosition(20.f, 17.5f, 0.f);
-
 	GenerateWaypoints(100, 100, 1, 4);
 }
 
 void SP2::Update(double dt)
 {
+	std::cout << ItemObject::ItemList[3] << std::endl;
 	if (playerState == STATE_FPS){
 		player.Update(dt);
 	}
@@ -579,13 +575,14 @@ void SP2::Update(double dt)
 	Interval(dt);
 	UpdatePortal(dt);
 	UpdateDoor(dt);
-	ShipButtonAnimation(dt);
+	//ShipButtonAnimation(dt);
 	UpdateNPCs(dt);
 	AlienAnimation(dt);
 	//AlarmUpdate();
+	
 
 	bool stateChanged = false;
-	if (mazeChk == 1){
+	if (ItemObject::ItemList[3]->mazeCheck == 1){
 		playerState = STATE_INTERACTING_MAZE;
 
 		Application::state2D = true;
@@ -595,6 +592,7 @@ void SP2::Update(double dt)
 
 		mappy = Maze(10, 10, screenX, screenY);
 		Application::SetMousePosition(mappy.gridSizeX,mappy.gridSizeY);
+		ItemObject::ItemList[3]->mazeCheck = 0;
 	}
 	else if (Application::IsKeyPressed('P')){
 		playerState = STATE_FPS;
@@ -681,23 +679,22 @@ void SP2::Update(double dt)
 	}
 		if (Application::IsKeyPressed('F'))
 		{
-			PressButton();
-
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
 				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 				{
 					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}
-
+				}					
 			}
 		}
+			
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
 
 				ItemObject::ItemList[i]->PickUpAnimation(dt);
+				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
 			}
-
+			
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
 				ItemObject::ItemList[i]->ItemDelay(dt);
@@ -1065,7 +1062,7 @@ void SP2::Render()
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
-			mazeChk = 0;
+			ItemObject::ItemList[3]->mazeCheck = 0;
 		}
 	}
 		if (mappy.mazeSuccess == true){
@@ -2126,6 +2123,7 @@ void SP2::RenderTurret()
 
 
 	modelStack.PopMatrix();
+
 	modelStack.PopMatrix();
 }
 
@@ -2140,59 +2138,18 @@ void SP2::RenderShipButton()
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(0, buttonRise/6 + 0.65, 0);
+		modelStack.Translate(0, ItemObject::ItemList[3]->buttonRise/6 + 0.65, 0);
 		modelStack.Scale(0.35, 0.35, 0.35);
 		RenderMesh(meshList[GEO_ShipButton], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 0.93, -0.08);
-		modelStack.Rotate(-buttonCover, 1, 0, 0);
+		modelStack.Rotate(-ItemObject::ItemList[3]->buttonCover, 1, 0, 0);
 		modelStack.Scale(0.35, 0.35, 0.35);
 		RenderMesh(meshList[GEO_ShipButonCover], true);
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();
-}
-
-void SP2::PressButton()
-{
-	buttonCoverBool = true;
-	if (cbuttonRise == true)
-	{
-		buttonPressBool = true;
-		mazeChk += 1;
-	}
-	
-}
-
-void SP2::ShipButtonAnimation(double dt)
-{
-	if (buttonCoverBool == true && buttonCover < 90)
-	{
-		buttonCover += (float(50 * dt));
-	}
-	if (buttonCover > 90)
-	{
-		buttonCoverBool = false;
-		buttonRiseBool = true;
-	}
-	if (buttonRiseBool == true && cbuttonRise == false)
-	{
-		buttonRise += (float(1 * dt));
-	}
-	if (buttonRise > 1)
-	{
-		buttonRiseBool = false;
-		cbuttonRise = true;
-	}
-	if (cbuttonRise == true && buttonPressBool == true)
-	{
-		buttonRise -= (float(1 * dt));
-	}
-	if (buttonRise < 0)
-	{
-		buttonPressBool = false;
-	}
 }
 
 void SP2::RenderMaze()
@@ -2393,4 +2350,3 @@ void SP2::RenderAlien()
 //		alarmLights = true;
 //	}
 //}
-

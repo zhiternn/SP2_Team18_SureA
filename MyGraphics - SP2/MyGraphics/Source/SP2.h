@@ -269,8 +269,6 @@ private:
 	void PickUpAnimation(double dt);
 
 	void RenderShipButton();
-	void PressButton();
-	void ShipButtonAnimation(double dt);
 
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
@@ -288,13 +286,7 @@ private:
 	bool DoorReturn;
 	bool itemText;//item pickup
 	bool intervalBool;//Interval for ... anything i guess.
-	bool buttonCoverBool;
-	bool buttonRiseBool;
-	bool buttonPressBool;
-	bool cbuttonRise;
 
-	float buttonCover;
-	float buttonRise;
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;
