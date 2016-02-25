@@ -587,7 +587,7 @@ void SP2::Update(double dt)
 
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(15);
+		m_timer.StartCountdown(20);
 
 
 		mappy = Maze(10, 10, screenX, screenY);
@@ -704,8 +704,13 @@ void SP2::Update(double dt)
 				ItemObject::ItemList[i]->ItemDelay(dt);
 			}
 
-			if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
+			std::cout << "MAZEY TEST   " <<  mappy.mazeSuccess << std::endl;
+
+			if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
 			{
+				player.position.Set(0, 20, 0);
+			}
+			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))){
 				player.position.Set(18, 19, 0);
 			}
 
@@ -892,12 +897,13 @@ void SP2::Render()
 		RenderInternalSkybox();
 		modelStack.PopMatrix();
 		modelStack.PushMatrix();
-		RenderTraps();
 		RenderDoor();
 		RenderShipButton();
+		RenderTraps();
 		modelStack.PopMatrix();
 		if (player.position.y <= 16.5){
 			onGround = true;
+		
 		}
 	}
 
@@ -1077,6 +1083,18 @@ void SP2::Render()
 			if (counter <=200){
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 				RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+			}
+			if (m_timer.GetTimeLeft() <= 0 && onGround == false){
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
+			}
+			if (m_timer.GetTimeLeft() >= 0 && onGround == true){
+				counter++;
+				std::cout << counter << std::endl;
+				if (counter <= 2000){
+					RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+					RenderTextOnScreen(meshList[GEO_TEXT], "Mission Success~!", Color(0.f, 1.f, 0.f), 40, -300.f, -300.f);
+				}
 			}
 		}
 	
@@ -1799,7 +1817,7 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 		}
 
-		if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true)
+		if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true && ItemObject::ItemList[0]->ItemBoolInterval == false && ItemObject::ItemList[1]->ItemBoolInterval == false && ItemObject::ItemList[2]->ItemBoolInterval == false)
 		{
 			modelStack.PushMatrix();
 			ItemObject::ItemList[0]->SetPosition(5, 1, 45);
