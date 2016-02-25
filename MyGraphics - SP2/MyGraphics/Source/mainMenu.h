@@ -8,6 +8,8 @@
 #ifndef MAIN_MENU_H
 #define MAIN_MENU_H
 
+using std::string;
+
 class mainMenu : public Scene
 {
 	enum MAINMENU_STATE
@@ -26,6 +28,7 @@ class mainMenu : public Scene
 	{
 		GEO_BG,
 		GEO_TEXT,
+		GEO_TEXTBOX,
 
 		GEO_BUTTON,
 		GEO_BUTTONHOVER, 
@@ -96,22 +99,29 @@ public:
 	void RenderTitleOnScreen(Mesh* mesh, Color color, float size, float borderX, float borderY);
 	void RenderBackgroundOnScreen(Mesh* mesh, Color color, float size, float borderX, float borderY);
 	void UpdateButton(double dt);
-
+	void readTxtFile(string load);
+	
+	//game states
 	void MainMenuState();
 	void InstructionState();
 	void OptionsState();
 	void CreditState();
 
+	//check if button is clicked
 	bool clickChk;
 	bool onClicked;
+	bool check;
 
+	//bool to check if what page is active
 	bool instructions;
 	bool options;
 	bool credits;
 
+	//check if player is overclicking
 	double bufferTime;
 	double elapsedTime;
 
+	//check what state is the program suppose to be in
 	int buttonchk;
 
 	MAINMENU_STATE state;

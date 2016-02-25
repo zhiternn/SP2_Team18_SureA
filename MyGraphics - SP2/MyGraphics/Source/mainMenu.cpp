@@ -8,6 +8,18 @@
 #include "Application.h"
 #include "SharedData.h"
 
+#include <sstream>
+#include <fstream>
+
+using std::string;
+using std::ifstream;
+
+ifstream readFile;
+
+//char output to store read from text file
+string output;
+
+
 mainMenu::mainMenu()
 {
 	glClearColor(1.f, 0.f, 0.f, 0.f);
@@ -59,6 +71,8 @@ mainMenu::mainMenu()
 	meshList[GEO_BG] = MeshBuilder::GenerateQuad("background", Color(1, 1, 1), 1, 1);
 	meshList[GEO_BG]->textureID = LoadTGA("Image//bg.tga");
 
+	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("Textbox for menu pages", Color(0, 0, 0), 1, 1);
+
 	meshList[GEO_EXITBUTTON] = MeshBuilder::GenerateQuad("exit button", Color(1, 1, 1), 18, 5);
 	meshList[GEO_EXITBUTTONHOVER] = MeshBuilder::GenerateQuad("exit button hover", Color(0, 0, 0), 18, 5);
 	meshList[GEO_BUTTONSELECTED] = MeshBuilder::GenerateQuad("exit menu button select", Color(1, 1, 1), 18, 5);
@@ -92,8 +106,56 @@ void mainMenu::Init()
 	//MAINMENU_STATE state = M_MAIN;
 }
 
+void mainMenu::readTxtFile(string load)
+{
+	readFile.open(load);
+	int y = 0;
+	if (readFile.is_open())
+	{
+		if (instructions == true)
+		{
+			RenderBackgroundOnScreen(meshList[GEO_TEXTBOX], Color(0, 0, 0), 45, 52, 35);
+			while (getline(readFile, output))
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 1, 1), 2, 18, y + 26);
+				y--;
+			}
+			readFile.close();
+		}
+		if (credits == true)
+		{
+			RenderBackgroundOnScreen(meshList[GEO_TEXTBOX], Color(0, 0, 0), 48, 43, 35);
+			while (getline(readFile, output))
+			{
+				if (y == -5 || y == -10 || y == -15 || y == -20)
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 1, 1), 2, 12, y + 27);
+					y--;
+				}
+				else
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 0), 2, 12, y + 27);
+					y--;
+				}
+			}
+			readFile.close();
+		}
+	}
+	
+}
+
 void mainMenu::Update(double dt)
 {
+	//check if player is clicking in real time
+	if (Application::IsKeyPressed(VK_LBUTTON))
+	{
+		check = true;
+	}
+	else
+	{
+		check = false;
+	}
+
 	switch (state)
 	{
 	case M_MAIN:
@@ -170,7 +232,7 @@ void mainMenu::Update(double dt)
 	case M_INSTRUCTION:
 		if (SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 			&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950) {
-			if (Application::IsKeyPressed(VK_LBUTTON)) {
+			if (Application::IsKeyPressed(VK_LBUTTON) && check == true) {
 				state = M_MAIN;
 				elapsedTime = 0;
 				instructions = false;
@@ -182,8 +244,7 @@ void mainMenu::Update(double dt)
 	case M_OPTION:
 		if (SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 			&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950) {
-			if (Application::IsKeyPressed(VK_LBUTTON))
-			{
+			if (Application::IsKeyPressed(VK_LBUTTON) && check == true){
 				state = M_MAIN;
 				elapsedTime = 0;
 				options = false;
@@ -194,7 +255,7 @@ void mainMenu::Update(double dt)
 	case M_CREDITS:
 		if (SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 			&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950) {
-			if (Application::IsKeyPressed(VK_LBUTTON)) {
+			if (Application::IsKeyPressed(VK_LBUTTON) && check == true) {
 				state = M_MAIN;
 				elapsedTime = 0;
 				credits = false;
@@ -228,11 +289,11 @@ void mainMenu::UpdateButton(double dt)
 		}
 		else if (buttonchk == 4)
 		{
-			state = M_OPTION;
+			options = true;
 		}
 		else if (buttonchk == 5)
 		{
-			state = M_CREDITS;
+			credits = true;
 		}
 		else if (buttonchk == 6)
 		{
@@ -246,6 +307,14 @@ void mainMenu::UpdateButton(double dt)
 		if (instructions == true)
 		{
 			state = M_INSTRUCTION;
+		}
+		if (options == true)
+		{
+			state = M_OPTION;
+		}
+		if (credits == true)
+		{
+			state = M_CREDITS;
 		}
 	}
 
@@ -583,9 +652,11 @@ void mainMenu::InstructionState()
 
 	RenderBackgroundOnScreen(meshList[GEO_BG], Color(0, 0, 0), 80, 40, 40);
 
+	readTxtFile("Text//instructions.txt");
+
 	//mouse postion
-	RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], "y pos : " + std::to_string(SharedData::GetInstance()->m_newY), Color(0, 0, 0), 2, 1, 1);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "y pos : " + std::to_string(SharedData::GetInstance()->m_newY), Color(0, 0, 0), 2, 1, 1);
 
 	RenderTitleOnScreen(meshList[GEO_PLAYBUTTONSELECTED], Color(0, 0, 0), 23, 12.5, 57);
 	RenderTextOnScreen(meshList[GEO_TEXT], "INSTRUCTIONS :", Color(0, 0, 1), 2, 1, 28);
@@ -644,6 +715,8 @@ void mainMenu::CreditState()
 	buttonchk = 0;
 
 	RenderBackgroundOnScreen(meshList[GEO_BG], Color(0, 0, 0), 80, 40, 40);
+
+	readTxtFile("Text//credits.txt");
 
 	//mouse postion
 	RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);

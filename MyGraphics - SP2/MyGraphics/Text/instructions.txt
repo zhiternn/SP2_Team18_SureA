@@ -1,0 +1,18 @@
+Controls
+~~~~~~~~
+
+[W][A][S][D] Key 
+
+- Player movement
+
+[SPACEBAR] 
+
+- Shooting on turret
+
+[E] Key 
+
+- To interact
+
+[MOUSE] Control 
+
+- Player Camera Control 
