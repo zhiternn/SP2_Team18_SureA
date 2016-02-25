@@ -2,10 +2,16 @@
 
 vector<Enemy*> Enemy::enemyList;
 
-Enemy::Enemy(Vector3 pos, float speed) :
-NPC(pos, speed)
+Enemy::Enemy(Vector3 pos, Vector3 dir, float speed) :
+NPC(pos, dir, speed)
 {
 	state = FALL;
+
+	hitbox.SetSize(
+		1.5f,
+		2.f,
+		1.5f
+	);
 
 	Enemy::enemyList.push_back(this);
 }

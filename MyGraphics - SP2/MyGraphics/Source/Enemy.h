@@ -12,7 +12,7 @@ using std::list;
 class Enemy : public NPC
 {
 public:
-	Enemy(Vector3 pos = Vector3(0, 0, 0), float speed = 1.f);
+	Enemy(Vector3 pos = Vector3(0, 0, 0), Vector3 dir = Vector3(0, 0, -1), float speed = 1.f);
 	virtual ~Enemy();
 
 	static vector<Enemy*> enemyList;

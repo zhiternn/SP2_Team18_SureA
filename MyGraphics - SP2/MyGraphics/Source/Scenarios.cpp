@@ -28,12 +28,14 @@ Scenario(duration)
 
 ScenarioDefend::~ScenarioDefend()
 {
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){
+		it = Enemy::enemyList.erase(it);
+	}
 }
 
 void ScenarioDefend::Update(double dt)
 {
 	if (timer.GetTimeLeft() > 0){
-		std::cout << timer.GetTimeLeft() << std::endl;
 		if (Enemy::enemyList.size() <= 0){
 			wave++;
 			amountToSpawn += increment;
@@ -57,14 +59,18 @@ void ScenarioDefend::SpawnEnemies()
 		//random speed between 1.f - 4.f
 		new Enemy(
 			Vector3( // position
-			rand()%91 - 45, // x pos
+			rand() % 91 - 45, // x pos
 			20,				// y pos
-			rand()%21 - 45	// z pos
-			), 
-			(float)(rand()%40+10) / 10.f // speed
+			rand() % 21 - 45	// z pos
+			),
+			Vector3( // direction
+			0, 0, 1
+			),
+			(float)(rand() % 40 + 10) / 10.f // speed
 			);
 	}
 }
+
 
 void ScenarioDefend::MoveEnemies()
 {

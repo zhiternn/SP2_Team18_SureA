@@ -1,7 +1,7 @@
 #include "Hitbox.h"
 #include "Object.h"
 #include "ItemBox.h"
-#include "NPC.h"
+#include "Enemy.h"
 
 vector<Hitbox*> Hitbox::hitboxList;
 
@@ -165,16 +165,16 @@ bool Hitbox::CheckHitBox(Vector3 lhs, int damage)
 			return true;
 		}
 	}
-	for (size_t i = 0; i <NPC::npcList.size(); ++i){
+	for (size_t i = 0; i < Enemy::enemyList.size(); ++i){
 		if (
-			lhs.x > NPC::npcList[i]->hitbox.minPoint.x &&
-			lhs.x < NPC::npcList[i]->hitbox.maxPoint.x &&
-			lhs.y > NPC::npcList[i]->hitbox.minPoint.y &&
-			lhs.y < NPC::npcList[i]->hitbox.maxPoint.y &&
-			lhs.z > NPC::npcList[i]->hitbox.minPoint.z &&
-			lhs.z < NPC::npcList[i]->hitbox.maxPoint.z
+			lhs.x > Enemy::enemyList[i]->hitbox.minPoint.x &&
+			lhs.x < Enemy::enemyList[i]->hitbox.maxPoint.x &&
+			lhs.y > Enemy::enemyList[i]->hitbox.minPoint.y &&
+			lhs.y < Enemy::enemyList[i]->hitbox.maxPoint.y &&
+			lhs.z > Enemy::enemyList[i]->hitbox.minPoint.z &&
+			lhs.z < Enemy::enemyList[i]->hitbox.maxPoint.z
 			){
-			NPC::npcList[i]->ReceiveDamage(damage);
+			Enemy::enemyList[i]->ReceiveDamage(damage);
 
 			return true;
 		}

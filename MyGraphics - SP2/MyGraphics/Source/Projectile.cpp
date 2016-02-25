@@ -27,7 +27,7 @@ bool Projectile::Update(double dt)
 {
 	distanceTravelled += dt * speed;
 	position += direction * dt * speed;
-	vSpeed -= WV_GRAVITY/2 * dt;
+	vSpeed -= WV_GRAVITY/4 * dt;
 
 	position.y += vSpeed;
 

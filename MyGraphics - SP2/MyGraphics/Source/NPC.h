@@ -13,12 +13,10 @@ using std::list;
 class NPC
 {
 public:
-	NPC(Vector3 pos, float speed);
+	NPC(Vector3 pos, Vector3 dir, float speed);
 	virtual ~NPC();
 
 	virtual void Update(double dt) = 0;
-
-	static vector<NPC*> npcList;
 
 	void GoTo(Vector3 destination);
 	void SetHealth(int amount);
@@ -26,17 +24,19 @@ public:
 
 	Vector3 position;
 	Hitbox hitbox;
+	float facingYaw;
 protected:
 
 	float speed;
 
 	Vector3 checkPointDir;
+	const Vector3 defaultDirection;
 	list<Waypoint*>::reverse_iterator checkPoint;//determines at which waypoint of the path it is at
 	list<Waypoint*> path;
 
 	int HP;
 	bool isDead;
-	
+
 };
 
 #endif

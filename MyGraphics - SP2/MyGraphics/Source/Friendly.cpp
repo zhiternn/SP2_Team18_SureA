@@ -1,7 +1,9 @@
 #include "Friendly.h"
 
-Friendly::Friendly(Vector3 pos, float speed) :
-NPC(pos, speed)
+vector<Friendly*> Friendly::friendlyList;
+
+Friendly::Friendly(Vector3 pos, Vector3 dir, float speed) :
+NPC(pos, dir, speed)
 {
 }
 
@@ -11,18 +13,21 @@ Friendly::~Friendly()
 
 void Friendly::Update(double dt)
 {
-	if (position.y > Waypoint::sizeV / 2){
-		position.y -= speed * dt;
-	}
-	else if (checkPoint != path.rend()){
-
-		//MOVE TO
-		checkPointDir = ((*checkPoint)->position - position).Normalized();
-		position += checkPointDir * speed * dt;
-
-
-		if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
-			checkPoint++;
-		}
+	switch (state)
+	{
+	case IDLE:
+		break;
+	case ROAM:
+		break;
+	case PANIC:
+		//static float panic_speed = speed * 2;
+		//speed = panic_speed;
+		break;
+	case CHAT:
+		break;
+	case EVACUATE:
+		break;
+	default:
+		break;
 	}
 }

@@ -40,9 +40,9 @@ void Player::Update(double dt)
 	// if not pressed, no speed increase
 	if (!Application::IsKeyPressed(VK_SHIFT)){
 		if (tired == true)
-		//not sprinting
-		SPRINT_MULTIPLIER = 3.f;
-		
+			//not sprinting
+			SPRINT_MULTIPLIER = 3.f;
+	}
 	if (Application::IsKeyPressed(VK_SHIFT) && tired == false){
 		SPRINT_MULTIPLIER = 10.f;
 		SprintDuration -= 0.5 * dt;
@@ -52,27 +52,27 @@ void Player::Update(double dt)
 		sprintMeter += 0.3 * dt;
 		std::cout << sprintMeter << std::endl;
 	}
-		if (Application::IsKeyPressed('W'))
-		{
-			position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-			position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-			
-		}
-		if (Application::IsKeyPressed('S'))
-		{
-			position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-			position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		}
-		if (Application::IsKeyPressed('A'))
-		{
-			position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-			position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		}
-		if (Application::IsKeyPressed('D'))
-		{
-			position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-			position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		}
+	if (Application::IsKeyPressed('W'))
+	{
+		position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		
+	}
+	if (Application::IsKeyPressed('S'))
+	{
+		position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+	}
+	if (Application::IsKeyPressed('A'))
+	{
+		position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+	}
+	if (Application::IsKeyPressed('D'))
+	{
+		position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+	}
 	
 	if (Application::IsKeyPressed(VK_SPACE))
 	{

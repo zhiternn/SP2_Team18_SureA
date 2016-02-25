@@ -1,35 +1,20 @@
 #include "NPC.h"
 
-vector<NPC*> NPC::npcList;
-
-NPC::NPC(Vector3 pos, float speed)
+NPC::NPC(Vector3 pos, Vector3 dir, float speed) :
+defaultDirection(dir)
 {
 	position = pos;
 	checkPoint = path.rend();
 	checkPointDir.SetZero();
+
 	this->speed = speed;
 	isDead = false;
 	HP = 15;
-	hitbox.SetSize(
-		1,
-		4,
-		1
-		);
-
-	NPC::npcList.push_back(this);
+	facingYaw = 0.f;
 }
 
 NPC::~NPC()
 {
-	for (std::vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end();){
-		if ((*it)->isDead)
-		{
-			it = NPC::npcList.erase(it);
-		}
-		else{
-			++it;
-		}
-	}
 }
 
 void CalculateMovementCost(Waypoint* node, Waypoint* prevNode)

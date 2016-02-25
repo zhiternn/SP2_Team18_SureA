@@ -15,6 +15,7 @@
 #include "Projectile.h"
 #include "Hitbox.h"
 #include "Enemy.h"
+#include "Friendly.h"
 #include "Countdown.h"
 #include "MazeInteraction.h"
 #include "Scenarios.h"
@@ -237,6 +238,7 @@ private:
 	//base spotlight
 	float baseSpotlight_maxLength;
 	float baseSpotlight_startingX;
+	float baseSpotlight_endingX;
 	float baseSpotlight_power; //calculates in percentage
 
 	int mazeChk;

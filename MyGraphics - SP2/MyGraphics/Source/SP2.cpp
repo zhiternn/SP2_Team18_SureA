@@ -145,7 +145,7 @@ void SP2::Init()
 	light[1].type = Light::LIGHT_SPOT;
 	light[1].position.Set(0, 5, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 10.f;
+	light[1].power = 0.f;
 	light[1].kC = 1.f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -392,8 +392,8 @@ void SP2::Init()
 	animation_moveDoor = 0.f;
 
 	// Base spotlight
-	baseSpotlight_maxLength = screenX * 0.6;
-	baseSpotlight_startingX = -screenX + screenX * 0.2;
+	baseSpotlight_startingX = (-screenX/2.f) + screenX * 0.1;
+	baseSpotlight_endingX = (screenX / 2.f) - screenX * 0.1;
 	baseSpotlight_power = 1;
 
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
@@ -431,7 +431,7 @@ void SP2::Init()
 
 	turret.hitbox.SetSize(3.f, 4, 3.f);
 	turret.hitbox.SetPivot(0, 2.f, 0);
-	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 3);
+	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 12);
 
 	baseSpotlight.hitbox.SetSize(1, 1, 0.75f);
 	baseSpotlight.hitbox.SetPivot(0, 0.5f, 0);
@@ -641,17 +641,17 @@ void SP2::Update(double dt)
 
 	if (Application::IsKeyPressed('L')){
 		if (runningScenario == nullptr){
-			runningScenario = new ScenarioDefend(2, 10);
+			runningScenario = new ScenarioDefend(5, 30);
 		}
 	}
-
 	if (runningScenario != nullptr){
-		if (!runningScenario->stopScenario){
-			runningScenario->Update(dt);
-		}
-		else{
+		if (runningScenario->stopScenario == true){
+
 			delete runningScenario;
 			runningScenario = nullptr;
+		}
+		else{
+			runningScenario->Update(dt);
 		}
 	}
 
@@ -2208,45 +2208,54 @@ void SP2::RenderMaze()
 
 void SP2::UpdateNPCs(double dt)
 {
-	for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
+		(*it)->Update(dt);
+	}
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
 		(*it)->Update(dt);
 	}
 }
 
 void SP2::RenderNPCs()
 {
-	for (vector<NPC*>::iterator it = NPC::npcList.begin(); it != NPC::npcList.end(); ++it){
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
 			(*it)->position.y,
 			(*it)->position.z
 			);
-		modelStack.Scale(
-			Waypoint::sizeH,
-			Waypoint::sizeV,
-			Waypoint::sizeH
+		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
+		RenderAlien();
+		modelStack.PopMatrix();
+	}
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
+		modelStack.PushMatrix();
+		modelStack.Translate(
+			(*it)->position.x,
+			(*it)->position.y,
+			(*it)->position.z
 			);
-		RenderMesh(meshList[GEO_HITBOX], false);
+		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
+		RenderAlien();
 		modelStack.PopMatrix();
 	}
 }
 
 void SP2::UpdateLightSlider()
 {
-	double x, y;
-	Application::GetMouseMovement(x, y);
-
-	x /= -10;
-	y /= 10;
-
 	if (Application::IsKeyPressed(VK_LBUTTON)){
-		baseSpotlight_power = (float)((x - baseSpotlight_startingX) / baseSpotlight_maxLength);
+		double x, y;
+		Application::GetMouseMovement(x, y);
 
-		if (baseSpotlight_power > 2.5f)
-			baseSpotlight_power = 2.5f;
-		if (baseSpotlight_power < 0)
-			baseSpotlight_power = 0;
+		x *= -1;
+
+		if (x > baseSpotlight_endingX)
+			x = baseSpotlight_endingX;
+		if (x < baseSpotlight_startingX)
+			x = baseSpotlight_startingX;
+
+		baseSpotlight_power = (float)((x - baseSpotlight_startingX) / (baseSpotlight_endingX - baseSpotlight_startingX));
 
 		light[1].power = baseSpotlight_power * 10;
 		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
@@ -2256,30 +2265,9 @@ void SP2::UpdateLightSlider()
 void SP2::RenderLightSlider()
 {
 	RenderQuadOnScreen(meshList[GEO_LIGHTSLIDER],
-		baseSpotlight_power * baseSpotlight_maxLength, 5,
-		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength) / 2, 0
+		baseSpotlight_power * (baseSpotlight_endingX - baseSpotlight_startingX), 10,
+		baseSpotlight_startingX + (baseSpotlight_power * (baseSpotlight_endingX - baseSpotlight_startingX))/2, 0
 		);
-}
-
-void SP2::RenderFriendlyNPC()
-{
-	double x, y;
-	Application::GetMouseMovement(x, y);
-
-	x /= -10;
-	y /= 10;
-
-	if (Application::IsKeyPressed(VK_LBUTTON)){
-		baseSpotlight_power = (float)((x - baseSpotlight_startingX) / baseSpotlight_maxLength);
-
-		if (baseSpotlight_power > 2.5f)
-			baseSpotlight_power = 2.5f;
-		if (baseSpotlight_power < 0)
-			baseSpotlight_power = 0;
-
-		light[1].power = baseSpotlight_power * 10;
-		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-	}
 }
 
 bool SP2::ItemCheckPosition(Vector3 pos, float degree)
@@ -2332,10 +2320,9 @@ void SP2::AlienAnimation(double dt)
 void SP2::RenderAlien()
 {
 	modelStack.PushMatrix();
-		modelStack.Translate(-40, 3,30);//blahbalhblah
+	modelStack.Scale(0.5f, 0.5f, 1);
+
 			modelStack.PushMatrix();
-			modelStack.Translate(0, 0, 0);
-			modelStack.Scale(1, 1,2);
 			RenderMesh(meshList[GEO_AlienBody], true);
 			modelStack.PopMatrix();
 
@@ -2359,6 +2346,7 @@ void SP2::RenderAlien()
 			modelStack.Scale(-1, 1, -2);
 			RenderMesh(meshList[GEO_AlienLegs], true);
 			modelStack.PopMatrix();
+
 	modelStack.PopMatrix();
 }
 

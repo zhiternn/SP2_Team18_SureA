@@ -77,7 +77,7 @@ void Turret::Update(double dt)
 	barrelPos = seatPos + (view * (hitbox.sizeX / 1.5f));
 	barrelPos.y -= (hitbox.sizeY*0.05);
 
-	if (Application::IsKeyPressed(VK_SPACE) && readyToShoot >= (float)(1.f/roundPerSecond)){
+	if (Application::IsKeyPressed(VK_SPACE) || Application::IsKeyPressed(VK_LBUTTON) && readyToShoot >= (float)(1.f / roundPerSecond)){
 		readyToShoot = 0.f;
 		Projectile::projectileList.push_back(new Projectile(
 			Vector3(barrelPos.x, barrelPos.y, barrelPos.z),
