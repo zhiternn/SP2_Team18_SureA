@@ -668,6 +668,9 @@ void SP2::Update(double dt)
 			it++;
 		}
 	}
+	Mtx44 rotate1, rotate2;
+	rotate1.SetToRotation(12, 0, 1, 0);
+	rotate2.SetToRotation(12, 0, 1, 0);   
 	if (Application::IsKeyPressed('Y'))
 	{
 		Mtx44 rotate;
@@ -684,7 +687,8 @@ void SP2::Update(double dt)
 				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 				{
 					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}					
+				}		
+
 			}
 		}
 			
@@ -706,9 +710,7 @@ void SP2::Update(double dt)
 			}
 
 
-			Mtx44 rotate1, rotate2;
-			rotate1.SetToRotation(12, 0, 1, 0);
-			rotate2.SetToRotation(12, 0, 1, 0);
+
 
 
 			if (Application::IsKeyPressed(0x31)){
@@ -1014,8 +1016,8 @@ void SP2::Render()
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "X " + std::to_string(player.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Z " + std::to_string(player.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "X " + std::to_string(player.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "Z " + std::to_string(player.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemList.size  " + std::to_string(ItemObject::ItemList.size), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
@@ -1026,9 +1028,9 @@ void SP2::Render()
 		//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		//RenderTextOnScreen(meshList[GEO_TEXT], "SprintDuration:  " + std::to_string(player.SprintDuration), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
-		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
-		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval0:  " + std::to_string(ItemObject::ItemList[0]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -310.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{

@@ -169,7 +169,7 @@ void ItemObject::ItemDelay(double dt)
 		ItemInterval += (float(50 * dt));
 	}
 
-	if (ItemInterval > 200)
+	if (ItemInterval > 1000)
 	{
 		ItemBoolInterval = false;
 	}
