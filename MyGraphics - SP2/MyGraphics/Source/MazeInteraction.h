@@ -24,6 +24,7 @@ public:
 	void PrintMap();
 	void GenerateMap();
 	void Collision();
+
 	
 	float gridSizeX;
 	float gridSizeY;
@@ -31,6 +32,7 @@ public:
 	int colNumber;
 	float startingPointX;
 	float startingPointY;
+	bool mazeSuccess;
 
 	int mapLayout[10][10];
 private:

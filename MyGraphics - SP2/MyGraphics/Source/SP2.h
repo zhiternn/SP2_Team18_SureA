@@ -303,9 +303,12 @@ private:
 	float animation_moveDoor;
 	float towardsCameraYaw;
 
+
+	int counter;
 	int screenX, screenY;
 	int playerState;
 	int gameState;
+
 
 	Player player;
 

@@ -190,7 +190,14 @@ void Maze::Collision(){
 	std::cout << xGrid << ", " << yGrid << "     ";
 
 	if (mapLayout[yGrid][xGrid] != MAP_PATH){
-		std::cout << " LANGAED ";
+		Application::SetMousePosition(gridSizeX + gridSizeX/2, gridSizeY + gridSizeY/2);
 	}
+
+	if (yGrid == 7 && xGrid == 7){
+		mazeSuccess = true;
+		std::cout << "success" << std::endl;
+
+	}
+	
 	std::cout << std::endl;
 }

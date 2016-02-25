@@ -590,12 +590,11 @@ void SP2::Update(double dt)
 
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(60);
+		m_timer.StartCountdown(15);
 
 
 		mappy = Maze(10, 10, screenX, screenY);
-		Application::SetMousePosition(screenX * 10 + mappy.gridSizeX, screenY * 10 + mappy.gridSizeY * 10);
-		mazeSuccess = true;
+		Application::SetMousePosition(mappy.gridSizeX,mappy.gridSizeY);
 	}
 	else if (Application::IsKeyPressed('P')){
 		playerState = STATE_FPS;
@@ -1053,21 +1052,35 @@ void SP2::Render()
 	}
 
 	if (playerState == STATE_INTERACTING_MAZE){
-		
-		RenderMaze();
+
 
 		Application::ShowCursor();
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 535, 250, 687, 400.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25,  450.f, 400.f);
-		
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 2000, 1500, 0.f, 5.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		RenderMaze();
+
+
+
 		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
 			mazeChk = 0;
 		}
-
 	}
+		if (mappy.mazeSuccess == true){
+			Application::SetMousePosition(0, 0);
+			playerState = STATE_FPS;
+			Application::HideCursor();
+
+			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+			counter++;
+			if (counter <=200){
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+			}
+		}
+	
 
 
 
@@ -1582,7 +1595,7 @@ void SP2::RenderPortal()
 void SP2::UpdateDoor(double dt)
 {
 	
-	if (mazeSuccess == true){
+	if (mappy.mazeSuccess == true){
 		DoorMoveTrue = true;
 	}
 	if (DoorMoveTrue == true){
@@ -2038,7 +2051,7 @@ void SP2::RenderTraps()
 
 void SP2::TrapsMovement(double dt)
 {
-	if (mazeSuccess == true){
+	if (mappy.mazeSuccess == true){
 		if (forth == true)
 		{
 			trapMove += (float)(2 * dt);
