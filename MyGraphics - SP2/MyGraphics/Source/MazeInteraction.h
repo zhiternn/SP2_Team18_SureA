@@ -29,8 +29,8 @@ public:
 	float gridSizeY;
 	int rowNumber;
 	int colNumber;
-	int startingPointX;
-	int startingPointY;
+	float startingPointX;
+	float startingPointY;
 
 	int mapLayout[10][10];
 private:

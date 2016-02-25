@@ -289,6 +289,15 @@ void SP2::Init()
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
 
+	meshList[GEO_AlienBody] = MeshBuilder::GenerateOBJ("AlienBody", "OBJ//AlienBody.obj");
+	meshList[GEO_AlienBody]->textureID = LoadTGA("Image//AlienBody.tga");
+
+	meshList[GEO_AlienHands] = MeshBuilder::GenerateOBJ("AlienHands", "OBJ//AlienHands.obj");
+	meshList[GEO_AlienHands]->textureID = LoadTGA("Image//DirtyYellow.tga");
+
+	meshList[GEO_AlienLegs] = MeshBuilder::GenerateOBJ("AlienLegs", "OBJ//AlienLegs.obj");
+	meshList[GEO_AlienLegs]->textureID = LoadTGA("Image//DirtyYellow.tga");
+
 	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("Test", Color(1, 1, 1));
 	meshList[GEO_TEST]->textureID = LoadTGA("Image//mazeDesign.tga");
 
@@ -346,8 +355,9 @@ void SP2::Init()
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
-	screenX /= 20;
-	screenY /= 20;
+
+	std::cout <<"screenX: " << screenX << "   ScreenY: " << screenY << std::endl;
+	std::cout << screenX/2 << "   " << (double)screenY/2 << std::endl;
 
 	playerState = STATE_FPS;
 
@@ -368,6 +378,11 @@ void SP2::Init()
 	alarmLights = false;
 	interval = 0;
 	intervalBool = false;
+
+	AlienSpawn = false;
+	AlienMovementsBool = false;
+	AlienMovementDirections = false;
+	AlienAnimate = 0;
 
 	buttonCover = 0;
 	buttonRise = 0;
@@ -566,6 +581,7 @@ void SP2::Update(double dt)
 	UpdateDoor(dt);
 	ShipButtonAnimation(dt);
 	UpdateNPCs(dt);
+	AlienAnimation(dt);
 	//AlarmUpdate();
 
 	bool stateChanged = false;
@@ -574,11 +590,11 @@ void SP2::Update(double dt)
 
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(15);
+		m_timer.StartCountdown(60);
 
 
 		mappy = Maze(10, 10, screenX, screenY);
-		Application::SetMousePosition(screenX * 10 + mappy.gridSizeX, screenY * 10 + mappy.gridSizeY * 11);
+		Application::SetMousePosition(screenX * 10 + mappy.gridSizeX, screenY * 10 + mappy.gridSizeY * 10);
 		mazeSuccess = true;
 	}
 	else if (Application::IsKeyPressed('P')){
@@ -662,10 +678,11 @@ void SP2::Update(double dt)
 		light[2].spotDirection = rotate * light[2].spotDirection;
 		light[3].spotDirection = rotate * light[3].spotDirection;
 		//DeleteAfter();
+		AlienSpawn = true;
 	}
 		if (Application::IsKeyPressed('F'))
 		{
-			//PressButton();
+			PressButton();
 
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
@@ -696,6 +713,7 @@ void SP2::Update(double dt)
 			Mtx44 rotate1, rotate2;
 			rotate1.SetToRotation(12, 0, 1, 0);
 			rotate2.SetToRotation(12, 0, 1, 0);
+
 
 			if (Application::IsKeyPressed(0x31)){
 				glEnable(GL_CULL_FACE);
@@ -868,7 +886,6 @@ void SP2::Render()
 
 	modelStack.PushMatrix();
 	RenderSlideDoor();
-
 	RenderPickUpObj();
 
 	if (onGround == false){
@@ -920,6 +937,10 @@ void SP2::Render()
 	modelStack.PushMatrix();
 	RenderExplosion();
 
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderQuadOnScreen(meshList[GEO_UIBAR], player.SprintDuration * 50, 7, -95, 48);
 	modelStack.PopMatrix();
 
 	//for (int i = 0; i < Waypoint::waypointList.size(); ++i){
@@ -977,16 +998,16 @@ void SP2::Render()
 	}
 	// UI STUFF HERE
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  150, 25, 0, -25.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 4, -37.f, -25.f);
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500, 250, 0, -25.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, -400.f, -25.f);
 	}
 	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
 		RenderLightSlider();
 	}
 	if ((player.position - portal.position).Length() < 2.f && portalChk == false){
 		
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  150,25, 0,-25.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 4, -40.f, -25.f);
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500,250, 0,-25.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 40, -400.f, -25.f);
 	}
 
 		//modelStack.PushMatrix();
@@ -1009,7 +1030,9 @@ void SP2::Render()
 		//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "AlarmLights:  " + std::to_string(alarmLights), Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "SprintDuration:  " + std::to_string(player.SprintDuration), Color(1.f, 1.f, 1.f), 2, -55.f, -31.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
+		//RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1017,10 +1040,15 @@ void SP2::Render()
 		{
 			if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES. PRESS F TO PLACE CORE", Color(1.f, 1.f, 1.f), 3, -75.f, 0.f);
+
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES. PRESS F TO PLACE CORE", Color(1.f, 1.f, 1.f), 25, -700.f, -25.f);
 			}
 			else
-				RenderTextOnScreen(meshList[GEO_TEXT], "COLLECT ALL CORES TO ACTIVATE PORTAL!", Color(1.f, 1.f, 1.f), 3, -75, 0.f);
+			{
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "COLLECT ALL CORES TO ACTIVATE PORTAL!", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
+			}
 		}
 	}
 
@@ -1029,8 +1057,9 @@ void SP2::Render()
 		RenderMaze();
 
 		Application::ShowCursor();
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 2, -50.f, 0.f);
-
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 535, 250, 687, 400.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25,  450.f, 400.f);
+		
 		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
@@ -1040,9 +1069,7 @@ void SP2::Render()
 
 	}
 
-	modelStack.PushMatrix();
-	//	RenderQuadOnScreen(meshList[GEO_UIBAR], -player.sprint1 * 40 + 80, 7, -95, 48);
-	modelStack.PopMatrix();
+
 
 }
 
@@ -1132,7 +1159,7 @@ void SP2::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float si
 
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(-screenX, screenX, -screenY, screenY, -10, 10); //size of screen UI
+	ortho.SetToOrtho(-screenX/2, screenX/2, -screenY/2, screenY/2, -10, 10); //size of screen UI
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -1174,7 +1201,7 @@ void SP2::RenderQuadOnScreen(Mesh* mesh, float sizeX, float sizeY, float moveX, 
 
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(-screenX, screenX, -screenY, screenY, -10, 10); //size of screen UI
+	ortho.SetToOrtho(-screenX / 2, screenX / 2, -screenY / 2, screenY / 2, -10, 10); //size of screen UI
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -1604,7 +1631,6 @@ void SP2::RenderExplosion()
 			(*it)->position.y,
 			(*it)->position.z
 			);
-		std::cout << towardsCameraYaw << std::endl;
 		modelStack.Rotate(
 			-towardsCameraYaw,
 			0,
@@ -1642,6 +1668,7 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[0]->position.y,
 				ItemObject::ItemList[0]->position.z
 				);
+			modelStack.Rotate(ItemObject::ItemList[0]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[0]->growing / 100 + 1, ItemObject::ItemList[0]->growing / 100 + 1, ItemObject::ItemList[0]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem1], true);
 			modelStack.PopMatrix();
@@ -1657,6 +1684,7 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[1]->position.y,
 				ItemObject::ItemList[1]->position.z
 				);
+			modelStack.Rotate(ItemObject::ItemList[1]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[1]->growing / 100 + 1, ItemObject::ItemList[1]->growing / 100 + 1, ItemObject::ItemList[1]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem2], true);
 			modelStack.PopMatrix();
@@ -1673,6 +1701,8 @@ void SP2::RenderPickUpObj()
 				ItemObject::ItemList[2]->position.y,
 				ItemObject::ItemList[2]->position.z
 				);
+
+			modelStack.Rotate(ItemObject::ItemList[2]->fly * 1000, 0, 1, 0);
 			modelStack.Scale(ItemObject::ItemList[2]->growing / 100 + 1, ItemObject::ItemList[2]->growing / 100 + 1, ItemObject::ItemList[2]->growing / 100 + 1);
 			RenderMesh(meshList[GEO_Testitem3], true);
 			modelStack.PopMatrix();
@@ -2162,11 +2192,14 @@ void SP2::RenderMaze()
 	//	}
 	//}
 
-	for (int y = 0; y<mappy.colNumber; ++y){
-		for (int x = 0; x < mappy.rowNumber; ++x){
+	for (int y = 0; y<mappy.colNumber-1; ++y){
+		for (int x = 0; x < mappy.rowNumber-1; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
-			
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM], mappy.gridSizeX, mappy.gridSizeY, (x*mappy.gridSizeX) - mappy.gridSizeX / 2, (-y*mappy.gridSizeY) - mappy.gridSizeY / 2);
+				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM],
+					mappy.gridSizeX, 
+					mappy.gridSizeY,
+					((x*mappy.gridSizeX) - mappy.gridSizeX /2) - screenX/2.f + mappy.gridSizeX,
+					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
 
 		}
@@ -2227,6 +2260,7 @@ void SP2::RenderLightSlider()
 		baseSpotlight_startingX + (baseSpotlight_power * baseSpotlight_maxLength) / 2, 0
 		);
 }
+
 void SP2::RenderFriendlyNPC()
 {
 	double x, y;
@@ -2248,14 +2282,11 @@ void SP2::RenderFriendlyNPC()
 	}
 }
 
-
 bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 {
 	Vector3 view = (pos - player.position).Normalized();
 
 	float angleX = Math::RadianToDegree(acos(view.Dot(player.view)));
-
-	std::cout << pos << std::endl;
 
 	if (angleX < degree)
 	{
@@ -2265,6 +2296,70 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 	{
 		return false;
 	}
+}
+
+void SP2::AlienAnimation(double dt)
+{
+	if (AlienSpawn == true)
+	{
+		AlienMovementsBool = true;
+	}
+	if (AlienMovementsBool == true)
+	{
+		if (AlienMovementDirections == true)
+		{
+			AlienAnimate += (float(10 * dt));
+		}
+
+		if (AlienMovementDirections == false)
+		{
+			AlienAnimate -= (float(10 * dt));
+		}
+	}
+
+	if (AlienAnimate > 12)
+	{
+		AlienMovementDirections = false;
+	}
+
+	if (AlienAnimate < -12.3)
+	{
+		AlienMovementDirections = true;
+	}
+
+}
+
+void SP2::RenderAlien()
+{
+	modelStack.PushMatrix();
+		modelStack.Translate(-40, 3,30);//blahbalhblah
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0, 0);
+			modelStack.Scale(1, 1,2);
+			RenderMesh(meshList[GEO_AlienBody], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(AlienAnimate/2, 0, 0, 1);
+			modelStack.Scale(1,1,2);
+			RenderMesh(meshList[GEO_AlienHands], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(AlienAnimate, 0, 0, 1);
+			modelStack.Scale(1, 1, 2);
+			RenderMesh(meshList[GEO_AlienLegs], true);
+			modelStack.PopMatrix();
+
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0.5, 0);
+			modelStack.Rotate(-AlienAnimate, 0, 0, 1);
+			modelStack.Scale(-1, 1, -2);
+			RenderMesh(meshList[GEO_AlienLegs], true);
+			modelStack.PopMatrix();
+	modelStack.PopMatrix();
 }
 
 //void SP2::AlarmUpdate()
@@ -2297,3 +2392,4 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 //		alarmLights = true;
 //	}
 //}
+

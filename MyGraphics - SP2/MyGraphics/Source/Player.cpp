@@ -20,6 +20,7 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 	camera.Init(this->position, this->position+this->view, Vector3(0, 1, 0));
 
 	vSpeed = 0.f;
+	SprintDuration = 2.f;
 
 	hitbox.SetSize(1.f, 3, 1.f);
 	hitbox.SetPosition(pos);
@@ -30,45 +31,80 @@ void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 5.f;
 	static const float MOVEMENT_SPEED = 5.f;
-	float SPRINT_MULTIPLIER = 2.f;
+	float SPRINT_MULTIPLIER = 5.f;
 
 	Vector3 oldPos = position;
 
+	//std::cout << SprintDuration << std::endl;
+
 	// if not pressed, no speed increase
 	if (!Application::IsKeyPressed(VK_SHIFT)){
-		SPRINT_MULTIPLIER = 2.f;
+		if (tired == true)
+		//not sprinting
+		SPRINT_MULTIPLIER = 3.f;
+		
+	if (Application::IsKeyPressed(VK_SHIFT) && tired == false){
+		SPRINT_MULTIPLIER = 10.f;
+		SprintDuration -= 0.5 * dt;
 	}
-	if (Application::IsKeyPressed('W'))
-	{
-		position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+	else if (tired == false){
+		//sprinting
+		sprintMeter += 0.3 * dt;
+		std::cout << sprintMeter << std::endl;
 	}
-	if (Application::IsKeyPressed('S'))
-	{
-		position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-		position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
-	}
+		if (Application::IsKeyPressed('W'))
+		{
+			position.x += (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z += (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			
+		}
+		if (Application::IsKeyPressed('S'))
+		{
+			position.x -= (view.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z -= (view.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			position.x -= (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z -= (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			position.x += (right.x * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+			position.z += (right.z * MOVEMENT_SPEED * SPRINT_MULTIPLIER * dt);
+		}
+	
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
 		if (vSpeed == 0.f){
 			vSpeed = 6.f * dt;
 		}
 	}
+
 	//if (sprint1 >= 0)
 	//{
 	//	sprint1 -= 0.3 * dt;
 	//	tired = false;
 	//}
+
+	if (SprintDuration < 0)
+	{
+		tired = true;
+	}
+	if (SprintDuration > 0)
+	{
+		tired = false;
+	}
+	if (SprintDuration < 2)
+	{
+		SprintDuration += 0.1 * dt;
+	}
+	if (SprintDuration > 2)
+	{
+		SprintDuration = 2;
+	}
+
+
 
 	//Conflicts with crouching
 	/*vSpeed -= (float)(WV_GRAVITY / 5 * dt);

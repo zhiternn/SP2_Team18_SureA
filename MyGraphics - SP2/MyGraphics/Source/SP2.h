@@ -81,6 +81,10 @@ class SP2 : public Scene
 		GEO_ShipButton,
 		GEO_ShipButonCover,
 
+		GEO_AlienBody,
+		GEO_AlienHands,
+		GEO_AlienLegs,
+
 		NUM_GEOMETRY
 	};
 	enum PLAYER_STATE
@@ -202,12 +206,19 @@ private:
 	void RenderFriendlyNPC();
 	void AlarmUpdate();
 	void DeleteAfter();
-
+	
+	void AlienAnimation(double dt);
+	void RenderAlien();
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
 	bool alarmLights;
 	float interval; // can delete after alarmlight has been set to button
+
+	bool AlienSpawn;//
+	bool AlienMovementsBool;
+	bool AlienMovementDirections;
+	float AlienAnimate;
 
 	//door
 	float DoorMove;
