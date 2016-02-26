@@ -22,9 +22,11 @@ void Turret::Init(Vector3 pos, Vector3 dir, int atkSpeed)
 	barrelPos = seatPos + (view * (hitbox.sizeX / 1.5f));
 
 	roundPerSecond = atkSpeed;
+	heatLimit = atkSpeed; // average of "10" seconds before overheating
+	heatSystem = 0.f;
+	isOverHeated = false;
 	
 	forRotationYaw = forRotationPitch = 0.f;
-	
 	camera.Init(seatPos, barrelPos, up);
 }
 
@@ -77,7 +79,7 @@ void Turret::Update(double dt)
 	barrelPos = seatPos + (view * (hitbox.sizeX / 1.5f));
 	barrelPos.y -= (hitbox.sizeY*0.05);
 
-	if (Application::IsKeyPressed(VK_SPACE) && readyToShoot >= (float)(1.f / roundPerSecond)){
+	if (Application::IsKeyPressed(VK_SPACE) && readyToShoot >= (float)(1.f / roundPerSecond) && !isOverHeated){
 		readyToShoot = 0.f;
 		Projectile::projectileList.push_back(new Projectile(
 			Vector3(barrelPos.x, barrelPos.y, barrelPos.z),
@@ -86,9 +88,19 @@ void Turret::Update(double dt)
 			65,
 			10
 			));
+		heatSystem += 1.f;
+		if (heatSystem > roundPerSecond){
+			isOverHeated = true;
+		}
 	}
 	else if (readyToShoot < (float)(1.f/roundPerSecond)){
 		readyToShoot += (float)(dt);
+	}
+	if (heatSystem > 0){
+		heatSystem -= (float)(1.0f/roundPerSecond);
+	}
+	else{
+		isOverHeated = false;
 	}
 
 	camera.position.y = seatPos.y + abs(view.y);
@@ -99,6 +111,7 @@ float Turret::GetPitch()
 {
 	return forRotationPitch;
 }
+
 float Turret::GetYaw()
 {
 	return forRotationYaw;

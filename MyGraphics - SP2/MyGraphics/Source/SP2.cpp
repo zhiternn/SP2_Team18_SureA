@@ -1,6 +1,5 @@
 #include "SP2.h"
 #include "GL\glew.h"
-
 #include "shader.hpp"
 #include "Application.h"
 #include "MeshBuilder.h"
@@ -10,6 +9,8 @@
 #include "Effect.h"
 #include "ItemBox.h"
 #include "Countdown.h"
+
+#include <ctime>
 
 SP2::SP2()
 {
@@ -21,6 +22,8 @@ SP2::~SP2()
 
 void SP2::Init()
 {
+	srand(time(NULL));
+
 	Application::HideCursor();
 
 	//Application::SetMousePosition();
@@ -314,6 +317,8 @@ void SP2::Init()
 	meshList[GEO_TURRET_BASE]->textureID = LoadTGA("Image//turret.tga");
 	meshList[GEO_TURRET_HEAD] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret_head.obj");
 	meshList[GEO_TURRET_HEAD]->textureID = LoadTGA("Image//turret.tga");
+	meshList[GEO_TURRET_BARREL] = MeshBuilder::GenerateOBJ("turret", "OBJ//turret_barrel.obj");
+	meshList[GEO_TURRET_BARREL]->textureID = LoadTGA("Image//turret.tga");
 
 	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
 	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
@@ -624,6 +629,7 @@ void SP2::Update(double dt)
 		}
 		else if (playerState == STATE_INTERACTING_TURRET){
 			playerState = STATE_FPS;
+			player.Init(player.position, turret.view);
 		}
 
 		//BASE SPOTLIGHT INTERACTION
@@ -1013,6 +1019,8 @@ void SP2::Render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(turret.heatSystem), Color(1, 0, 0), 40, -400.f, -25.f);
+
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500, 250, 0, -25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, -400.f, -25.f);
@@ -1025,7 +1033,6 @@ void SP2::Render()
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500,250, 0,-25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 40, -400.f, -25.f);
 	}
-
 		//modelStack.PushMatrix();
 		//modelStack.Rotate(180, 0, 0, 1);
 		//modelStack.PopMatrix();
@@ -2176,14 +2183,14 @@ void SP2::RenderTurret()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 2.995f, 0);
-	modelStack.Rotate(
-		turret.GetPitch(),
-		-1,
-		0,
-		0);
+	modelStack.Rotate(turret.GetPitch(), -1, 0, 0);
 	RenderMesh(meshList[GEO_TURRET_HEAD], true);
 
+	modelStack.PushMatrix();
+	//modelStack.Rotate();
+	RenderMesh(meshList[GEO_TURRET_BARREL], true);
 
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
@@ -2311,7 +2318,7 @@ void SP2::UpdateLightSlider()
 
 		baseSpotlight_power = (float)((x - baseSpotlight_startingX) / (baseSpotlight_endingX - baseSpotlight_startingX));
 
-		light[1].power = baseSpotlight_power * 10;
+		light[1].power = baseSpotlight_power * 50;
 		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
 	}
 }

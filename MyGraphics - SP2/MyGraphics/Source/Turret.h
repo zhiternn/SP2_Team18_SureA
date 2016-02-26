@@ -20,9 +20,14 @@ public:
 
 	void Init(Vector3 pos, Vector3 dir, int atkSpeed = 1);
 	virtual void Update(double dt);
+
+	float heatSystem;
 private:
 	float forRotationYaw, forRotationPitch;
 	int roundPerSecond;
+	int heatLimit;
+	bool isOverHeated;
+
 };
 
 #endif
