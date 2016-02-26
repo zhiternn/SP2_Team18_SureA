@@ -241,6 +241,8 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
+	bool inRange;
+	bool inRange2;
 	bool portalChk;
 	bool mazeSuccess;
 	bool onGround;
@@ -261,6 +263,7 @@ private:
 	Object laserTrap;
 	Object laserTrap1;
 	Object laserTrap2;
+	Object laserTrap3;
 	Object frontDoor;
 	Object frontDoor2;
 	Object backDoor;

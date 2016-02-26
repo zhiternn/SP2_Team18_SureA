@@ -413,13 +413,25 @@ void SP2::Init()
 	portal.SetPosition(0, 0, 48);
 
 	laserTrap.hitbox.SetSize(0.05, 0.05, 5);
-	laserTrap.SetPosition(9, 18, 0);
-	
+	laserTrap.SetPosition(9, 30, 0);
+
 	laserTrap1.hitbox.SetSize(0.05, 0.05, 5);
-	laserTrap1.SetPosition(5, 18, 0);
+	laserTrap1.SetPosition(5, 30, 0);
 
 	laserTrap2.hitbox.SetSize(0.05, 5, 0.05);
-	laserTrap2.SetPosition(2, 18, 0);
+	laserTrap2.SetPosition(2, 30, 0);
+
+	laserTrap3.hitbox.SetSize(0.05, 5, 0.05);
+	laserTrap3.SetPosition(3, 30, 0);
+
+	//if player presses button, trap collision box sets into position
+	if (mappy.mazeSuccess == true)
+	{
+		laserTrap.SetPosition(9, 18, 0);
+		laserTrap1.SetPosition(5, 18, 0);
+		laserTrap2.SetPosition(2, 18, 0);
+		laserTrap3.SetPosition(3, 18, 0);
+	}
 
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
@@ -533,11 +545,11 @@ void SP2::Init()
 
 	//Base Camp
 	Object* CampWall_Right = new Object();
-	CampWall_Right->hitbox.SetSize(42, 10, 1);
+	CampWall_Right->hitbox.SetSize(44, 10, 1);
 	CampWall_Right->SetPosition(0, 5.f, 49.f);
 
 	Object* CampWall_Left = new Object();
-	CampWall_Left->hitbox.SetSize(42, 10, 1);
+	CampWall_Left->hitbox.SetSize(44, 10, 1);
 	CampWall_Left->SetPosition(0, 5.f, 29);
 
 	Object* CampWall_Back = new Object();
@@ -721,7 +733,7 @@ void SP2::Update(double dt)
 			{
 				player.position.Set(0, 20, 0);
 			}
-			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))){
+			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap3.hitbox))){
 				player.position.Set(18, 19, 0);
 			}
 		
@@ -1985,86 +1997,112 @@ void SP2::RenderSlideDoor()
 void SP2::DoorMovement(double dt)
 {
 	//front door
-	if (player.position.x <= -21 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -12 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
+	if (player.position.x <= -19 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -10 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
 	{
 		if (DoorMove < 2.2)
 		{
 			Door = true;
 		}
+		inRange = true;
 		doorChk = true;
 		front = true;
 		timer = 0;
 	}
-	
+	else
+	{
+		inRange = false;
+		Door = false;
+	}
+
 	//back door
-	if (player.position.x <= 28 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 19 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
+	if (player.position.x <= 30 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 21 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
 	{
 		if (DoorMove2 < 2.2)
 		{
 			Door2 = true;
 		}
+		inRange2 = true;
 		doorChk = true;
 		back = true;
 		timer = 0;
 	}
-
-	//door
-	if (timer > 3)
+	else
 	{
-		timerBool = true;
-		doorChk = false;
-		timer = 0;
+		inRange2 = false;
+		Door2 = false;
 	}
 
-	if (Door == true)
-	{
-		DoorMove += (float)(2 * dt);
-		frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
-		frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-		if (DoorMove > 2.2)
-		{
-			Door = false;
-		}
-
-	}
-	if (Door2 == true)
-	{
-		DoorMove2 += (float)(2 * dt);
-		backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
-		backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-		if (DoorMove2 > 2.2)
-		{
-			Door2 = false;
-		}
-
-	}
 	if (doorChk == true)
 	{
 		timer += (float)(1 * dt);
 	}
 
-	if (timerBool == true && front == true)
+	if (inRange == true)
 	{
-		DoorMove -= (float)(2 * dt);
-		frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
-		frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-		if (DoorMove < -0.2)
+		if (Door == true)
 		{
-			timerBool = false;
-			Door = false;
-			front = false;
+			DoorMove += (float)(5 * dt);
+			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
+			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
+			if (DoorMove > 2.2)
+			{
+				Door = false;
+			}
+
+		}
+
+
+	}
+	else if (inRange == false && Door == false)
+	{
+		timerBool = true;
+		doorChk = false;
+		timer = 0;
+
+		if (front == true)
+		{
+			DoorMove -= (float)(5 * dt);
+			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
+			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
+			if (DoorMove < -0.2)
+			{
+				timerBool = false;
+				Door = false;
+				front = false;
+			}
 		}
 	}
-	if (timerBool == true && back == true)
+	if (inRange2 == true)
 	{
-		DoorMove2 -= (float)(2 * dt);
-		backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
-		backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-		if (DoorMove2 < -0.2)
+		if (Door2 == true)
 		{
-			timerBool = false;
-			Door2 = false;
-			back = false;
+			DoorMove2 += (float)(5 * dt);
+			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
+			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
+			if (DoorMove2 > 2.2)
+			{
+				Door2 = false;
+			}
+
+		}
+	}
+	else if (inRange2 == false && Door2 == false)
+	{
+		timerBool = true;
+		doorChk = false;
+		timer = 0;
+
+		if (back == true)
+		{
+			DoorMove2 -= (float)(5 * dt);
+			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
+			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
+			if (DoorMove2 < -0.2)
+			{
+				timerBool = false;
+				Door2 = false;
+				back = false;
+			}
 		}
 	}
 }
@@ -2072,6 +2110,7 @@ void SP2::DoorMovement(double dt)
 void SP2::RenderTraps()
 {
 	
+	if (mappy.mazeSuccess == true){
 		//traps
 		modelStack.PushMatrix();
 		//modelStack.Translate(9, 18, 0);
@@ -2108,18 +2147,31 @@ void SP2::RenderTraps()
 		RenderMesh(meshList[GEO_TRAPS], true);
 		modelStack.PopMatrix();
 
+		modelStack.PushMatrix();
+		//modelStack.Translate(5, 19.75, 0);
+		modelStack.Translate(
+			laserTrap3.position.x,
+			laserTrap3.position.y,
+			laserTrap3.position.z
+			);
+		modelStack.Scale(0.05, 4.5, 0.05);
+		RenderMesh(meshList[GEO_TRAPS], true);
+		modelStack.PopMatrix();
+	}
 	
 }
 
 void SP2::TrapsMovement(double dt)
 {
 	if (mappy.mazeSuccess == true){
+
 		if (forth == true)
 		{
-			trapMove += (float)(2 * dt);
-			laserTrap.SetPosition(9 - trapMove, 18, 0);
-			laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
-			laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+			trapMove += (float)(10 * dt);
+			laserTrap.SetPosition(14 - trapMove * 2, 18, 0);
+			laserTrap1.SetPosition(13 - trapMove, 18, 0);
+			laserTrap2.SetPosition(12, 19.75, 2.5 - trapMove);
+			laserTrap3.SetPosition(8, 19.75, 1 - trapMove * 0.5);
 			if (trapMove > 5)
 			{
 				forth = false;
@@ -2128,10 +2180,11 @@ void SP2::TrapsMovement(double dt)
 		}
 		if (backN == true)
 		{
-			trapMove -= (float)(2 * dt);
-			laserTrap.SetPosition(9 - trapMove, 18, 0);
-			laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
-			laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+			trapMove -= (float)(10 * dt);
+			laserTrap.SetPosition(14 - trapMove * 2, 18, 0);
+			laserTrap1.SetPosition(13 - trapMove, 18, 0);
+			laserTrap2.SetPosition(12, 19.75, 2.5 - trapMove);
+			laserTrap3.SetPosition(8, 19.75, 1 - trapMove * 0.5);
 			if (trapMove < 0)
 			{
 				forth = true;
