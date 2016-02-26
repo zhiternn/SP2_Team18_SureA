@@ -1778,6 +1778,8 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
 		{
 			modelStack.PushMatrix();
+			ItemObject::ItemList[1]->SetPosition(5, 1000, 47);
+			ItemObject::ItemList[2]->SetPosition(5, 1000, 47);
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
 				modelStack.PushMatrix();
 					modelStack.Translate(
