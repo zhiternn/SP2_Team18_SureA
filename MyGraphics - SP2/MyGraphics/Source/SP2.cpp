@@ -364,21 +364,17 @@ void SP2::Init()
 	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
 	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
 
-<<<<<<< a3ee160e61146581e5271977670a40d38113d053
 	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
 	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
-=======
+
 	meshList[GEO_ENDFLAG] = MeshBuilder::GenerateQuad("Flag", Color(1, 1, 1));
 	meshList[GEO_ENDFLAG]->textureID = LoadTGA("Image//flag.tga");
 
 	meshList[GEO_MAZETEX] = MeshBuilder::GenerateQuad("Maze", Color(1, 1, 1));
 	meshList[GEO_MAZETEX]->textureID = LoadTGA("Image//mazeMap.tga");
 
-
 	meshList[GEO_STARTFLAG] = MeshBuilder::GenerateQuad("Start", Color(1, 1, 1));
 	meshList[GEO_STARTFLAG]->textureID = LoadTGA("Image//start.tga");
->>>>>>> c2800d280429c775ebe9f159339e738cf853599b
-
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 
@@ -716,8 +712,11 @@ void SP2::Update(double dt)
 	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 		{
+		
 			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 			{
+				
+
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
 			}	
 				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
@@ -729,7 +728,7 @@ void SP2::Update(double dt)
 			
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
-
+					
 				ItemObject::ItemList[i]->PickUpAnimation(dt);
 				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
 			}
@@ -758,11 +757,6 @@ void SP2::Update(double dt)
 	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 	{
 		ItemObject::ItemList[i]->ItemDelay(dt);
-	}
-
-	if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
-	{
-		player.position.Set(18, 19, 0);
 	}
 
 	if (Application::IsKeyPressed(0x31)){
@@ -1078,8 +1072,9 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
 		RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval0:  " + std::to_string(ItemObject::ItemList[0]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -370.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1811,6 +1806,8 @@ void SP2::RenderPickUpObj()
 			modelStack.PushMatrix();
 			ItemObject::ItemList[1]->SetPosition(5, 1000, 47);
 			ItemObject::ItemList[2]->SetPosition(5, 1000, 47);
+			ItemObject::ItemList[1]->haveItem == false;
+			ItemObject::ItemList[2]->haveItem == false;
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
 				modelStack.PushMatrix();
 					modelStack.Translate(

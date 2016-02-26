@@ -154,14 +154,16 @@ void ItemObject::PickUp(Hitbox hitbox)
 			ItemInterval = 0;
 		}
 		buttonCoverBool = true;
-<<<<<<< a3ee160e61146581e5271977670a40d38113d053
-=======
 	
->>>>>>> c2800d280429c775ebe9f159339e738cf853599b
 		if (cbuttonRise == true)
 		{
+			if (mazeCounter == 1){
+				mazeCheck = 1;
+			}
 			buttonPressBool = true;
-			mazeCheck = 1;
+		
+
+
 		}
 	}
 }
@@ -173,7 +175,7 @@ void ItemObject::ItemDelay(double dt)
 		ItemInterval += (float(1 * dt));
 	}
 
-	if (ItemInterval > 2)
+	if (ItemInterval > 5)
 	{
 		ItemBoolInterval = false;
 	}
@@ -206,5 +208,7 @@ void ItemObject::ShipButtonAnimation(double dt)
 	if (buttonRise < 0)
 	{
 		buttonPressBool = false;
+		mazeCounter = 1;
 	}
+	
 }
