@@ -91,6 +91,7 @@ class SP2 : public Scene
 		GEO_AlienHands,
 		GEO_AlienLegs,
 
+		GEO_ShipGuard,
 
 		GEO_EFFECT_EXPLOSION,
 		GEO_EFFECT_BEAM,
@@ -206,6 +207,8 @@ private:
 	void RenderMaze();
 	void RenderLightSlider();
 	void RenderEffect();
+
+	void RenderShipGuard();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);

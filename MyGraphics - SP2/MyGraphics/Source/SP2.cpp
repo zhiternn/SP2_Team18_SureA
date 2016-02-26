@@ -286,11 +286,14 @@ void SP2::Init()
 	meshList[GEO_ShipButtonStand] = MeshBuilder::GenerateOBJ("ShipButtonStand", "OBJ//ShipButtonStand.obj");
 	meshList[GEO_ShipButtonStand]->textureID = LoadTGA("Image//floor.tga");
 
-	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("", "OBJ//ShipButton.obj");
+	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("ShipButton", "OBJ//ShipButton.obj");
 	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
 
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
+
+	meshList[GEO_ShipGuard] = MeshBuilder::GenerateOBJ("ShipGuard", "OBJ//ShipGuard.obj");
+	meshList[GEO_ShipGuard]->textureID = LoadTGA("Image//PlayerHands.tga");
 
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
@@ -506,6 +509,10 @@ void SP2::Init()
 	item4->hitbox.SetSize(3, 2, 3);
 	item4->SetPosition(20, 17.5, 0);
 
+	ItemObject* item5 = new ItemObject();//ShipGuard
+	item5->hitbox.SetSize(14, 5, 28);
+	item5->SetPosition(39.5, 2.5, 35);
+
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
 	internalWall_Ground->hitbox.SetSize(10.f, 1, 5);
@@ -718,14 +725,16 @@ void SP2::Update(double dt)
 				
 
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
-			}	
-				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
-				{
-					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}		
-			}
+			}		
+		}
 	}
-			
+		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+		{
+			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
+			{
+				ItemObject::ItemList[i]->Collider(player.hitbox);
+			}
+		}
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
 					
@@ -893,6 +902,8 @@ void SP2::Render()
 	RenderNPCs();
 	RenderSlideDoor();
 	RenderPickUpObj();
+	RenderShipGuard();
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -1072,9 +1083,6 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
 		RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval0:  " + std::to_string(ItemObject::ItemList[0]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -370.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1084,7 +1092,7 @@ void SP2::Render()
 			{
 
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
-				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES. PRESS F TO PLACE CORE", Color(1.f, 1.f, 1.f), 25, -700.f, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES.", Color(1.f, 1.f, 1.f), 25, -700.f, -25.f);
 			}
 			else
 			{
@@ -1093,6 +1101,14 @@ void SP2::Render()
 			}
 		}
 	}
+
+	if(ItemObject::ItemList[0]->TextCheck == true || ItemObject::ItemList[1]->TextCheck == true || ItemObject::ItemList[2]->TextCheck == true)
+	{
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "PRESS F TO PICK UP", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
+	}
+
+
 
 	if (playerState == STATE_INTERACTING_MAZE){
 
@@ -2478,6 +2494,19 @@ void SP2::RenderAlien()
 			modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
+}
+
+void SP2::RenderShipGuard()
+{
+	if (ItemObject::ItemList[4]->ShipGuardCheck == false)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(40, 0, 35);
+		//modelStack.Rotate(AlienAnimate / 2, 0, 0, 1);
+		modelStack.Scale(1, 1, 2);
+		RenderMesh(meshList[GEO_ShipGuard], true);
+		modelStack.PopMatrix();
+	}
 }
 
 //void SP2::AlarmUpdate()

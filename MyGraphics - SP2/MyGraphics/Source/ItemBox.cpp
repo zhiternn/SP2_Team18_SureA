@@ -23,6 +23,9 @@ ItemObject::ItemObject()
 	buttonPressBool = false;
 	cbuttonRise = false;
 
+	TextCheck = false;
+	ShipGuardCheck = false;
+
 	mazeCheck = 0;
 	buttonCover = 0;
 	buttonRise = 0;
@@ -135,6 +138,27 @@ void ItemObject::PickUpAnimation(double dt)
 	//////////////////
 }
 
+void ItemObject::Collider(Hitbox hitbox)
+{
+	if (Hitbox::CheckItems(this->hitbox, hitbox)){
+	
+		ShipGuardCheck = true;
+		TextCheck = true;
+		if (haveItem == true && ItemBoolInterval == false && oneTimeThing == false)
+		{
+			haveItem = false;
+			dropItem = true;
+			ItemBoolInterval = true;
+			ItemInterval = 0;
+		}
+	}
+	else
+	{
+		ShipGuardCheck = false;
+		TextCheck = false;
+	}
+}
+
 void ItemObject::PickUp(Hitbox hitbox)
 {
 	if (Hitbox::CheckItems(this->hitbox, hitbox))
@@ -146,13 +170,7 @@ void ItemObject::PickUp(Hitbox hitbox)
 			ItemBoolInterval = true;
 			ItemInterval = 0;
 		}
-		if (haveItem == true && ItemBoolInterval == false && oneTimeThing == false)
-		{
-			haveItem = false;
-			dropItem = true;
-			ItemBoolInterval = true;
-			ItemInterval = 0;
-		}
+
 		buttonCoverBool = true;
 	
 		if (cbuttonRise == true)
@@ -161,9 +179,6 @@ void ItemObject::PickUp(Hitbox hitbox)
 				mazeCheck = 1;
 			}
 			buttonPressBool = true;
-		
-
-
 		}
 	}
 }
