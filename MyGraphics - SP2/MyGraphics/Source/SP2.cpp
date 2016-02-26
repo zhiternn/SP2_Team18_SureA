@@ -1101,12 +1101,15 @@ void SP2::Render()
 			}
 		}
 	}
-
-	if(ItemObject::ItemList[0]->TextCheck == true || ItemObject::ItemList[1]->TextCheck == true || ItemObject::ItemList[2]->TextCheck == true)
+	for (int i = 0; i < 3; i++)
 	{
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "PRESS F TO PICK UP", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
+		if (ItemObject::ItemList[i]->TextCheck == true && ItemObject::ItemList[i]->canPut == false)
+		{
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "PRESS F TO PICK UP", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
+		}
 	}
+	
 
 
 
@@ -1820,10 +1823,6 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
 		{
 			modelStack.PushMatrix();
-			ItemObject::ItemList[1]->SetPosition(5, 1000, 47);
-			ItemObject::ItemList[2]->SetPosition(5, 1000, 47);
-			ItemObject::ItemList[1]->haveItem == false;
-			ItemObject::ItemList[2]->haveItem == false;
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
 				modelStack.PushMatrix();
 					modelStack.Translate(
@@ -2442,12 +2441,12 @@ void SP2::AlienAnimation(double dt)
 	{
 		if (AlienMovementDirections == true)
 		{
-			AlienAnimate += (float(10 * dt));
+			AlienAnimate += (float(250 * dt));
 		}
 
 		if (AlienMovementDirections == false)
 		{
-			AlienAnimate -= (float(10 * dt));
+			AlienAnimate -= (float(250 * dt));
 		}
 	}
 
