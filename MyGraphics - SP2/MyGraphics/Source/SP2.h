@@ -76,6 +76,7 @@ class SP2 : public Scene
 		GEO_TestitemExtra,
 		GEO_TestItemStand,
 		GEO_UIBAR,
+		GEO_UIBAROUTLINE,
 
 		GEO_ShipButtonStand,
 		GEO_ShipButton,
@@ -85,8 +86,11 @@ class SP2 : public Scene
 		GEO_AlienHands,
 		GEO_AlienLegs,
 
+
 		GEO_EFFECT_EXPLOSION,
 		GEO_EFFECT_BEAM,
+
+		GEO_PlayerHands,
 
 		NUM_GEOMETRY
 	};

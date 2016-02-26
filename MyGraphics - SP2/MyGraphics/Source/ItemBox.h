@@ -37,7 +37,6 @@ public:
 	bool buttonRiseBool;
 	bool buttonPressBool;
 	bool cbuttonRise;
-
 	int mazeCheck;
 
 	bool ItemBoolInterval;

@@ -318,8 +318,11 @@ void SP2::Init()
 	meshList[GEO_ALLYSHIP] = MeshBuilder::GenerateOBJ("allyship", "OBJ//allyShip.obj");
 	meshList[GEO_ALLYSHIP]->textureID = LoadTGA("Image//allyShip.tga");
 
-	meshList[GEO_UIBAR] = MeshBuilder::GenerateOBJ("Bar", "OBJ//UIBar.obj");
-	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//enemyTex.tga");
+	meshList[GEO_UIBAR] = MeshBuilder::GenerateOBJ("UIBAR", "OBJ//UIBar.obj");
+	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//EnergyBar.tga");
+	meshList[GEO_UIBAROUTLINE] = MeshBuilder::GenerateQuad("UIBAROUTLINE", Color(1, 1, 1));
+	meshList[GEO_UIBAROUTLINE]->textureID = LoadTGA("Image//EnergyBarOutLine.tga");
+	
 
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//door.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
@@ -355,6 +358,9 @@ void SP2::Init()
 
 	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
 	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
+
+	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
+	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -460,19 +466,19 @@ void SP2::Init()
 
 	//Items
 	ItemObject* item1 = new ItemObject();//Obj1 
-	item1->hitbox.SetSize(2, 2, 2);
+	item1->hitbox.SetSize(3, 2, 3);
 	item1->SetPosition(0, 1, 0);
 
 	ItemObject* item2 = new ItemObject();//Obj2 
-	item2->hitbox.SetSize(2, 2, 2);
+	item2->hitbox.SetSize(3, 2, 3);
 	item2->SetPosition(-10, 1, 0);
 
 	ItemObject* item3 = new ItemObject();//Obj3 
-	item3->hitbox.SetSize(2, 2, 2);
+	item3->hitbox.SetSize(3, 2, 3);
 	item3->SetPosition(-5, 1, 0);
 
 	ItemObject* item4 = new ItemObject();//Button
-	item4->hitbox.SetSize(2, 2, 2);
+	item4->hitbox.SetSize(3, 2, 3);
 	item4->SetPosition(20, 17.5, 0);
 
 	//INTERNAL SKYBOX BOUNDARIES
@@ -683,8 +689,13 @@ void SP2::Update(double dt)
 			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 			{
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
-			}		
-		}
+			}	
+				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
+				{
+					ItemObject::ItemList[i]->PickUp(player.hitbox);
+				}		
+			}
+	}
 			
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
@@ -707,9 +718,6 @@ void SP2::Update(double dt)
 			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))){
 				player.position.Set(18, 19, 0);
 			}
-
-
-	}
 		
 	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 	{
@@ -917,6 +925,20 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_FLOOR], true);
 	modelStack.PopMatrix();
 
+
+	modelStack.PushMatrix();
+	RenderQuadOnScreen(meshList[GEO_PlayerHands], 200,200,1100,-500);
+	modelStack.PopMatrix();
+
+	//modelStack.PushMatrix();
+	//modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
+	//modelStack.Scale(0.1, 0.1, 0.1);
+	//modelStack.PushMatrix();
+	//modelStack.Translate(player.right.x * 4.3, player.right.y * 4.3 - 2.3, player.right.z * 4.3 + 4);
+	//RenderMesh(meshList[GEO_PlayerHands], true);
+	//modelStack.PopMatrix();
+	//modelStack.PopMatrix();
+
 	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end(); ++it){
 		modelStack.PushMatrix();
 		modelStack.Translate(
@@ -947,7 +969,8 @@ void SP2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderQuadOnScreen(meshList[GEO_UIBAR], player.SprintDuration * 50, 7, -95, 48);
+	RenderQuadOnScreen(meshList[GEO_UIBAROUTLINE], 1000, 70, -250, 480);
+	RenderQuadOnScreen(meshList[GEO_UIBAR], player.SprintDuration * 480, 50, -735, 480);
 	modelStack.PopMatrix();
 
 	// HIT BOXES
@@ -1023,7 +1046,7 @@ void SP2::Render()
 		//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval0:  " + std::to_string(ItemObject::ItemList[0]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -310.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
 		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
 
@@ -1755,7 +1778,7 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(0, -ItemObject::ItemList[1]->fly * 2 + 2, -ItemObject::ItemList[1]->fly * 2 + 2) ;
+			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
 				modelStack.PushMatrix();
 					modelStack.Translate(
 						ItemObject::ItemList[0]->position.x,
@@ -1833,9 +1856,9 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == true && ItemObject::ItemList[1]->haveItem == true && ItemObject::ItemList[2]->haveItem == true && ItemObject::ItemList[0]->ItemBoolInterval == false && ItemObject::ItemList[1]->ItemBoolInterval == false && ItemObject::ItemList[2]->ItemBoolInterval == false)
 		{
 			modelStack.PushMatrix();
-			ItemObject::ItemList[0]->SetPosition(5, 1, 45);
-			ItemObject::ItemList[1]->SetPosition(5, 1, 45);
-			ItemObject::ItemList[2]->SetPosition(5, 1, 45);
+			ItemObject::ItemList[0]->SetPosition(5, 1, 47);
+			ItemObject::ItemList[1]->SetPosition(5, 1, 47);
+			ItemObject::ItemList[2]->SetPosition(5, 1, 47);
 			modelStack.Translate(player.position.x + player.view.x, player.position.y + player.view.y, player.position.z + player.view.z);
 			modelStack.Scale(0.1, 0.1, 0.1);
 			modelStack.PushMatrix();

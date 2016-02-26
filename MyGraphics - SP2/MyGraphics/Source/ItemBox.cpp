@@ -154,10 +154,10 @@ void ItemObject::PickUp(Hitbox hitbox)
 			ItemInterval = 0;
 		}
 		buttonCoverBool = true;
-		mazeCheck = 1;
 		if (cbuttonRise == true)
 		{
 			buttonPressBool = true;
+			mazeCheck = 1;
 		}
 	}
 }
@@ -166,10 +166,10 @@ void ItemObject::ItemDelay(double dt)
 {
 	if (ItemBoolInterval == true)
 	{
-		ItemInterval += (float(50 * dt));
+		ItemInterval += (float(1 * dt));
 	}
 
-	if (ItemInterval > 200)
+	if (ItemInterval > 2)
 	{
 		ItemBoolInterval = false;
 	}
