@@ -37,7 +37,7 @@ void Turret::Update(double dt)
 
 	if (Application::IsKeyPressed('W')){
 		if (view.y < 0.5f){
-			float pitch = (float)(TURN_SPEED * dt);
+			float pitch = (float)(TURN_SPEED/2 * dt);
 			forRotationPitch += pitch;
 			Mtx44 rotate;
 			rotate.SetToRotation(pitch, right.x, right.y, right.z);
@@ -48,7 +48,7 @@ void Turret::Update(double dt)
 	}
 	if (Application::IsKeyPressed('S')){
 		if (view.y > -0.5f){
-			float pitch = -(float)(TURN_SPEED * dt);
+			float pitch = -(float)(TURN_SPEED/2 * dt);
 			forRotationPitch += pitch;
 			Mtx44 rotate;
 			rotate.SetToRotation(pitch, right.x, right.y, right.z);
@@ -65,6 +65,9 @@ void Turret::Update(double dt)
 		view = rotate * view;
 		right = rotate * right;
 		up = rotate * up;
+		camera.view = rotate * camera.view;
+		camera.right = rotate * camera.right;
+		camera.up = rotate * camera.up;
 	}
 	if (Application::IsKeyPressed('D')){
 		float yaw = -(float)(TURN_SPEED * dt);
@@ -74,6 +77,9 @@ void Turret::Update(double dt)
 		view = rotate * view;
 		right = rotate * right;
 		up = rotate * up;
+		camera.view = rotate * camera.view;
+		camera.right = rotate * camera.right;
+		camera.up = rotate * camera.up;
 	}
 
 	barrelPos = seatPos + (view * (hitbox.sizeX / 1.5f));
@@ -103,7 +109,7 @@ void Turret::Update(double dt)
 		isOverHeated = false;
 	}
 
-	camera.position.y = seatPos.y + abs(view.y);
+	camera.position = seatPos - view*0.5f;
 	camera.Update(dt);
 }
 

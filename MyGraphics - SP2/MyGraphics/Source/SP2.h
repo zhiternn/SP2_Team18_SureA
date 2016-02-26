@@ -220,6 +220,7 @@ private:
 	
 	void AlienAnimation(double dt);
 	void RenderAlien();
+	void RenderCivilians();
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 

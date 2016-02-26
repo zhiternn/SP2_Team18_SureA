@@ -120,7 +120,6 @@ void SP2::Init()
 	// Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-
 	glUniform1i(m_parameters[U_NUMLIGHTS], 4);
 	//setting up light object
 	light[0].type = Light::LIGHT_DIRECTIONAL;
@@ -562,6 +561,11 @@ void SP2::Init()
 	allyShip.SetPosition(40.f, 0.f, 35.f);
 
 	GenerateWaypoints(100, 100, 1, 4);
+
+	//spawns civilians
+	for (size_t i = 0; i < 3; ++i){
+		Friendly::friendlyList.push_back(new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f));
+	}
 }
 
 void SP2::Update(double dt)
@@ -714,8 +718,6 @@ void SP2::Update(double dt)
 			{
 				ItemObject::ItemList[i]->ItemDelay(dt);
 			}
-
-			std::cout << "MAZEY TEST   " <<  mappy.mazeSuccess << std::endl;
 
 			if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
 			{
@@ -895,19 +897,12 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Scale(0.2, 0.2, 0.2);
-	RenderMesh(meshList[GEO_HEADNPC1], true);
-	RenderMesh(meshList[GEO_BODYNPC1], true);
-	RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
-
-	modelStack.Translate(5, 0, 0);
-	RenderMesh(meshList[GEO_HEADNPC2], true);
-	RenderMesh(meshList[GEO_BODYNPC2], true);
-	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Scale(0.5, 0.5, 0.5);
+	//RenderMesh(meshList[GEO_HEADNPC1], true);
+	//RenderMesh(meshList[GEO_BODYNPC1], true);
+	//RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
+	//RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
 
 	if (onGround == false){
 		modelStack.PushMatrix();
@@ -2187,7 +2182,6 @@ void SP2::RenderTurret()
 	RenderMesh(meshList[GEO_TURRET_HEAD], true);
 
 	modelStack.PushMatrix();
-	//modelStack.Rotate();
 	RenderMesh(meshList[GEO_TURRET_BARREL], true);
 
 	modelStack.PopMatrix();
@@ -2222,14 +2216,6 @@ void SP2::RenderShipButton()
 
 void SP2::RenderMaze()
 {
-	//for (int i = 0; i > mappy.sizeY-1; ++i){
-	//	for (int j = 0; j < mappy.sizeX; ++j){
-	//		if (mappy.mapLayout[i][j] == Maze::MAP_PATH){
-	//			RenderQuadOnScreen(meshList[GEO_TEST], 1, 1, j, i);
-	//		}
-	//	}
-	//}
-
 	for (int y = 0; y<mappy.colNumber-1; ++y){
 		for (int x = 0; x < mappy.rowNumber-1; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
@@ -2294,11 +2280,11 @@ void SP2::RenderNPCs()
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
-			(*it)->position.y,
+			(*it)->position.y - Waypoint::sizeV/2,
 			(*it)->position.z
 			);
 		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
-		RenderAlien();
+		RenderCivilians();
 		modelStack.PopMatrix();
 	}
 }
@@ -2408,6 +2394,22 @@ void SP2::RenderAlien()
 			RenderMesh(meshList[GEO_AlienLegs], true);
 			modelStack.PopMatrix();
 
+	modelStack.PopMatrix();
+}
+
+void SP2::RenderCivilians()
+{
+	modelStack.PushMatrix();
+	modelStack.Scale(0.5, 0.5, 0.5);
+	RenderMesh(meshList[GEO_HEADNPC2], true);
+	RenderMesh(meshList[GEO_BODYNPC2], true);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 1.947, 0);
+	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
+	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
+
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
 

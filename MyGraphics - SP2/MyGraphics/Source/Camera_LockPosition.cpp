@@ -48,7 +48,6 @@ void Camera_LockPosition::Update(double dt)
 	}
 
 	view.Normalize();
-	right.Normalize();
 	up.Normalize();
 
 	Application::SetMousePosition();
