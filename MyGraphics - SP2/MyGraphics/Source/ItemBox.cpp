@@ -154,6 +154,10 @@ void ItemObject::PickUp(Hitbox hitbox)
 			ItemInterval = 0;
 		}
 		buttonCoverBool = true;
+<<<<<<< a3ee160e61146581e5271977670a40d38113d053
+=======
+	
+>>>>>>> c2800d280429c775ebe9f159339e738cf853599b
 		if (cbuttonRise == true)
 		{
 			buttonPressBool = true;

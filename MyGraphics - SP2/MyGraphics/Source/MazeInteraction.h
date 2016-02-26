@@ -36,7 +36,7 @@ public:
 	float startingPointY;
 	bool mazeSuccess;
 
-	int mapLayout[10][10];
+	int mapLayout[16][16];
 private:
 
 	int generatePathX;

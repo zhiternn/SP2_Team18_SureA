@@ -5,8 +5,8 @@
 
 Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 {
-		gridSizeY = (float)(screenSizeY*0.75) / numberOfRows;
-		gridSizeX = (float)(screenSizeX*0.8) / numberOfCols;
+		gridSizeY = (float)(screenSizeY*1.f) / numberOfRows;
+		gridSizeX = (float)(screenSizeX*0.75f) / numberOfCols;
 		startingPointX = (float)screenSizeX / 2.f;
 		startingPointY = (float)screenSizeY / 2.f;
 		rowNumber = numberOfRows;
@@ -37,7 +37,6 @@ void Maze::GenerateMap(void)
 	//	RANDOMLY GENERATE PATHS STARTING FROM CENTER
 	//
 	srand((unsigned int)time(NULL));
-	mapLayout[1][1] = MAP_PATH;
 	do{
 		irng = rand() % 4;
 		//UP
@@ -99,7 +98,7 @@ void Maze::GenerateMap(void)
 	} while (mapLayout[colNumber - 3][rowNumber - 3] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
 
 	mapLayout[1][1] = MAP_START;
-	mapLayout[7][7] = MAP_END;
+	mapLayout[colNumber - 3][rowNumber - 3] = MAP_END;
 
 }			 
 
@@ -112,6 +111,7 @@ void Maze::PrintMap(){
 			else{
 				std::cout << " ";
 			}
+
 		}
 		std::cout << std::endl;
 	}
@@ -123,11 +123,12 @@ void Maze::Collision(){
 	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
 	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
 
+	std::cout << xGrid << "Y" << yGrid << std::endl;
 	if (mapLayout[yGrid][xGrid] == MAP_BLOCK){
 		Application::SetMousePosition(gridSizeX + gridSizeX/2, gridSizeY + gridSizeY/2);
 	}
 
-	if (yGrid == 7 && xGrid == 7){
+	if (yGrid == colNumber - 3 && xGrid == rowNumber - 3){
 		mazeSuccess = true;
 	}
 	

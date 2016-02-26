@@ -364,8 +364,20 @@ void SP2::Init()
 	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
 	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
 
+<<<<<<< a3ee160e61146581e5271977670a40d38113d053
 	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
 	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
+=======
+	meshList[GEO_ENDFLAG] = MeshBuilder::GenerateQuad("Flag", Color(1, 1, 1));
+	meshList[GEO_ENDFLAG]->textureID = LoadTGA("Image//flag.tga");
+
+	meshList[GEO_MAZETEX] = MeshBuilder::GenerateQuad("Maze", Color(1, 1, 1));
+	meshList[GEO_MAZETEX]->textureID = LoadTGA("Image//mazeMap.tga");
+
+
+	meshList[GEO_STARTFLAG] = MeshBuilder::GenerateQuad("Start", Color(1, 1, 1));
+	meshList[GEO_STARTFLAG]->textureID = LoadTGA("Image//start.tga");
+>>>>>>> c2800d280429c775ebe9f159339e738cf853599b
 
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
@@ -611,7 +623,7 @@ void SP2::Update(double dt)
 		m_timer.StartCountdown(20);
 
 
-		mappy = Maze(10, 10, screenX, screenY);
+		mappy = Maze(16, 16, screenX, screenY);
 		Application::SetMousePosition(mappy.gridSizeX, mappy.gridSizeY);
 		ItemObject::ItemList[3]->mazeCheck = 0;
 	}
@@ -2286,18 +2298,25 @@ void SP2::RenderMaze()
 	for (int y = 0; y<mappy.colNumber-1; ++y){
 		for (int x = 0; x < mappy.rowNumber-1; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM],
+				RenderQuadOnScreen(meshList[GEO_MAZETEX],
 					mappy.gridSizeX, 
 					mappy.gridSizeY,
 					((x*mappy.gridSizeX) - mappy.gridSizeX /2) - screenX/2.f + mappy.gridSizeX,
 					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
 			else if (mappy.mapLayout[y][x] == Maze::MAP_START){
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_TOP],
+				RenderQuadOnScreen(meshList[GEO_STARTFLAG],
 				mappy.gridSizeX,
 				mappy.gridSizeY,
 				((x*mappy.gridSizeX) - mappy.gridSizeX / 2) - screenX / 2.f + mappy.gridSizeX,
 				(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
+			}
+			else if (mappy.mapLayout[y][x] == Maze::MAP_END){
+				RenderQuadOnScreen(meshList[GEO_ENDFLAG],
+					mappy.gridSizeX,
+					mappy.gridSizeY,
+					((x*mappy.gridSizeX) - mappy.gridSizeX / 2) - screenX / 2.f + mappy.gridSizeX,
+					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
 		}
 	}
