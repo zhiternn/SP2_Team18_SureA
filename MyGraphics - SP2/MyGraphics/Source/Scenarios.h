@@ -12,6 +12,8 @@ public:
 	virtual void Update(double dt) = 0;
 
 	bool stopScenario;
+	bool winScenario;
+	bool loseScenario;
 protected:
 	Countdown timer;
 };

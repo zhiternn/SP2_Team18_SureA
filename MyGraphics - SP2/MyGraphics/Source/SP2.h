@@ -177,6 +177,14 @@ class SP2 : public Scene
 		U_TOTAL
 	};
 
+	enum TIMERS
+	{
+		TIMER_MAZE,
+		TIMER_SCENARIO,
+
+		TIMER_END
+	};
+
 public:
 	SP2();
 	~SP2();
@@ -294,7 +302,7 @@ private:
 
 	Mesh *meshList[NUM_GEOMETRY];
 
-	Countdown m_timer;
+	Countdown m_timer[TIMER_END];
 
 	vector<float> objArrangementData;
 
@@ -323,6 +331,7 @@ private:
 	Player player;
 
 	Scenario* runningScenario;// nullptr if no scenario is running
+	bool scenarioResult; // true if win
 
 	Maze mappy;
 

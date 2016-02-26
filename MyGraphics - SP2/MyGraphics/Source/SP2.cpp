@@ -402,7 +402,7 @@ void SP2::Init()
 	AlienMovementDirections = false;
 	AlienAnimate = 0;
 
-
+	scenarioResult = false;
 
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
@@ -617,13 +617,15 @@ void SP2::Update(double dt)
 	//AlarmUpdate();
 
 
+
+
 	bool stateChanged = false;
 	if (ItemObject::ItemList[3]->mazeCheck == 1){
 		playerState = STATE_INTERACTING_MAZE;
 
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(20);
+		m_timer[TIMER_MAZE].StartCountdown(20);
 
 
 		mappy = Maze(16, 16, screenX, screenY);
@@ -676,11 +678,13 @@ void SP2::Update(double dt)
 
 	if (Application::IsKeyPressed('L')){
 		if (runningScenario == nullptr){
-			runningScenario = new ScenarioDefend(3, 60, 10);
+			runningScenario = new ScenarioDefend(3, 3, 10);
 		}
 	}
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
+			scenarioResult = runningScenario->winScenario;
+			m_timer[TIMER_SCENARIO].StartCountdown(5);
 
 			delete runningScenario;
 			runningScenario = nullptr;
@@ -695,7 +699,7 @@ void SP2::Update(double dt)
 			runningScenario->Update(dt);
 		}
 	}
-
+	
 	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end();){
 		if ((*it)->Update(dt)){
 			it = Projectile::projectileList.erase(it);
@@ -792,6 +796,9 @@ void SP2::Update(double dt)
 	else if (readyToUse_HITBOX < 2.f){
 		readyToUse_HITBOX += (float)(10 * dt);
 	}
+
+
+
 }
 
 void SP2::Render()
@@ -1118,10 +1125,10 @@ void SP2::Render()
 
 		Application::ShowCursor();
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 2000, 1500, 0.f, 5.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 		RenderMaze();
 
-		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
+		if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
@@ -1134,17 +1141,17 @@ void SP2::Render()
 			playerState = STATE_FPS;
 			Application::HideCursor();
 
-			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 			counter++;
 			if (counter <=200){
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 				RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
 			}
-			if (m_timer.GetTimeLeft() <= 0 && onGround == false){
+			if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
 			}
-			if (m_timer.GetTimeLeft() >= 0 && onGround == true){
+			if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
 				counter++;
 				std::cout << counter << std::endl;
 				if (counter <= 2000){
@@ -1159,14 +1166,34 @@ void SP2::Render()
 		playerState = STATE_FPS;
 		Application::HideCursor();
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 		counter++;
 		if (counter <=200){
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
 		}
 	}
-}
+
+		if (m_timer[TIMER_SCENARIO].GetTimeLeft() > 0){
+			if (scenarioResult == true){ // if win
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, -400.f, -25.f);
+			}
+			else{ // if lose
+			}
+		}
+
+		/*if (runningScenario->loseScenario == true){
+			m_timer[TIMER_SCENARIO].StartCountdown(5);
+			runningScenario->loseScenario = false;
+		}
+
+		if (m_timer[TIMER_SCENARIO].GetTimeLeft() > 0){
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You suck!", Color(1, 0, 0), 40, -400.f, -25.f);
+			
+		}*/
+	}
 
 void SP2::Exit()
 {
