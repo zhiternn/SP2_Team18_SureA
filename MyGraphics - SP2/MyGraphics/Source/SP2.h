@@ -231,7 +231,7 @@ private:
 	void LightsSetup();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
-	void RenderFriendlyNPC();
+	void RenderFriendly();
 	void AlarmUpdate();
 	void DeleteAfter();
 	

@@ -869,20 +869,6 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Scale(0.2, 0.2, 0.2);
-	RenderMesh(meshList[GEO_HEADNPC1], true);
-	RenderMesh(meshList[GEO_BODYNPC1], true);
-	RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
-
-	modelStack.Translate(5, 0, 0);
-	RenderMesh(meshList[GEO_HEADNPC2], true);
-	RenderMesh(meshList[GEO_BODYNPC2], true);
-	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
-	modelStack.PopMatrix();
-
 	if (onGround == false){
 		modelStack.PushMatrix();
 		modelStack.Translate(15, 17.5, 0);
@@ -2343,11 +2329,11 @@ void SP2::RenderNPCs()
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
-			(*it)->position.y,
+			(*it)->position.y - Waypoint::sizeV/2,
 			(*it)->position.z
 			);
 		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
-		RenderAlien();
+		RenderFriendly();
 		modelStack.PopMatrix();
 	}
 }
@@ -2460,6 +2446,22 @@ void SP2::RenderAlien()
 	modelStack.PopMatrix();
 }
 
+void SP2::RenderFriendly()
+{
+	modelStack.PushMatrix();
+	modelStack.Scale(0.3, 0.3, 0.3);
+	RenderMesh(meshList[GEO_HEADNPC2], true);
+	RenderMesh(meshList[GEO_BODYNPC2], true);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
+	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
+
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+}
+
 void SP2::RenderShipGuard()
 {
 	if (ItemObject::ItemList[4]->ShipGuardCheck == false)
@@ -2553,34 +2555,3 @@ void SP2::UpdateProjectile(double dt)
 		}
 	}
 }
-
-//void SP2::AlarmUpdate()
-//{
-//	Mtx44 rotate;
-//	rotate.SetToRotation(12, 0, 1, 0);
-//
-//	if (alarmLights == true)
-//	{
-//		light[2].spotDirection = rotate * light[2].spotDirection;
-//		light[3].spotDirection = rotate * light[3].spotDirection;
-//		light[2].power = 10.f;
-//		light[3].power = 10.f;
-//	}
-//	if (alarmLights == false)
-//	{
-//		light[2].power = 0.f;
-//		light[3].power = 0.f;
-//	}
-//}
-
-//void SP2::DeleteAfter()
-//{
-//	if (alarmLights == true)
-//	{
-//		alarmLights = false;
-//	}
-//	if (alarmLights == false)
-//	{
-//		alarmLights = true;
-//	}
-//}

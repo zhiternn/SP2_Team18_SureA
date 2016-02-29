@@ -31,6 +31,7 @@ Scenario(duration)
 ScenarioDefend::~ScenarioDefend()
 {
 	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){
+		delete *it;
 		it = Enemy::enemyList.erase(it);
 	}
 }
@@ -53,6 +54,7 @@ void ScenarioDefend::Update(double dt)
 					stopScenario = true;
 				}
 
+				delete *it;
 				it = Enemy::enemyList.erase(it);
 			}
 			else{
