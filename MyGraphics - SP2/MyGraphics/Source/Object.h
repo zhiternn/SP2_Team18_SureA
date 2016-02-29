@@ -20,6 +20,7 @@ public:
 	void ReceiveDamage(int amount);
 
 	bool isDead;
+	bool toBeIgnored;//ignored by pathfinder
 private:
 	int HP;
 	bool isInvulnerable;

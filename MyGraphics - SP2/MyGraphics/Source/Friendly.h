@@ -14,6 +14,16 @@ using std::list;
 class Friendly : public NPC
 {
 public:
+
+	enum FRIENDLY_STATE
+	{
+		IDLE,
+		ROAM,
+		PANIC,
+		CHAT,
+		EVACUATE
+	};
+
 	Friendly(Vector3 pos = Vector3(0, 0, 0), Vector3 dir = Vector3(0, 0, 1), float speed = 1.f);
 	virtual  ~Friendly();
 
@@ -23,17 +33,9 @@ public:
 	void StoreDialogue(vector<string> svec);
 	string GetDialogue();
 
-	short state;
+	bool reachedDestination;
+	FRIENDLY_STATE state;
 private:
-	enum STATE
-	{
-		IDLE,
-		ROAM,
-		PANIC,
-		CHAT,
-		EVACUATE
-	};
-
 	vector<string> dialogue;
 };
 

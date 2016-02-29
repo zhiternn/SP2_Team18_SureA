@@ -12,12 +12,11 @@ using std::list;
 class Enemy : public NPC
 {
 public:
-	enum STATE
+	enum ENEMY_STATE
 	{
 		MOVE,
 		HIT,
 		FALL,
-		FINISH
 	};
 
 	Enemy(Vector3 pos = Vector3(0, 0, 0), Vector3 dir = Vector3(0, 0, -1), float speed = 1.f);
@@ -35,7 +34,7 @@ public:
 	bool isHit;
 private:
 
-	short state;
+	ENEMY_STATE state;
 	int HP;
 };
 

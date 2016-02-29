@@ -11,19 +11,24 @@ Airship::~Airship()
 {
 }
 
-void Airship::Init(const Vector3& pos, const Vector3& frontDir)
+void Airship::Init(const Vector3& pos, const Vector3& view)
 {
 	this->position = pos;
-	this->frontDir = defaultFront = frontDir.Normalized();
-	this->right = this->defaultRight = (this->frontDir.Cross(Vector3(0, 1, 0))).Normalized();
+	this->view = defaultFront = view.Normalized();
+	this->up = Vector3(0, 1, 0);
+	this->right = this->defaultRight = (this->view.Cross(this->up)).Normalized();
 
-	camera.Init(pos - frontDir, pos, Vector3(0, 1, 0));
-	ySpeed = xSpeed = zSpeed = 0.f;
+	Mtx44 rotate;
+	rotate.SetToRotation(-25, right.x, right.y, right.z);
+
+	Vector3 forCamDir = rotate * view;
+
+	camera.Init(pos + forCamDir * 3, pos, Vector3(0, 1, 0));
+	ySpeed = hSpeed = 0.f;
 
 	facingYaw = 0.f;
 
-	hitbox.SetSize(1.8f, 1.5f, 1.8f);
-	hitbox.SetPosition(position);
+	std::cout << this->view << std::endl;
 }
 
 void Airship::Update(double dt, bool controlling)
@@ -51,12 +56,14 @@ void Airship::Update(double dt, bool controlling)
 
 			Mtx44 rotate;
 			rotate.SetToRotation(yaw, 0, 1, 0);
-			frontDir = rotate * frontDir;
+			view = rotate * view;
 			right = rotate * right;
 
 			camera.right = rotate * camera.right;
 			camera.up = rotate * camera.up;
 			camera.view = rotate * camera.view;
+
+			facingYaw = (((defaultFront.Cross(view)).y / abs((defaultFront.Cross(view)).y)) * Math::RadianToDegree(acos(defaultFront.Dot(view))));
 		}
 		if (Application::IsKeyPressed('D'))
 		{
@@ -64,12 +71,14 @@ void Airship::Update(double dt, bool controlling)
 
 			Mtx44 rotate;
 			rotate.SetToRotation(yaw, 0, 1, 0);
-			frontDir = rotate * frontDir;
+			view = rotate * view;
 			right = rotate * right;
 
 			camera.right = rotate * camera.right;
 			camera.up = rotate * camera.up;
 			camera.view = rotate * camera.view;
+
+			facingYaw = (((defaultFront.Cross(view)).y / abs((defaultFront.Cross(view)).y)) * Math::RadianToDegree(acos(defaultFront.Dot(view))));
 		}
 		if (Application::IsKeyPressed('W'))
 		{
@@ -80,16 +89,15 @@ void Airship::Update(double dt, bool controlling)
 			ySpeed -= (THRUST_LIMIT/2) * dt;
 		}
 	}
-	frontDir.y = 0;
-	frontDir.Normalize();
+	view.y = 0;
+	view.Normalize();
 	right.Normalize();
 
-	xSpeed += ((frontDir.x * thrustSpeed)) * dt;
-	ySpeed += ((frontDir.y * thrustSpeed) - WV_GRAVITY) * dt;
-	zSpeed += ((frontDir.z * thrustSpeed)) * dt;
-	position.x += xSpeed * dt;
+	ySpeed += ((view.y * thrustSpeed) - WV_GRAVITY) * dt;
+	hSpeed += thrustSpeed * dt;
+	position.x += view.x * hSpeed * dt;
 	position.y += ySpeed * dt;
-	position.z += zSpeed * dt;
+	position.z += view.z * hSpeed * dt;
 
 	hitbox.SetPosition(position);
 
@@ -100,7 +108,7 @@ void Airship::Update(double dt, bool controlling)
 	if (Hitbox::CheckHitBox(hitbox, oldPos, xCollided, yCollided, zCollided)){
 		if (xCollided){
 			position.x = oldPos.x;
-			xSpeed = 0;
+			hSpeed = 0;
 		}
 		if (yCollided){
 			position.y = oldPos.y;
@@ -108,14 +116,11 @@ void Airship::Update(double dt, bool controlling)
 		}
 		if (zCollided){
 			position.z = oldPos.z;
-			zSpeed = 0;
+			hSpeed = 0;
 		}
 
 		hitbox.SetPosition(position);
 	}
-
-	facingYaw = (((defaultFront.Cross(frontDir)).y / abs((defaultFront.Cross(frontDir)).y)) * Math::RadianToDegree(acos(defaultFront.Dot(frontDir))));
-	std::cout << facingYaw << std::endl;
 
 	camera.target = position;
 	camera.Update(dt);

@@ -403,25 +403,31 @@ void SP2::Init()
 	interval = 0;
 	intervalBool = false;
 
+	//ALIEN ANIMATION INIT
 	AlienSpawn = false;
 	AlienMovementsBool = false;
 	AlienMovementDirections = false;
 	AlienAnimate = 0;
 
+	//GENERAL SCENARIO INIT
+	runningScenario = nullptr;
 	scenarioResult = false;
 
+	//EVACUATION SCENARIO INIT
+	bool runningEvacuationScenario = true;
+	bool winScenario = false;
+
+	//PORTAL ANIMATION INIT
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
 	animation_moveDoor = 0.f;
 
-	// Base spotlight
+	//BASE SPOTLIGHT INIT
 	baseSpotlight_startingX = (-screenX/2.f) + screenX * 0.1;
 	baseSpotlight_endingX = (screenX / 2.f) - screenX * 0.1;
 	baseSpotlight_power = 1;
 
 	player.Init(Vector3(-35, 5, 40), Vector3(0, 0, -1));
-	
-	runningScenario = nullptr;
 
 	//ArrangeObjs(65, 65, 30);
 
@@ -467,6 +473,11 @@ void SP2::Init()
 	turret.hitbox.SetSize(3.f, 4, 3.f);
 	turret.hitbox.SetPivot(0, 2.f, 0);
 	turret.Init(Vector3(-46.f, 0, -20.f), Vector3(0, 0, 1), 12);
+
+	allyShip.hitbox.SetSize(8.f, 1.5, 10);
+	allyShip.hitbox.SetPivot(0, 0.5f, 0);
+	allyShip.Init(Vector3(40.f, 0.f, 35.f), Vector3(0, 0, 1));
+	allyShip.toBeIgnored = true;
 
 	baseSpotlight.hitbox.SetSize(1, 1, 0.75f);
 	baseSpotlight.hitbox.SetPivot(0, 0.5f, 0);
@@ -589,11 +600,6 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
-	// SHIPS
-	allyShip.Init(Vector3(40.f, 0.f, 35.f), Vector3(0, 0, 1));
-	allyShip.hitbox.SetSize(8.f, 1.5, 10);
-	allyShip.hitbox.SetPivot(0, 0.5f, 0);
-
 	std::ifstream file;
 	std::string line;
 
@@ -612,8 +618,8 @@ void SP2::Init()
 	GenerateWaypoints(100, 100, 1, 4);
 
 	//spawns civilians
-	for (size_t i = 0; i < 20; ++i){
-		Friendly::friendlyList.push_back(new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f));
+	for (size_t i = 0; i < 5; ++i){
+		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
 		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
 	}
 
@@ -622,9 +628,6 @@ void SP2::Init()
 
 void SP2::Update(double dt)
 {
-
-	std::cout << Application::mouseWheelX << "   " << Application::mouseWheelY << std::endl;
-
 	if (playerState == STATE_FPS){
 		player.Update(dt);
 	}
@@ -647,6 +650,7 @@ void SP2::Update(double dt)
 	AlienAnimation(dt);
 	UpdateEffect(dt);
 	UpdateProjectile(dt);
+	UpdateEvacuationScenario();
 
 	bool stateChanged = false;
 	if (ItemObject::ItemList[3]->mazeCheck == 1){
@@ -704,13 +708,19 @@ void SP2::Update(double dt)
 		//NPC INTERACTION
 		for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
 			if (ItemCheckPosition((*it)->position, 45) && (player.position - (*it)->position).Length() <= 3.5f && m_timer[TIMER_NPC].GetTimeLeft() <= 0){
-				currentDialogue = (*it)->GetDialogue();
-				m_timer[TIMER_NPC].StartCountdown(2);
+				if (runningEvacuationScenario){
+					(*it)->GoTo(allyShip.position);
+					(*it)->state = Friendly::EVACUATE;
+				}
+				else{
+					currentDialogue = (*it)->GetDialogue();
+					m_timer[TIMER_NPC].StartCountdown(2);
+				}
 			}
 		}
 
 		//AIRSHIP INTERACTION
-		if ((player.position - allyShip.position).Length() <= 10.f){
+		if (playerState == STATE_FPS && (player.position - allyShip.position).Length() <= 7.f){
 			playerState = STATE_INTERACTING_AIRSHIP;
 		}
 		else if (playerState == STATE_INTERACTING_AIRSHIP){
@@ -736,23 +746,28 @@ void SP2::Update(double dt)
 			runningScenario = new ScenarioDefend(3, 3, 10);
 		}
 	}
+	if (Application::IsKeyPressed('K')){
+		StartEvacuationScenario(60, 5);
+	}
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
-			m_timer[TIMER_SCENARIO].StartCountdown(5);
+			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 
 			delete runningScenario;
 			runningScenario = nullptr;
 		}
 		else{
-			Mtx44 rotate;
-			rotate.SetToRotation(100.f * dt, 0, 1, 0);
-			light[2].spotDirection = rotate * light[2].spotDirection;
-			light[3].spotDirection = rotate * light[3].spotDirection;
-			AlienSpawn = true;
-
 			runningScenario->Update(dt);
 		}
+	}
+
+	if(runningScenario != nullptr || runningEvacuationScenario){
+		Mtx44 rotate;
+		rotate.SetToRotation(100.f * dt, 0, 1, 0);
+		light[2].spotDirection = rotate * light[2].spotDirection;
+		light[3].spotDirection = rotate * light[3].spotDirection;
+		AlienSpawn = true;
 	}
 
 	if (Application::IsKeyPressed('Y'))
@@ -853,7 +868,7 @@ void SP2::Render()
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
 	}
-	if (playerState == STATE_INTERACTING_AIRSHIP){
+	else if (playerState == STATE_INTERACTING_AIRSHIP){
 		camPos = allyShip.camera.position;
 		camTar = allyShip.camera.target;
 		camUp =	allyShip.camera.up;
@@ -1130,27 +1145,14 @@ void SP2::Render()
 			}
 		}
 
-	if (mappy.mazeSuccess == true){
-		Application::SetMousePosition(0, 0);
-		playerState = STATE_FPS;
-		Application::HideCursor();
-
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
-		counter++;
-		if (counter <=200){
-			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+	if (m_timer[TIMER_SCENARIO_TEXTS].GetTimeLeft() > 0){
+		if (scenarioResult == true){ // if win
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, -400.f, -25.f);
+		}
+		else{ // if lose
 		}
 	}
-
-		if (m_timer[TIMER_SCENARIO].GetTimeLeft() > 0){
-			if (scenarioResult == true){ // if win
-				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, -400.f, -25.f);
-			}
-			else{ // if lose
-			}
-		}
 
 		/*if (runningScenario->loseScenario == true){
 			m_timer[TIMER_SCENARIO].StartCountdown(5);
@@ -2333,17 +2335,18 @@ void SP2::RenderMaze()
 
 void SP2::UpdateNPCs(double dt)
 {
-	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){
-		if ((*it)->isDead){
-			it = Enemy::enemyList.erase(it);
+	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
+		(*it)->Update(dt);
+	}
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end();){
+		if ((*it)->reachedDestination){
+			delete *it;
+			it = Friendly::friendlyList.erase(it);
 		}
 		else{
 			(*it)->Update(dt);
-			it++;
+			++it;
 		}
-	}
-	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
-		(*it)->Update(dt);
 	}
 }
 
@@ -2593,6 +2596,29 @@ void SP2::UpdateProjectile(double dt)
 		else{
 			(*it)->Update(dt);
 			it++;
+		}
+	}
+}
+
+void SP2::StartEvacuationScenario(double duration, int numberToSave)
+{
+	m_timer[TIMER_SCENARIO_EVACUATE].StartCountdown(duration);
+	runningEvacuationScenario = true;
+}
+
+void SP2::UpdateEvacuationScenario()
+{
+	if (runningEvacuationScenario){
+		if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() > 0){//continue scenario
+			if (Friendly::friendlyList.size() == 0 && playerState == STATE_INTERACTING_AIRSHIP && allyShip.position.y >= 30.f){
+				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
+				scenarioResult = true;
+				runningEvacuationScenario = false;
+			}
+		}
+		else if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() <= 0){//LOSE
+			scenarioResult = false;
+			runningEvacuationScenario = false;
 		}
 	}
 }

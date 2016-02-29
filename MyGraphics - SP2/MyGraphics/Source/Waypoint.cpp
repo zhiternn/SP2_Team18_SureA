@@ -115,7 +115,6 @@ void Waypoint::LinkWaypoints()
 				this->reachableWaypoints.push_back(Waypoint::waypointList[j]);
 			}
 		}
-
 	}
 }
 void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)

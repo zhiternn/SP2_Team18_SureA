@@ -52,7 +52,7 @@ void Enemy::Update(double dt)
 			}
 		}
 		else{
-			state = FINISH;
+			reachedDestination = true;
 		}
 		break;
 
@@ -71,10 +71,6 @@ void Enemy::Update(double dt)
 			position.y = Waypoint::sizeV / 2;
 			state = MOVE;
 		}
-		break;
-
-	case FINISH:
-		reachedDestination = true;
 		break;
 
 	default:

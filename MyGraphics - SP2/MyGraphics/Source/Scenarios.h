@@ -6,6 +6,7 @@
 class Scenario
 {
 public:
+
 	Scenario(double duration);
 	virtual ~Scenario();
 
@@ -13,7 +14,6 @@ public:
 
 	bool stopScenario;
 	bool winScenario;
-	bool loseScenario;
 protected:
 	Countdown timer;
 };
@@ -39,10 +39,14 @@ private:
 //class ScenarioEvacuate : public Scenario
 //{
 //public:
+//	ScenarioEvacuate(double duration);
+//	virtual ~ScenarioEvacuate();
+//
 //	virtual void Update(double dt);
+//
 //private:
 //};
-//
+
 //class ScenarioInfiltrate : public Scenario
 //{
 //public:

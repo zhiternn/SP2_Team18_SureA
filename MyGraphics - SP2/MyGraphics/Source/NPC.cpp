@@ -32,6 +32,7 @@ void CalculateMovementCost(Waypoint* node, Waypoint* prevNode)
 		}
 	}
 }
+
 Waypoint* GetLowestInList(vector<Waypoint*> vec)
 {
 	float currentLowestMovementCost = 999.f;
@@ -46,6 +47,7 @@ Waypoint* GetLowestInList(vector<Waypoint*> vec)
 
 	return belongingWaypoint;
 }
+
 list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 {
 	Waypoint* parentWaypoint = nullptr;
@@ -96,6 +98,7 @@ list<Waypoint*> Dijkstra(Waypoint* start, Waypoint* end)
 
 	return result;
 }
+
 void NPC::GoTo(Vector3 destination)
 {
 	path.clear();

@@ -1,9 +1,11 @@
 #include "Scenarios.h"
 #include "Enemy.h"
+#include "Friendly.h"
 
 Scenario::Scenario(double duration)
 {
 	timer.StartCountdown(duration);
+	winScenario = false;
 	stopScenario = false;
 }
 
@@ -18,6 +20,7 @@ Scenario::~Scenario()
 ScenarioDefend::ScenarioDefend(int health, double duration, int increment) :
 Scenario(duration)
 {
+
 	this->increment = increment;
 	amountToSpawn = increment;
 	HP = health;
@@ -50,7 +53,6 @@ void ScenarioDefend::Update(double dt)
 			if ((*it)->reachedDestination){
 				HP -= 1;
 				if (HP <= 0){// LOSE
-					loseScenario = true;
 					stopScenario = true;
 				}
 
@@ -87,7 +89,6 @@ void ScenarioDefend::SpawnEnemies()
 		);
 	}
 }
-
 
 void ScenarioDefend::MoveEnemies()
 {

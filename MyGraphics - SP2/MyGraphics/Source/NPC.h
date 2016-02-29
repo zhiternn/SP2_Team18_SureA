@@ -13,6 +13,7 @@ using std::list;
 class NPC
 {
 public:
+
 	NPC(Vector3 pos, Vector3 dir, float speed);
 	virtual ~NPC();
 

@@ -7,6 +7,9 @@ NPC(pos, dir, speed)
 {
 	state = IDLE;
 	dialogue.clear();
+	reachedDestination = false;
+
+	Friendly::friendlyList.push_back(this);
 }
 
 Friendly::~Friendly()
@@ -49,9 +52,23 @@ void Friendly::Update(double dt)
 		break;
 
 	case CHAT:
+
 		break;
 
 	case EVACUATE:
+		if (checkPoint != path.rend()){
+			//MOVE TO
+			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
+			position += checkPointDir * speed * dt;
+
+			if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
+				checkPoint++;
+			}
+		}
+		else{
+			reachedDestination = true;;
+		}
 		break;
 
 	default:

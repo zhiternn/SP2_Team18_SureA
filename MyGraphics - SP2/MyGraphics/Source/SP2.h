@@ -182,7 +182,8 @@ class SP2 : public Scene
 	enum TIMERS
 	{
 		TIMER_MAZE,
-		TIMER_SCENARIO,
+		TIMER_SCENARIO_TEXTS,
+		TIMER_SCENARIO_EVACUATE,
 		TIMER_NPC,
 
 		TIMER_END
@@ -332,6 +333,11 @@ private:
 	int playerState;
 	int gameState;
 	int npcCountdown;
+
+	//Variables and Functions required for Scenario Evacuate
+	void StartEvacuationScenario(double duration, int numberToSave);
+	void UpdateEvacuationScenario();
+	bool runningEvacuationScenario;
 
 	string currentDialogue;
 

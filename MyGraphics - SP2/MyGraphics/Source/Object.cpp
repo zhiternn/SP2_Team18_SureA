@@ -9,6 +9,7 @@ Object::Object()
 	HP = 0;
 	isInvulnerable = true;
 	isDead = false;
+	toBeIgnored = false;
 
 	objectList.push_back(this);
 }
