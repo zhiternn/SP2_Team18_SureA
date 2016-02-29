@@ -20,7 +20,7 @@ public:
 	void SetPosition(Vector3 pos);
 
 	// ALL check functions return true if collide
-	static bool CheckHitBox(Hitbox lhs, Vector3& pos, Vector3 oldPos, Hitbox* selfHitBox = nullptr); // player -> AABB list
+	static bool CheckHitBox(Hitbox& hitbox, Vector3 oldPos, bool& x, bool& y, bool& z); //Hitbox check for move-able objects
 	static bool CheckHitBox(Vector3 lhs, int damage);	// Point -> AABB list
 	static bool CheckHitBox(Hitbox lhs);	// AABB -> AABB list (For Waypoints)
 	static bool CheckItems(Hitbox lhs, Hitbox rhs); // AABB->AABB (1 to 1 comparison)

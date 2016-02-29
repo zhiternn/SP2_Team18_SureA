@@ -145,13 +145,6 @@ void Helicopter::Update(double dt, bool controlling)
 	position.y += vSpeed * dt;
 	hitbox.SetPosition(position);
 
-	if (Hitbox::CheckHitBox(hitbox, position, oldPos, &hitbox)){
-		vSpeed = 0.f;
-		xSpeed = 0.f;
-		zSpeed = 0.f;
-	}
-
-
 	camera.target = position;
 	camera.Update(dt);
 }

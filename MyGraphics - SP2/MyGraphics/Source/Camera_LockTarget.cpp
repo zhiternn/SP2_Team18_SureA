@@ -20,13 +20,24 @@ void Camera_LockTarget::Init(const Vector3& pos, const Vector3& target, const Ve
 	this->up = up;
 	this->up.Normalize();
 
+	zoom = 10.f;
+
 }
 
 void Camera_LockTarget::Update(double dt)
 {
 	static const float CAMERA_SPEED = 10.f;
-	static float ZOOM = 5.f;
+	static float ZOOM_SPEED = 30.f;
 	
+	if (Application::mouseWheelY > 0){
+		zoom -= ZOOM_SPEED * dt;
+		Application::mouseWheelY = 0;
+	}
+	else if(Application::mouseWheelY < 0){
+		zoom += ZOOM_SPEED * dt;
+		Application::mouseWheelY = 0;
+	}
+
 	double mouseY, mouseX;
 
 	Application::GetMouseMovement(mouseX, mouseY);
@@ -36,7 +47,7 @@ void Camera_LockTarget::Update(double dt)
 	view = rotate * view;
 	right = rotate * right;
 	up = rotate * up;
-	position = target - view * ZOOM;
+	position = target - view * zoom;
 
 	if (view.y < 0.9396 && mouseY > 0 || view.y > -0.9396 && mouseY < 0){
 		float pitch = (float)(mouseY * CAMERA_SPEED * dt);
@@ -44,12 +55,14 @@ void Camera_LockTarget::Update(double dt)
 		view = rotate * view;
 		right = rotate * right;
 		up = rotate * up;
-		position = target - view * ZOOM;
+		position = target - view * zoom;
 	}
 
 	view.Normalize();
 	right.Normalize();
 	up.Normalize();
+
+	Application::SetMousePosition();
 }
 
 void Camera_LockTarget::Reset()

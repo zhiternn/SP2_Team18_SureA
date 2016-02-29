@@ -14,7 +14,6 @@ public:
 	Vector3 defaultRight;
 
 	Vector3 position;
-	Vector3 thrustDir;
 	Vector3 frontDir;
 	Vector3 right;
 
@@ -26,6 +25,8 @@ public:
 	float ySpeed;
 	float xSpeed;
 	float zSpeed;
+
+	float facingYaw;
 
 	void Init(const Vector3& pos, const Vector3& frontDir);
 	void Update(double dt, bool controlling);

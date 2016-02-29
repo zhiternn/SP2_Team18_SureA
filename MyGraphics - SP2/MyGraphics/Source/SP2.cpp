@@ -598,6 +598,9 @@ void SP2::Init()
 
 void SP2::Update(double dt)
 {
+
+	std::cout << Application::mouseWheelX << "   " << Application::mouseWheelY << std::endl;
+
 	if (playerState == STATE_FPS){
 		player.Update(dt);
 	}
@@ -609,7 +612,7 @@ void SP2::Update(double dt)
 	}
 
 	turret.Update(dt, playerState == STATE_INTERACTING_TURRET);
-	//allyShip.Update(dt, playerState == STATE_INTERACTING_TURRET);
+	allyShip.Update(dt, playerState == STATE_INTERACTING_AIRSHIP);
 
 	TrapsMovement(dt);
 	DoorMovement(dt);
@@ -680,6 +683,17 @@ void SP2::Update(double dt)
 				std::cout << "INTERACTED" << std::endl;
 			}
 		}
+
+		//AIRSHIP INTERACTION
+		if ((player.position - allyShip.position).Length() <= 10.f){
+			playerState = STATE_INTERACTING_AIRSHIP;
+		}
+		else if (playerState == STATE_INTERACTING_AIRSHIP){
+			playerState = STATE_FPS;
+			Vector3 exitPoint = allyShip.position;
+			exitPoint.y += player.hitbox.sizeY;
+			player.Init(exitPoint, allyShip.camera.view);
+		}
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
@@ -740,8 +754,7 @@ void SP2::Update(double dt)
 			}
 		}
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
-			{
-					
+			{	
 				ItemObject::ItemList[i]->PickUpAnimation(dt);
 				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
 			}
@@ -807,10 +820,14 @@ void SP2::Render()
 	Vector3 camPos, camTar, camUp;
 
 	if (playerState == STATE_INTERACTING_TURRET){
-
 		camPos = turret.camera.position;
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
+	}
+	if (playerState == STATE_INTERACTING_AIRSHIP){
+		camPos = allyShip.camera.position;
+		camTar = allyShip.camera.target;
+		camUp =	allyShip.camera.up;
 	}
 	else{
 		camPos = player.camera.position;
@@ -2175,6 +2192,7 @@ void SP2::RenderAllyShip()
 		allyShip.position.y,
 		allyShip.position.z
 		);
+	modelStack.Rotate(allyShip.facingYaw, 0, 1, 0);
 	modelStack.Scale(2, 2, 2);
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();

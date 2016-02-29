@@ -65,60 +65,60 @@ void Hitbox::FinalizeHitbox()
 		);
 }
 
-bool Hitbox::CheckHitBox(Hitbox lhs, Vector3& pos, Vector3 oldPos, Hitbox* selfHitBox)
+bool Hitbox::CheckHitBox(Hitbox& hitbox, Vector3 oldPos, bool& x, bool& y, bool& z)
 {
 	bool collided = false;
 	for (size_t i = 0; i < Object::objectList.size(); ++i){
 		if (
-			lhs.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
-			lhs.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
-			lhs.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
-			lhs.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
-			lhs.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
-			lhs.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z &&
-			selfHitBox != &(Object::objectList[i]->hitbox)
-		){
+			hitbox.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
+			hitbox.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
+			hitbox.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
+			hitbox.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
+			hitbox.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
+			hitbox.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z &&
+			&hitbox != &(Object::objectList[i]->hitbox)
+			){
 			collided = true;
-			float xDistMoved = pos.x - oldPos.x;
-			float yDistMoved = pos.y - oldPos.y;
-			float zDistMoved = pos.z - oldPos.z;
+			float xDistMoved = hitbox.position.x - oldPos.x;
+			float yDistMoved = hitbox.position.y - oldPos.y;
+			float zDistMoved = hitbox.position.z - oldPos.z;
 
 			//CHECK X
 			if (
-				lhs.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
-				lhs.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
-				lhs.maxPoint.y - yDistMoved > Object::objectList[i]->hitbox.minPoint.y &&
-				lhs.minPoint.y - yDistMoved < Object::objectList[i]->hitbox.maxPoint.y &&
-				lhs.maxPoint.z - zDistMoved > Object::objectList[i]->hitbox.minPoint.z &&
-				lhs.minPoint.z - zDistMoved < Object::objectList[i]->hitbox.maxPoint.z
+				hitbox.maxPoint.x > Object::objectList[i]->hitbox.minPoint.x &&
+				hitbox.minPoint.x < Object::objectList[i]->hitbox.maxPoint.x &&
+				hitbox.maxPoint.y - yDistMoved > Object::objectList[i]->hitbox.minPoint.y &&
+				hitbox.minPoint.y - yDistMoved < Object::objectList[i]->hitbox.maxPoint.y &&
+				hitbox.maxPoint.z - zDistMoved > Object::objectList[i]->hitbox.minPoint.z &&
+				hitbox.minPoint.z - zDistMoved < Object::objectList[i]->hitbox.maxPoint.z
 				){
-				pos.x = oldPos.x;
+				x = true;
 			}
 			//CHECK Y
 			if (
-				lhs.maxPoint.x - xDistMoved > Object::objectList[i]->hitbox.minPoint.x &&
-				lhs.minPoint.x - xDistMoved < Object::objectList[i]->hitbox.maxPoint.x &&
-				lhs.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
-				lhs.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
-				lhs.maxPoint.z - zDistMoved > Object::objectList[i]->hitbox.minPoint.z &&
-				lhs.minPoint.z - zDistMoved < Object::objectList[i]->hitbox.maxPoint.z
+				hitbox.maxPoint.x - xDistMoved > Object::objectList[i]->hitbox.minPoint.x &&
+				hitbox.minPoint.x - xDistMoved < Object::objectList[i]->hitbox.maxPoint.x &&
+				hitbox.maxPoint.y > Object::objectList[i]->hitbox.minPoint.y &&
+				hitbox.minPoint.y < Object::objectList[i]->hitbox.maxPoint.y &&
+				hitbox.maxPoint.z - zDistMoved > Object::objectList[i]->hitbox.minPoint.z &&
+				hitbox.minPoint.z - zDistMoved < Object::objectList[i]->hitbox.maxPoint.z
 				){
-				pos.y = oldPos.y;
+				y = true;
 			}
 			//CHECK Z
 			if (
-				lhs.maxPoint.x - xDistMoved > Object::objectList[i]->hitbox.minPoint.x &&
-				lhs.minPoint.x - xDistMoved < Object::objectList[i]->hitbox.maxPoint.x &&
-				lhs.maxPoint.y - yDistMoved > Object::objectList[i]->hitbox.minPoint.y &&
-				lhs.minPoint.y - yDistMoved < Object::objectList[i]->hitbox.maxPoint.y &&
-				lhs.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
-				lhs.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z
+				hitbox.maxPoint.x - xDistMoved > Object::objectList[i]->hitbox.minPoint.x &&
+				hitbox.minPoint.x - xDistMoved < Object::objectList[i]->hitbox.maxPoint.x &&
+				hitbox.maxPoint.y - yDistMoved > Object::objectList[i]->hitbox.minPoint.y &&
+				hitbox.minPoint.y - yDistMoved < Object::objectList[i]->hitbox.maxPoint.y &&
+				hitbox.maxPoint.z > Object::objectList[i]->hitbox.minPoint.z &&
+				hitbox.minPoint.z < Object::objectList[i]->hitbox.maxPoint.z
 				){
-				pos.z = oldPos.z;
+				z = true;
 			}
-			lhs.SetPosition(pos);
 		}
 	}
+
 	return collided;
 }
 

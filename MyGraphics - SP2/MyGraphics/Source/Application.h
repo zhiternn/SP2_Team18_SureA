@@ -20,6 +20,9 @@ public:
 	static void ShowCursor();
 	static void HideCursor();
 
+	static double mouseWheelX;
+	static double mouseWheelY;
+
 private:
 
 	//Declare a window object

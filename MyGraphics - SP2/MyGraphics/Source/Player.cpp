@@ -114,11 +114,23 @@ void Player::Update(double dt)
 		position.y += vSpeed;
 		hitbox.SetPosition(position);
 
-		if (Hitbox::CheckHitBox(hitbox, position, oldPos, &hitbox))
-		{
-			if (position.y == oldPos.y){
-				vSpeed = 0.f;
+		bool xCollided = false;
+		bool yCollided = false;
+		bool zCollided = false;
+
+		if (Hitbox::CheckHitBox(hitbox, oldPos, xCollided, yCollided, zCollided)){
+			if (xCollided){
+				position.x = oldPos.x;
 			}
+			if (yCollided){
+				position.y = oldPos.y;
+				vSpeed = 0;
+			}
+			if (zCollided){
+				position.z = oldPos.z;
+			}
+
+			hitbox.SetPosition(position);
 		}
 
 		double mouseX, mouseY;

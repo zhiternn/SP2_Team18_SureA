@@ -19,6 +19,8 @@ const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
 
 bool Application::state2D;
+double Application::mouseWheelX;
+double Application::mouseWheelY;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -102,6 +104,12 @@ void resize_callback(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h); //update opengl the new window size
 }
 
+void mouseWheel_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Application::mouseWheelX = xoffset;
+	Application::mouseWheelY = yoffset;
+}
+
 void Application::Init()
 {
 	//Set the error callback
@@ -124,6 +132,7 @@ void Application::Init()
 	//Create a window and create its OpenGL context
 	m_window = glfwCreateWindow(1920, 1080, "Computer Graphics :D", NULL, NULL);
 	glfwSetWindowSizeCallback(m_window, resize_callback);
+	glfwSetScrollCallback(m_window, mouseWheel_callback);
 
 	//If the window couldn't be created
 	if (!m_window)

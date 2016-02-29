@@ -32,7 +32,7 @@ void Friendly::Update(double dt)
 		if (checkPoint != path.rend()){
 			//MOVE TO
 			checkPointDir = ((*checkPoint)->position - position).Normalized();
-			facingYaw = (defaultDirection.Cross(checkPointDir)).Dot(Vector3(0, 1, 0) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
+			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
 			if ((position - (*checkPoint)->position).Length() <= Waypoint::sizeH / 2){
