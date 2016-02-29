@@ -58,6 +58,8 @@ class SP2 : public Scene
 		GEO_ENDFLAG,
 		GEO_MAZETEX,
 		GEO_STARTFLAG,
+		GEO_FENCE,
+		GEO_CRATE,
 
 		GEO_TURRET_BASE,
 		GEO_TURRET_HEAD,
@@ -222,6 +224,8 @@ private:
 	void RenderShipGuard();
 	void RenderFriendly();
 	void RenderAlien();
+	void RenderFenceBoundary();
+	void RenderObstacles();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
