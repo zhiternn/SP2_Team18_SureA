@@ -751,8 +751,6 @@ void SP2::Update(double dt)
 				ItemObject::ItemList[i]->ItemDelay(dt);
 			}
 
-			std::cout << "MAZEY TEST   " <<  mappy.mazeSuccess << std::endl;
-
 			if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
 			{
 				player.position.Set(0, 20, 0);
@@ -2450,15 +2448,10 @@ void SP2::RenderFriendly()
 {
 	modelStack.PushMatrix();
 	modelStack.Scale(0.3, 0.3, 0.3);
-	RenderMesh(meshList[GEO_HEADNPC2], true);
 	RenderMesh(meshList[GEO_BODYNPC2], true);
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
+	RenderMesh(meshList[GEO_HEADNPC2], true);
 	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
 	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
-
-	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
 

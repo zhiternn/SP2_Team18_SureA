@@ -217,6 +217,8 @@ private:
 	void RenderLightSlider();
 	void RenderEffect();
 	void RenderShipGuard();
+	void RenderFriendly();
+	void RenderAlien();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
@@ -227,16 +229,13 @@ private:
 	void UpdateEffect(double dt);
 	void UpdateLightSlider();
 	void UpdateProjectile(double dt);
+	void AlienAnimation(double dt);
 
 	void LightsSetup();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
-	void RenderFriendly();
 	void AlarmUpdate();
 	void DeleteAfter();
-	
-	void AlienAnimation(double dt);
-	void RenderAlien();
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
