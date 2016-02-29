@@ -239,6 +239,7 @@ private:
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void AlarmUpdate();
 	void DeleteAfter();
+	void GenerateCivilians(int amount);
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
@@ -327,7 +328,7 @@ private:
 	float animation_moveDoor;
 	float towardsCameraYaw;
 
-
+	int InitialCivilianCount;
 	int counter;
 	int screenX, screenY;
 	int playerState;

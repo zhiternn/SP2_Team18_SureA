@@ -14,7 +14,6 @@ using std::list;
 class Friendly : public NPC
 {
 public:
-
 	enum FRIENDLY_STATE
 	{
 		IDLE,

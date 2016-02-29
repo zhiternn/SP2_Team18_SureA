@@ -1,3 +1,7 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include "SP2.h"
 #include "GL\glew.h"
 #include "shader.hpp"
@@ -600,30 +604,10 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
-	std::ifstream file;
-	std::string line;
-
-	file.open("Text//npc_Friendly_Civilians.txt");
-
-	vector<string> tempostorage;
-
-	if (file.is_open()){
-		while (!file.eof()){
-			std::getline(file, line);
-			tempostorage.push_back(line);
-		}
-	}
-	file.close();
-
 	GenerateWaypoints(100, 100, 1, 4);
 
-	//spawns civilians
-	for (size_t i = 0; i < 5; ++i){
-		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
-		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
-	}
-
-	tempostorage.clear();
+	InitialCivilianCount = 10;
+	GenerateCivilians(InitialCivilianCount);
 }
 
 void SP2::Update(double dt)
@@ -1171,6 +1155,8 @@ void SP2::Exit()
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
+
+	_CrtDumpMemoryLeaks();
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)
@@ -2604,6 +2590,7 @@ void SP2::StartEvacuationScenario(double duration, int numberToSave)
 {
 	m_timer[TIMER_SCENARIO_EVACUATE].StartCountdown(duration);
 	runningEvacuationScenario = true;
+	GenerateCivilians(numberToSave);
 }
 
 void SP2::UpdateEvacuationScenario()
@@ -2614,11 +2601,45 @@ void SP2::UpdateEvacuationScenario()
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				scenarioResult = true;
 				runningEvacuationScenario = false;
+				GenerateCivilians(InitialCivilianCount);
 			}
 		}
 		else if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() <= 0){//LOSE
 			scenarioResult = false;
 			runningEvacuationScenario = false;
+			GenerateCivilians(InitialCivilianCount);
 		}
 	}
+}
+
+void SP2::GenerateCivilians(int amount)
+{
+	//clears friendly list
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
+		delete *it;
+		it = Friendly::friendlyList.erase(it);
+	}
+
+	std::ifstream file;
+	std::string line;
+
+	file.open("Text//npc_Friendly_Civilians.txt");
+
+	vector<string> tempostorage;
+
+	if (file.is_open()){
+		while (!file.eof()){
+			std::getline(file, line);
+			tempostorage.push_back(line);
+		}
+	}
+	file.close();
+
+	//generates civilians
+	for (size_t i = 0; i < amount; ++i){
+		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
+		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
+	}
+
+	tempostorage.clear();
 }
