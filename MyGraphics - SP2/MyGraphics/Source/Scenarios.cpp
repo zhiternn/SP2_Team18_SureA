@@ -22,6 +22,7 @@ Scenario(duration)
 	amountToSpawn = increment;
 	HP = health;
 	wave = 1;
+	winScenario = false;
 
 	SpawnEnemies();
 	MoveEnemies();
@@ -47,7 +48,8 @@ void ScenarioDefend::Update(double dt)
 		for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){//check if enemies reached destination
 			if ((*it)->reachedDestination){
 				HP -= 1;
-				if (HP <= 0){
+				if (HP <= 0){// LOSE
+					loseScenario = true;
 					stopScenario = true;
 				}
 
@@ -58,7 +60,8 @@ void ScenarioDefend::Update(double dt)
 			}
 		}
 	}
-	else{
+	else{// WIN
+		winScenario = true;
 		stopScenario = true;
 	}
 }

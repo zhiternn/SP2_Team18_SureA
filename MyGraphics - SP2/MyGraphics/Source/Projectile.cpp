@@ -22,7 +22,7 @@ Projectile::~Projectile()
 {
 }
 
-bool Projectile::Update(double dt)
+void Projectile::Update(double dt)
 {
 	distanceTravelled += dt * speed;
 	position += direction * dt * speed;
@@ -35,8 +35,7 @@ bool Projectile::Update(double dt)
 
 		Effect::effectList.push_back(new Effect_Explosion(position));
 	}
-	if (distanceTravelled >= range){
+	else if (distanceTravelled >= range){
 		deleteBullet = true;
 	}
-	 return deleteBullet;
 }

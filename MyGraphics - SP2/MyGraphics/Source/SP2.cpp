@@ -120,6 +120,7 @@ void SP2::Init()
 	// Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+
 	glUniform1i(m_parameters[U_NUMLIGHTS], 4);
 	//setting up light object
 	light[0].type = Light::LIGHT_DIRECTIONAL;
@@ -285,11 +286,14 @@ void SP2::Init()
 	meshList[GEO_ShipButtonStand] = MeshBuilder::GenerateOBJ("ShipButtonStand", "OBJ//ShipButtonStand.obj");
 	meshList[GEO_ShipButtonStand]->textureID = LoadTGA("Image//floor.tga");
 
-	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("", "OBJ//ShipButton.obj");
+	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("ShipButton", "OBJ//ShipButton.obj");
 	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
 
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
+
+	meshList[GEO_ShipGuard] = MeshBuilder::GenerateOBJ("ShipGuard", "OBJ//ShipGuard.obj");
+	meshList[GEO_ShipGuard]->textureID = LoadTGA("Image//PlayerHands.tga");
 
 	meshList[GEO_TestitemExtra] = MeshBuilder::GenerateOBJ("ObjExtra", "OBJ//ObjectExtra.obj");
 	meshList[GEO_TestitemExtra]->textureID = LoadTGA("Image//walls3.tga");
@@ -366,6 +370,14 @@ void SP2::Init()
 	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
 	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
 
+	meshList[GEO_ENDFLAG] = MeshBuilder::GenerateQuad("Flag", Color(1, 1, 1));
+	meshList[GEO_ENDFLAG]->textureID = LoadTGA("Image//flag.tga");
+
+	meshList[GEO_MAZETEX] = MeshBuilder::GenerateQuad("Maze", Color(1, 1, 1));
+	meshList[GEO_MAZETEX]->textureID = LoadTGA("Image//mazeMap.tga");
+
+	meshList[GEO_STARTFLAG] = MeshBuilder::GenerateQuad("Start", Color(1, 1, 1));
+	meshList[GEO_STARTFLAG]->textureID = LoadTGA("Image//start.tga");
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 
@@ -390,7 +402,7 @@ void SP2::Init()
 	AlienMovementDirections = false;
 	AlienAnimate = 0;
 
-
+	scenarioResult = false;
 
 	animation_rotatePortal = 0.f;
 	animation_scalePortal = 0.f;
@@ -412,13 +424,25 @@ void SP2::Init()
 	portal.SetPosition(0, 0, 48);
 
 	laserTrap.hitbox.SetSize(0.05, 0.05, 5);
-	laserTrap.SetPosition(9, 18, 0);
-	
+	laserTrap.SetPosition(9, 30, 0);
+
 	laserTrap1.hitbox.SetSize(0.05, 0.05, 5);
-	laserTrap1.SetPosition(5, 18, 0);
+	laserTrap1.SetPosition(5, 30, 0);
 
 	laserTrap2.hitbox.SetSize(0.05, 5, 0.05);
-	laserTrap2.SetPosition(2, 18, 0);
+	laserTrap2.SetPosition(2, 30, 0);
+
+	laserTrap3.hitbox.SetSize(0.05, 5, 0.05);
+	laserTrap3.SetPosition(3, 30, 0);
+
+	//if player presses button, trap collision box sets into position
+	if (mappy.mazeSuccess == true)
+	{
+		laserTrap.SetPosition(9, 18, 0);
+		laserTrap1.SetPosition(5, 18, 0);
+		laserTrap2.SetPosition(2, 18, 0);
+		laserTrap3.SetPosition(3, 18, 0);
+	}
 
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
@@ -485,6 +509,10 @@ void SP2::Init()
 	item4->hitbox.SetSize(3, 2, 3);
 	item4->SetPosition(20, 17.5, 0);
 
+	ItemObject* item5 = new ItemObject();//ShipGuard
+	item5->hitbox.SetSize(14, 5, 28);
+	item5->SetPosition(39.5, 2.5, 35);
+
 	//INTERNAL SKYBOX BOUNDARIES
 	Object* internalWall_Ground = new Object();
 	internalWall_Ground->hitbox.SetSize(10.f, 1, 5);
@@ -532,11 +560,11 @@ void SP2::Init()
 
 	//Base Camp
 	Object* CampWall_Right = new Object();
-	CampWall_Right->hitbox.SetSize(42, 10, 1);
+	CampWall_Right->hitbox.SetSize(44, 10, 1);
 	CampWall_Right->SetPosition(0, 5.f, 49.f);
 
 	Object* CampWall_Left = new Object();
-	CampWall_Left->hitbox.SetSize(42, 10, 1);
+	CampWall_Left->hitbox.SetSize(44, 10, 1);
 	CampWall_Left->SetPosition(0, 5.f, 29);
 
 	Object* CampWall_Back = new Object();
@@ -556,14 +584,14 @@ void SP2::Init()
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
 	// SHIPS
+	allyShip.Init(Vector3(40.f, 0.f, 35.f), Vector3(0, 0, 1));
 	allyShip.hitbox.SetSize(8.f, 1.5, 10);
 	allyShip.hitbox.SetPivot(0, 0.5f, 0);
-	allyShip.SetPosition(40.f, 0.f, 35.f);
 
 	GenerateWaypoints(100, 100, 1, 4);
 
 	//spawns civilians
-	for (size_t i = 0; i < 3; ++i){
+	for (size_t i = 0; i < 20; ++i){
 		Friendly::friendlyList.push_back(new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f));
 	}
 }
@@ -576,12 +604,12 @@ void SP2::Update(double dt)
 	else if (playerState == STATE_INTERACTING_MAZE){
 		MazeInteraction(dt);
 	}
-	else if (playerState == STATE_INTERACTING_TURRET){
-		turret.Update(dt);
-	}
 	else if (playerState == STATE_INTERACTING_LIGHTSLIDER){
 		UpdateLightSlider();
 	}
+
+	turret.Update(dt, playerState == STATE_INTERACTING_TURRET);
+	//allyShip.Update(dt, playerState == STATE_INTERACTING_TURRET);
 
 	TrapsMovement(dt);
 	DoorMovement(dt);
@@ -591,8 +619,7 @@ void SP2::Update(double dt)
 	UpdateNPCs(dt);
 	AlienAnimation(dt);
 	UpdateEffect(dt);
-	//AlarmUpdate();
-
+	UpdateProjectile(dt);
 
 	bool stateChanged = false;
 	if (ItemObject::ItemList[3]->mazeCheck == 1){
@@ -600,10 +627,10 @@ void SP2::Update(double dt)
 
 		Application::state2D = true;
 		stateChanged = true;
-		m_timer.StartCountdown(20);
+		m_timer[TIMER_MAZE].StartCountdown(20);
 
 
-		mappy = Maze(10, 10, screenX, screenY);
+		mappy = Maze(16, 16, screenX, screenY);
 		Application::SetMousePosition(mappy.gridSizeX, mappy.gridSizeY);
 		ItemObject::ItemList[3]->mazeCheck = 0;
 	}
@@ -646,6 +673,13 @@ void SP2::Update(double dt)
 			Application::HideCursor();
 			Application::SetMousePosition();
 		}
+
+		//NPC INTERACTION
+		for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
+			if (ItemCheckPosition((*it)->position, 45) && (player.position - (*it)->position).Length() <= 3.5f){
+				std::cout << "INTERACTED" << std::endl;
+			}
+		}
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
@@ -653,11 +687,13 @@ void SP2::Update(double dt)
 
 	if (Application::IsKeyPressed('L')){
 		if (runningScenario == nullptr){
-			runningScenario = new ScenarioDefend(3, 60, 10);
+			runningScenario = new ScenarioDefend(3, 3, 10);
 		}
 	}
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
+			scenarioResult = runningScenario->winScenario;
+			m_timer[TIMER_SCENARIO].StartCountdown(5);
 
 			delete runningScenario;
 			runningScenario = nullptr;
@@ -670,15 +706,6 @@ void SP2::Update(double dt)
 			AlienSpawn = true;
 
 			runningScenario->Update(dt);
-		}
-	}
-
-	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end();){
-		if ((*it)->Update(dt)){
-			it = Projectile::projectileList.erase(it);
-		}
-		else{
-			it++;
 		}
 	}
 
@@ -696,20 +723,25 @@ void SP2::Update(double dt)
 	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 		{
+		
 			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 			{
+				
+
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
-			}	
-				if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
-				{
-					ItemObject::ItemList[i]->PickUp(player.hitbox);
-				}		
-			}
+			}		
+		}
 	}
-			
+		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+		{
+			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
+			{
+				ItemObject::ItemList[i]->Collider(player.hitbox);
+			}
+		}
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 			{
-
+					
 				ItemObject::ItemList[i]->PickUpAnimation(dt);
 				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
 			}
@@ -719,11 +751,13 @@ void SP2::Update(double dt)
 				ItemObject::ItemList[i]->ItemDelay(dt);
 			}
 
+			std::cout << "MAZEY TEST   " <<  mappy.mazeSuccess << std::endl;
+
 			if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
 			{
 				player.position.Set(0, 20, 0);
 			}
-			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))){
+			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap3.hitbox))){
 				player.position.Set(18, 19, 0);
 			}
 		
@@ -736,11 +770,6 @@ void SP2::Update(double dt)
 	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 	{
 		ItemObject::ItemList[i]->ItemDelay(dt);
-	}
-
-	if (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox))
-	{
-		player.position.Set(18, 19, 0);
 	}
 
 	if (Application::IsKeyPressed(0x31)){
@@ -767,6 +796,9 @@ void SP2::Update(double dt)
 	else if (readyToUse_HITBOX < 2.f){
 		readyToUse_HITBOX += (float)(10 * dt);
 	}
+
+
+
 }
 
 void SP2::Render()
@@ -799,69 +831,7 @@ void SP2::Render()
 		);
 	modelStack.LoadIdentity();
 
-	if (light[0].type == Light::LIGHT_DIRECTIONAL){
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	if (light[1].type == Light::LIGHT_DIRECTIONAL){
-		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[1].type == Light::LIGHT_SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	if (light[2].type == Light::LIGHT_DIRECTIONAL){
-		Vector3 lightDir(light[2].position.x, light[2].position.y, light[2].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[2].type == Light::LIGHT_SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
-		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT2_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
-		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	if (light[3].type == Light::LIGHT_DIRECTIONAL){
-		Vector3 lightDir(light[3].position.x, light[3].position.y, light[3].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[3].type == Light::LIGHT_SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
-		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[3].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT3_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
-		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	LightsSetup();
 
 	//RENDER OBJECTS
 	//RenderMesh(meshList[GEO_AXES], false);
@@ -877,6 +847,8 @@ void SP2::Render()
 	RenderNPCs();
 	RenderSlideDoor();
 	RenderPickUpObj();
+	RenderShipGuard();
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -897,12 +869,19 @@ void SP2::Render()
 	RenderMesh(meshList[GEO_BASE_SPOTLIGHT], true);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//modelStack.Scale(0.5, 0.5, 0.5);
-	//RenderMesh(meshList[GEO_HEADNPC1], true);
-	//RenderMesh(meshList[GEO_BODYNPC1], true);
-	//RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
-	//RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.2, 0.2, 0.2);
+	RenderMesh(meshList[GEO_HEADNPC1], true);
+	RenderMesh(meshList[GEO_BODYNPC1], true);
+	RenderMesh(meshList[GEO_LEFTLEGNPC1], true);
+	RenderMesh(meshList[GEO_RIGHTLEGNPC1], true);
+
+	modelStack.Translate(5, 0, 0);
+	RenderMesh(meshList[GEO_HEADNPC2], true);
+	RenderMesh(meshList[GEO_BODYNPC2], true);
+	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
+	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
+	modelStack.PopMatrix();
 
 	if (onGround == false){
 		modelStack.PushMatrix();
@@ -1049,8 +1028,6 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
 		RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval1:  " + std::to_string(ItemObject::ItemList[1]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -330.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "ItemInterval2:  " + std::to_string(ItemObject::ItemList[2]->ItemInterval), Color(1.f, 1.f, 1.f), 20, -550.f, -350.f);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1060,7 +1037,7 @@ void SP2::Render()
 			{
 
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
-				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES. PRESS F TO PLACE CORE", Color(1.f, 1.f, 1.f), 25, -700.f, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "GOOD JOB COLLECTING ALL THE CORES.", Color(1.f, 1.f, 1.f), 25, -700.f, -25.f);
 			}
 			else
 			{
@@ -1069,16 +1046,27 @@ void SP2::Render()
 			}
 		}
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		if (ItemObject::ItemList[i]->TextCheck == true && ItemObject::ItemList[i]->canPut == false)
+		{
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "PRESS F TO PICK UP", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
+		}
+	}
+	
+
+
 
 	if (playerState == STATE_INTERACTING_MAZE){
 
 
 		Application::ShowCursor();
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 2000, 1500, 0.f, 5.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 		RenderMaze();
 
-		if (m_timer.GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
+		if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
@@ -1091,17 +1079,17 @@ void SP2::Render()
 			playerState = STATE_FPS;
 			Application::HideCursor();
 
-			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 			counter++;
 			if (counter <=200){
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 				RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
 			}
-			if (m_timer.GetTimeLeft() <= 0 && onGround == false){
+			if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
 			}
-			if (m_timer.GetTimeLeft() >= 0 && onGround == true){
+			if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
 				counter++;
 				std::cout << counter << std::endl;
 				if (counter <= 2000){
@@ -1116,14 +1104,34 @@ void SP2::Render()
 		playerState = STATE_FPS;
 		Application::HideCursor();
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer.GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 		counter++;
 		if (counter <=200){
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
 		}
 	}
-}
+
+		if (m_timer[TIMER_SCENARIO].GetTimeLeft() > 0){
+			if (scenarioResult == true){ // if win
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, -400.f, -25.f);
+			}
+			else{ // if lose
+			}
+		}
+
+		/*if (runningScenario->loseScenario == true){
+			m_timer[TIMER_SCENARIO].StartCountdown(5);
+			runningScenario->loseScenario = false;
+		}
+
+		if (m_timer[TIMER_SCENARIO].GetTimeLeft() > 0){
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You suck!", Color(1, 0, 0), 40, -400.f, -25.f);
+			
+		}*/
+	}
 
 void SP2::Exit()
 {
@@ -1780,8 +1788,6 @@ void SP2::RenderPickUpObj()
 		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
 		{
 			modelStack.PushMatrix();
-			ItemObject::ItemList[1]->SetPosition(5, 1000, 47);
-			ItemObject::ItemList[2]->SetPosition(5, 1000, 47);
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
 				modelStack.PushMatrix();
 					modelStack.Translate(
@@ -1980,86 +1986,112 @@ void SP2::RenderSlideDoor()
 void SP2::DoorMovement(double dt)
 {
 	//front door
-	if (player.position.x <= -21 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -12 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
+	if (player.position.x <= -19 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -10 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
 	{
 		if (DoorMove < 2.2)
 		{
 			Door = true;
 		}
+		inRange = true;
 		doorChk = true;
 		front = true;
 		timer = 0;
 	}
-	
+	else
+	{
+		inRange = false;
+		Door = false;
+	}
+
 	//back door
-	if (player.position.x <= 28 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 19 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
+	if (player.position.x <= 30 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 21 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
 	{
 		if (DoorMove2 < 2.2)
 		{
 			Door2 = true;
 		}
+		inRange2 = true;
 		doorChk = true;
 		back = true;
 		timer = 0;
 	}
-
-	//door
-	if (timer > 3)
+	else
 	{
-		timerBool = true;
-		doorChk = false;
-		timer = 0;
+		inRange2 = false;
+		Door2 = false;
 	}
 
-	if (Door == true)
-	{
-		DoorMove += (float)(2 * dt);
-		frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
-		frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-		if (DoorMove > 2.2)
-		{
-			Door = false;
-		}
-
-	}
-	if (Door2 == true)
-	{
-		DoorMove2 += (float)(2 * dt);
-		backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
-		backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-		if (DoorMove2 > 2.2)
-		{
-			Door2 = false;
-		}
-
-	}
 	if (doorChk == true)
 	{
 		timer += (float)(1 * dt);
 	}
 
-	if (timerBool == true && front == true)
+	if (inRange == true)
 	{
-		DoorMove -= (float)(2 * dt);
-		frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
-		frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-		if (DoorMove < -0.2)
+		if (Door == true)
 		{
-			timerBool = false;
-			Door = false;
-			front = false;
+			DoorMove += (float)(5 * dt);
+			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
+			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
+			if (DoorMove > 2.2)
+			{
+				Door = false;
+			}
+
+		}
+
+
+	}
+	else if (inRange == false && Door == false)
+	{
+		timerBool = true;
+		doorChk = false;
+		timer = 0;
+
+		if (front == true)
+		{
+			DoorMove -= (float)(5 * dt);
+			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
+			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
+			if (DoorMove < -0.2)
+			{
+				timerBool = false;
+				Door = false;
+				front = false;
+			}
 		}
 	}
-	if (timerBool == true && back == true)
+	if (inRange2 == true)
 	{
-		DoorMove2 -= (float)(2 * dt);
-		backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
-		backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-		if (DoorMove2 < -0.2)
+		if (Door2 == true)
 		{
-			timerBool = false;
-			Door2 = false;
-			back = false;
+			DoorMove2 += (float)(5 * dt);
+			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
+			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
+			if (DoorMove2 > 2.2)
+			{
+				Door2 = false;
+			}
+
+		}
+	}
+	else if (inRange2 == false && Door2 == false)
+	{
+		timerBool = true;
+		doorChk = false;
+		timer = 0;
+
+		if (back == true)
+		{
+			DoorMove2 -= (float)(5 * dt);
+			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
+			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
+			if (DoorMove2 < -0.2)
+			{
+				timerBool = false;
+				Door2 = false;
+				back = false;
+			}
 		}
 	}
 }
@@ -2067,6 +2099,7 @@ void SP2::DoorMovement(double dt)
 void SP2::RenderTraps()
 {
 	
+	if (mappy.mazeSuccess == true){
 		//traps
 		modelStack.PushMatrix();
 		//modelStack.Translate(9, 18, 0);
@@ -2103,18 +2136,31 @@ void SP2::RenderTraps()
 		RenderMesh(meshList[GEO_TRAPS], true);
 		modelStack.PopMatrix();
 
+		modelStack.PushMatrix();
+		//modelStack.Translate(5, 19.75, 0);
+		modelStack.Translate(
+			laserTrap3.position.x,
+			laserTrap3.position.y,
+			laserTrap3.position.z
+			);
+		modelStack.Scale(0.05, 4.5, 0.05);
+		RenderMesh(meshList[GEO_TRAPS], true);
+		modelStack.PopMatrix();
+	}
 	
 }
 
 void SP2::TrapsMovement(double dt)
 {
 	if (mappy.mazeSuccess == true){
+
 		if (forth == true)
 		{
-			trapMove += (float)(2 * dt);
-			laserTrap.SetPosition(9 - trapMove, 18, 0);
-			laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
-			laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+			trapMove += (float)(10 * dt);
+			laserTrap.SetPosition(14 - trapMove * 2, 18, 0);
+			laserTrap1.SetPosition(13 - trapMove, 18, 0);
+			laserTrap2.SetPosition(12, 19.75, 2.5 - trapMove);
+			laserTrap3.SetPosition(8, 19.75, 1 - trapMove * 0.5);
 			if (trapMove > 5)
 			{
 				forth = false;
@@ -2123,10 +2169,11 @@ void SP2::TrapsMovement(double dt)
 		}
 		if (backN == true)
 		{
-			trapMove -= (float)(2 * dt);
-			laserTrap.SetPosition(9 - trapMove, 18, 0);
-			laserTrap1.SetPosition(10 - trapMove * 0.5, 18, 0);
-			laserTrap2.SetPosition(12 - trapMove * 1.5, 19.75, 1);
+			trapMove -= (float)(10 * dt);
+			laserTrap.SetPosition(14 - trapMove * 2, 18, 0);
+			laserTrap1.SetPosition(13 - trapMove, 18, 0);
+			laserTrap2.SetPosition(12, 19.75, 2.5 - trapMove);
+			laserTrap3.SetPosition(8, 19.75, 1 - trapMove * 0.5);
 			if (trapMove < 0)
 			{
 				forth = true;
@@ -2182,6 +2229,7 @@ void SP2::RenderTurret()
 	RenderMesh(meshList[GEO_TURRET_HEAD], true);
 
 	modelStack.PushMatrix();
+	//modelStack.Rotate();
 	RenderMesh(meshList[GEO_TURRET_BARREL], true);
 
 	modelStack.PopMatrix();
@@ -2216,21 +2264,36 @@ void SP2::RenderShipButton()
 
 void SP2::RenderMaze()
 {
+	//for (int i = 0; i > mappy.sizeY-1; ++i){
+	//	for (int j = 0; j < mappy.sizeX; ++j){
+	//		if (mappy.mapLayout[i][j] == Maze::MAP_PATH){
+	//			RenderQuadOnScreen(meshList[GEO_TEST], 1, 1, j, i);
+	//		}
+	//	}
+	//}
+
 	for (int y = 0; y<mappy.colNumber-1; ++y){
 		for (int x = 0; x < mappy.rowNumber-1; ++x){
 			if (mappy.mapLayout[y][x] == Maze::MAP_BLOCK){
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_BOTTOM],
+				RenderQuadOnScreen(meshList[GEO_MAZETEX],
 					mappy.gridSizeX, 
 					mappy.gridSizeY,
 					((x*mappy.gridSizeX) - mappy.gridSizeX /2) - screenX/2.f + mappy.gridSizeX,
 					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
 			else if (mappy.mapLayout[y][x] == Maze::MAP_START){
-				RenderQuadOnScreen(meshList[GEO_INTERNAL_TOP],
+				RenderQuadOnScreen(meshList[GEO_STARTFLAG],
 				mappy.gridSizeX,
 				mappy.gridSizeY,
 				((x*mappy.gridSizeX) - mappy.gridSizeX / 2) - screenX / 2.f + mappy.gridSizeX,
 				(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
+			}
+			else if (mappy.mapLayout[y][x] == Maze::MAP_END){
+				RenderQuadOnScreen(meshList[GEO_ENDFLAG],
+					mappy.gridSizeX,
+					mappy.gridSizeY,
+					((x*mappy.gridSizeX) - mappy.gridSizeX / 2) - screenX / 2.f + mappy.gridSizeX,
+					(((-y  * mappy.gridSizeY) - mappy.gridSizeY / 2) + screenY / 2.f));
 			}
 		}
 	}
@@ -2280,11 +2343,11 @@ void SP2::RenderNPCs()
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
-			(*it)->position.y - Waypoint::sizeV/2,
+			(*it)->position.y,
 			(*it)->position.z
 			);
 		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
-		RenderCivilians();
+		RenderAlien();
 		modelStack.PopMatrix();
 	}
 }
@@ -2343,12 +2406,12 @@ void SP2::AlienAnimation(double dt)
 	{
 		if (AlienMovementDirections == true)
 		{
-			AlienAnimate += (float(10 * dt));
+			AlienAnimate += (float(250 * dt));
 		}
 
 		if (AlienMovementDirections == false)
 		{
-			AlienAnimate -= (float(10 * dt));
+			AlienAnimate -= (float(250 * dt));
 		}
 	}
 
@@ -2397,20 +2460,98 @@ void SP2::RenderAlien()
 	modelStack.PopMatrix();
 }
 
-void SP2::RenderCivilians()
+void SP2::RenderShipGuard()
 {
-	modelStack.PushMatrix();
-	modelStack.Scale(0.5, 0.5, 0.5);
-	RenderMesh(meshList[GEO_HEADNPC2], true);
-	RenderMesh(meshList[GEO_BODYNPC2], true);
+	if (ItemObject::ItemList[4]->ShipGuardCheck == false)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(40, 0, 35);
+		//modelStack.Rotate(AlienAnimate / 2, 0, 0, 1);
+		modelStack.Scale(1, 1, 2);
+		RenderMesh(meshList[GEO_ShipGuard], true);
+		modelStack.PopMatrix();
+	}
+}
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 1.947, 0);
-	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
+void SP2::LightsSetup()
+{
+	if (light[0].type == Light::LIGHT_DIRECTIONAL){
+		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_SPOT){
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
 
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+	if (light[1].type == Light::LIGHT_DIRECTIONAL){
+		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[1].type == Light::LIGHT_SPOT){
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else{
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	if (light[2].type == Light::LIGHT_DIRECTIONAL){
+		Vector3 lightDir(light[2].position.x, light[2].position.y, light[2].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[2].type == Light::LIGHT_SPOT){
+		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
+		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT2_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else{
+		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
+		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	if (light[3].type == Light::LIGHT_DIRECTIONAL){
+		Vector3 lightDir(light[3].position.x, light[3].position.y, light[3].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[3].type == Light::LIGHT_SPOT){
+		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
+		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[3].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT3_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else{
+		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
+		glUniform3fv(m_parameters[U_LIGHT3_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+}
+
+void SP2::UpdateProjectile(double dt)
+{
+	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end();){
+		if ((*it)->deleteBullet == true){
+			delete *it;
+			it = Projectile::projectileList.erase(it);
+		}
+		else{
+			(*it)->Update(dt);
+			it++;
+		}
+	}
 }
 
 //void SP2::AlarmUpdate()

@@ -14,11 +14,12 @@ public:
 	Projectile(Vector3 pos, Vector3 dir, float r, float s, int d);
 	~Projectile();
 
-	bool Update(double dt);
+	void Update(double dt);
 
 	static vector<Projectile*> projectileList;
 
 	Vector3 position;
+	bool deleteBullet;
 private:
 	Vector3 direction;
 
@@ -28,8 +29,6 @@ private:
 	float vSpeed;
 
 	int damage;
-
-	bool deleteBullet;
 };
 
 #endif

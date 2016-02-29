@@ -18,6 +18,7 @@ public:
 	void SetPosition(float x, float y, float z);
 
 	void PickUp(Hitbox hitbox);
+	void Collider(Hitbox hitbox);
 	void PickUpAnimation(double dt);
 	void ItemDelay(double dt);
 	void PressButton();
@@ -37,7 +38,11 @@ public:
 	bool buttonRiseBool;
 	bool buttonPressBool;
 	bool cbuttonRise;
+	bool TextCheck;
+	bool ShipGuardCheck;
+
 	int mazeCheck;
+	int mazeCounter;
 
 	bool ItemBoolInterval;
 	float ItemInterval;

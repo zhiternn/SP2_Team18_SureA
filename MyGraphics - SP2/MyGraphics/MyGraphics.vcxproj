@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Airship.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera_LockPosition.cpp" />
     <ClCompile Include="Source\Effect.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Source\Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Airship.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera_LocKPosition.h" />
     <ClInclude Include="Source\Countdown.h" />

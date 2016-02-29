@@ -19,7 +19,7 @@ protected:
 public:
 	virtual ~Vehicle(){}
 
-	virtual void Update(double dt) = 0;
+	virtual void Update(double dt, bool controlling) = 0;
 
 	Vector3 view;
 	Vector3 up;

@@ -19,13 +19,13 @@ public:
 	float GetYaw();
 
 	void Init(Vector3 pos, Vector3 dir, int atkSpeed = 1);
-	virtual void Update(double dt);
+	virtual void Update(double dt, bool controlling);
 
 	float heatSystem;
 private:
 	float forRotationYaw, forRotationPitch;
 	int roundPerSecond;
-	int heatLimit;
+	float heatAmount;
 	bool isOverHeated;
 
 };

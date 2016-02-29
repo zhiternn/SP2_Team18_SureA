@@ -12,6 +12,7 @@
 #include "Light.h"
 #include "Object.h"
 #include "Turret.h"
+#include "Airship.h"
 #include "Projectile.h"
 #include "Hitbox.h"
 #include "Enemy.h"
@@ -54,6 +55,9 @@ class SP2 : public Scene
 		GEO_LIGHTSLIDER,
 		GEO_BASE_SPOTLIGHT,
 		GEO_TEXTBOX,
+		GEO_ENDFLAG,
+		GEO_MAZETEX,
+		GEO_STARTFLAG,
 
 		GEO_TURRET_BASE,
 		GEO_TURRET_HEAD,
@@ -88,6 +92,7 @@ class SP2 : public Scene
 		GEO_AlienHands,
 		GEO_AlienLegs,
 
+		GEO_ShipGuard,
 
 		GEO_EFFECT_EXPLOSION,
 		GEO_EFFECT_BEAM,
@@ -173,6 +178,14 @@ class SP2 : public Scene
 		U_TOTAL
 	};
 
+	enum TIMERS
+	{
+		TIMER_MAZE,
+		TIMER_SCENARIO,
+
+		TIMER_END
+	};
+
 public:
 	SP2();
 	~SP2();
@@ -203,6 +216,7 @@ private:
 	void RenderMaze();
 	void RenderLightSlider();
 	void RenderEffect();
+	void RenderShipGuard();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
@@ -212,6 +226,9 @@ private:
 	void UpdateNPCs(double dt);
 	void UpdateEffect(double dt);
 	void UpdateLightSlider();
+	void UpdateProjectile(double dt);
+
+	void LightsSetup();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void RenderFriendlyNPC();
@@ -220,7 +237,6 @@ private:
 	
 	void AlienAnimation(double dt);
 	void RenderAlien();
-	void RenderCivilians();
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
@@ -242,6 +258,8 @@ private:
 	bool doorChk;
 	bool front;
 	bool back;
+	bool inRange;
+	bool inRange2;
 	bool portalChk;
 	bool mazeSuccess;
 	bool onGround;
@@ -262,14 +280,15 @@ private:
 	Object laserTrap;
 	Object laserTrap1;
 	Object laserTrap2;
+	Object laserTrap3;
 	Object frontDoor;
 	Object frontDoor2;
 	Object backDoor;
 	Object backDoor2;
 	Object trapdoor;
 	Object baseSpotlight;
-	Object allyShip;
 
+	Airship allyShip;
 	Turret turret;
 	void RenderTurret();
 
@@ -286,7 +305,7 @@ private:
 
 	Mesh *meshList[NUM_GEOMETRY];
 
-	Countdown m_timer;
+	Countdown m_timer[TIMER_END];
 
 	vector<float> objArrangementData;
 
@@ -315,6 +334,7 @@ private:
 	Player player;
 
 	Scenario* runningScenario;// nullptr if no scenario is running
+	bool scenarioResult; // true if win
 
 	Maze mappy;
 
