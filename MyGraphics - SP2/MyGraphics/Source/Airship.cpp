@@ -27,8 +27,6 @@ void Airship::Init(const Vector3& pos, const Vector3& view)
 	ySpeed = hSpeed = 0.f;
 
 	facingYaw = 0.f;
-
-	std::cout << this->view << std::endl;
 }
 
 void Airship::Update(double dt, bool controlling)

@@ -232,7 +232,7 @@ void SP2::Init()
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//orbital-element_up.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//orbital-element_dn.tga");
-	
+
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(0.f, 0.f, 0.f), 4, 4);
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.7f, 0.7f, 0.7f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//grass.tga");
@@ -340,7 +340,7 @@ void SP2::Init()
 	meshList[GEO_UIBAR]->textureID = LoadTGA("Image//EnergyBar.tga");
 	meshList[GEO_UIBAROUTLINE] = MeshBuilder::GenerateQuad("UIBAROUTLINE", Color(1, 1, 1));
 	meshList[GEO_UIBAROUTLINE]->textureID = LoadTGA("Image//EnergyBarOutLine.tga");
-	
+
 
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//door.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
@@ -444,7 +444,7 @@ void SP2::Init()
 	animation_moveDoor = 0.f;
 
 	//BASE SPOTLIGHT INIT
-	baseSpotlight_startingX = (-screenX/2.f) + screenX * 0.1;
+	baseSpotlight_startingX = (-screenX / 2.f) + screenX * 0.1;
 	baseSpotlight_endingX = (screenX / 2.f) - screenX * 0.1;
 	baseSpotlight_power = 1;
 
@@ -479,9 +479,13 @@ void SP2::Init()
 
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
+<<<<<<< 638017802895c6a3400ed3a818a5bfd061f91cce
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);
+=======
+	frontDoor.SetPosition(-20.3, 2.8, 37.75); \
+>>>>>>> ccf061a516679a72c768c8b8386dabaece2c6ea2
 
-	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
+		frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
 
 	//back door
@@ -653,16 +657,10 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
-<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
-=======
 	//Friendly General1 = Friendly::STATUS_GENERAL;
 
-	// SHIPS
-	allyShip.Init(Vector3(40.f, 0.f, 35.f), Vector3(0, 0, 1));
-	allyShip.hitbox.SetSize(8.f, 1.5, 10);
-	allyShip.hitbox.SetPivot(0, 0.5f, 0);
 
->>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
+
 	std::ifstream file;
 	std::string line;
 
@@ -681,18 +679,14 @@ void SP2::Init()
 	GenerateWaypoints(100, 100, 1, 4);
 
 	//spawns civilians
-<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
-	for (size_t i = 0; i < 5; ++i){
-=======
 	for (size_t i = 0; i < 20; ++i){
->>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
 		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
 	}
 
 	tempostorage.clear();
+	
 }
-
 void SP2::Update(double dt)
 {
 	if (playerState == STATE_FPS){
@@ -706,7 +700,7 @@ void SP2::Update(double dt)
 	}
 
 	turret.Update(dt, playerState == STATE_INTERACTING_TURRET);
-	//allyShip.Update(dt, playerState == STATE_INTERACTING_TURRET);
+	allyShip.Update(dt, playerState == STATE_INTERACTING_AIRSHIP);
 
 	TrapsMovement(dt);
 	DoorMovement(dt);
@@ -785,7 +779,6 @@ void SP2::Update(double dt)
 				}
 			}
 		}
-<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 
 		//AIRSHIP INTERACTION
 		if (playerState == STATE_FPS && (player.position - allyShip.position).Length() <= 7.f){
@@ -797,8 +790,6 @@ void SP2::Update(double dt)
 			exitPoint.y += player.hitbox.sizeY;
 			player.Init(exitPoint, allyShip.camera.view);
 		}
-=======
->>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
@@ -941,14 +932,11 @@ void SP2::Render()
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
 	}
-<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	else if (playerState == STATE_INTERACTING_AIRSHIP){
 		camPos = allyShip.camera.position;
 		camTar = allyShip.camera.target;
 		camUp =	allyShip.camera.up;
 	}
-=======
->>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 	else{
 		camPos = player.camera.position;
 		camTar = player.camera.target;
@@ -1227,7 +1215,6 @@ void SP2::Render()
 	
 
 
-<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	if (m_timer[TIMER_SCENARIO_TEXTS].GetTimeLeft() > 0){
 		if (scenarioResult == true){ // if win
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
@@ -1236,7 +1223,6 @@ void SP2::Render()
 		else{ // if lose
 		}
 	}
-=======
 	if (mappy.mazeSuccess == true){
 		Application::SetMousePosition(0, 0);
 		playerState = STATE_FPS;
@@ -1264,7 +1250,6 @@ void SP2::Render()
 	}
 
 		
->>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 
 		/*if (runningScenario->loseScenario == true){
 			m_timer[TIMER_SCENARIO].StartCountdown(5);
@@ -2303,6 +2288,7 @@ void SP2::RenderAllyShip()
 		allyShip.position.z
 		);
 	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(allyShip.facingYaw, 0, 1, 0);
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
 }
