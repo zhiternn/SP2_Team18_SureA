@@ -20,6 +20,8 @@ public:
 	static vector<Friendly*> friendlyList;
 
 	virtual void Update(double dt);
+	void StoreDialogue(vector<string> svec);
+	string GetDialogue();
 
 	short state;
 private:
@@ -32,7 +34,7 @@ private:
 		EVACUATE
 	};
 
-	string dialogue;
+	vector<string> dialogue;
 };
 
 #endif
