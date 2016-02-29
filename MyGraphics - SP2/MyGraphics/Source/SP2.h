@@ -183,6 +183,7 @@ class SP2 : public Scene
 	{
 		TIMER_MAZE,
 		TIMER_SCENARIO,
+		TIMER_NPC,
 
 		TIMER_END
 	};
@@ -314,7 +315,8 @@ private:
 	bool DoorMoveTrue;
 	bool DoorReturn;
 	bool itemText;//item pickup
-	bool intervalBool;//Interval for ... anything i guess.
+	bool intervalBool;//Interval for ... anything i guess
+	bool npcCheck;
 
 	float readyToUse;
 	float readyToInteract;
@@ -329,7 +331,9 @@ private:
 	int screenX, screenY;
 	int playerState;
 	int gameState;
+	int npcCountdown;
 
+	string currentDialogue;
 
 	Player player;
 

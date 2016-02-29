@@ -6,6 +6,7 @@ Friendly::Friendly(Vector3 pos, Vector3 dir, float speed) :
 NPC(pos, dir, speed)
 {
 	state = IDLE;
+	dialogue.clear();
 }
 
 Friendly::~Friendly()
@@ -45,8 +46,6 @@ void Friendly::Update(double dt)
 		break;
 
 	case PANIC:
-		//static float panic_speed = speed * 2;
-		//speed = panic_speed;
 		break;
 
 	case CHAT:
@@ -58,4 +57,14 @@ void Friendly::Update(double dt)
 	default:
 		break;
 	}
+}
+
+void Friendly::StoreDialogue(vector<string> svec)
+{
+	dialogue = svec;
+}
+
+string Friendly::GetDialogue()
+{
+	return dialogue[rand()%dialogue.size()];
 }

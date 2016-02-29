@@ -11,6 +11,10 @@
 #include "Countdown.h"
 
 #include <ctime>
+#include <fstream>
+
+using std::string;
+using std::ifstream;
 
 SP2::SP2()
 {
@@ -383,6 +387,8 @@ void SP2::Init()
 
 	playerState = STATE_FPS;
 
+	currentDialogue = "";
+
 	readyToUse = 2.f;
 	readyToUse_HITBOX = 2.f;
 	readyToInteract = 2.f;
@@ -588,12 +594,30 @@ void SP2::Init()
 	allyShip.hitbox.SetSize(8.f, 1.5, 10);
 	allyShip.hitbox.SetPivot(0, 0.5f, 0);
 
+	std::ifstream file;
+	std::string line;
+
+	file.open("Text//npc_Friendly_Civilians.txt");
+
+	vector<string> tempostorage;
+
+	if (file.is_open()){
+		while (!file.eof()){
+			std::getline(file, line);
+			tempostorage.push_back(line);
+		}
+	}
+	file.close();
+
 	GenerateWaypoints(100, 100, 1, 4);
 
 	//spawns civilians
 	for (size_t i = 0; i < 20; ++i){
 		Friendly::friendlyList.push_back(new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f));
+		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
 	}
+
+	tempostorage.clear();
 }
 
 void SP2::Update(double dt)
@@ -679,8 +703,9 @@ void SP2::Update(double dt)
 
 		//NPC INTERACTION
 		for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
-			if (ItemCheckPosition((*it)->position, 45) && (player.position - (*it)->position).Length() <= 3.5f){
-				std::cout << "INTERACTED" << std::endl;
+			if (ItemCheckPosition((*it)->position, 45) && (player.position - (*it)->position).Length() <= 3.5f && m_timer[TIMER_NPC].GetTimeLeft() <= 0){
+				currentDialogue = (*it)->GetDialogue();
+				m_timer[TIMER_NPC].StartCountdown(2);
 			}
 		}
 
@@ -697,6 +722,13 @@ void SP2::Update(double dt)
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
+	}
+
+	if (m_timer[TIMER_NPC].GetTimeLeft() > 0){
+		npcCheck = true;
+	}
+	else{
+		npcCheck = false;
 	}
 
 	if (Application::IsKeyPressed('L')){
@@ -807,9 +839,6 @@ void SP2::Update(double dt)
 	else if (readyToUse_HITBOX < 2.f){
 		readyToUse_HITBOX += (float)(10 * dt);
 	}
-
-
-
 }
 
 void SP2::Render()
@@ -1056,8 +1085,10 @@ void SP2::Render()
 		}
 	}
 	
-
-
+	if (npcCheck == true){
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -200.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], currentDialogue, Color(1.f, 1.f, 1.f),40, -700.f, -200.f);
+	}
 
 	if (playerState == STATE_INTERACTING_MAZE){
 
@@ -1092,7 +1123,6 @@ void SP2::Render()
 			}
 			if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
 				counter++;
-				std::cout << counter << std::endl;
 				if (counter <= 2000){
 					RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 					RenderTextOnScreen(meshList[GEO_TEXT], "Mission Success~!", Color(0.f, 1.f, 0.f), 40, -300.f, -300.f);
