@@ -377,6 +377,21 @@ void SP2::Init()
 	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
 	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
 
+	meshList[GEO_HEADNPC2] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
+	meshList[GEO_HEADNPC2]->textureID = LoadTGA("Image//headnpc2.tga");
+
+	meshList[GEO_BODYNPC2] = MeshBuilder::GenerateOBJ("body", "OBJ//bodynpc2.obj");
+	meshList[GEO_BODYNPC2]->textureID = LoadTGA("Image//bodynpc2.tga");
+
+	meshList[GEO_LEFTLEGNPC2] = MeshBuilder::GenerateOBJ("left", "OBJ//legleftnpc2.obj");
+	meshList[GEO_LEFTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
+
+	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
+	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
+
+	meshList[GEO_GENERAL1] = MeshBuilder::GenerateOBJ("general1", "OBJ//General_1.obj");
+	meshList[GEO_GENERAL1]->textureID = LoadTGA("Image//flag.tga");
+
 	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
 	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
 
@@ -638,6 +653,16 @@ void SP2::Init()
 	CampWall_Front2->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front2->SetPosition(-20.5f, 2.5f, 33.f);
 
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
+=======
+	//Friendly General1 = Friendly::STATUS_GENERAL;
+
+	// SHIPS
+	allyShip.Init(Vector3(40.f, 0.f, 35.f), Vector3(0, 0, 1));
+	allyShip.hitbox.SetSize(8.f, 1.5, 10);
+	allyShip.hitbox.SetPivot(0, 0.5f, 0);
+
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 	std::ifstream file;
 	std::string line;
 
@@ -656,7 +681,11 @@ void SP2::Init()
 	GenerateWaypoints(100, 100, 1, 4);
 
 	//spawns civilians
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	for (size_t i = 0; i < 5; ++i){
+=======
+	for (size_t i = 0; i < 20; ++i){
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
 		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
 	}
@@ -677,7 +706,7 @@ void SP2::Update(double dt)
 	}
 
 	turret.Update(dt, playerState == STATE_INTERACTING_TURRET);
-	allyShip.Update(dt, playerState == STATE_INTERACTING_AIRSHIP);
+	//allyShip.Update(dt, playerState == STATE_INTERACTING_TURRET);
 
 	TrapsMovement(dt);
 	DoorMovement(dt);
@@ -756,6 +785,7 @@ void SP2::Update(double dt)
 				}
 			}
 		}
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 
 		//AIRSHIP INTERACTION
 		if (playerState == STATE_FPS && (player.position - allyShip.position).Length() <= 7.f){
@@ -767,6 +797,8 @@ void SP2::Update(double dt)
 			exitPoint.y += player.hitbox.sizeY;
 			player.Init(exitPoint, allyShip.camera.view);
 		}
+=======
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 	}
 	else if (readyToInteract < 2.f){
 		readyToInteract += (float)(10.f * dt);
@@ -782,6 +814,7 @@ void SP2::Update(double dt)
 	if (Application::IsKeyPressed('L')){
 		if (runningScenario == nullptr){
 			runningScenario = new ScenarioDefend(3, 3, 10);
+			m_timer[TIMER_DEFEND].StartCountdown(60);
 		}
 	}
 	if (Application::IsKeyPressed('K')){
@@ -839,7 +872,8 @@ void SP2::Update(double dt)
 			}
 		}
 			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
-			{	
+			{
+					
 				ItemObject::ItemList[i]->PickUpAnimation(dt);
 				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
 			}
@@ -902,15 +936,19 @@ void SP2::Render()
 	Vector3 camPos, camTar, camUp;
 
 	if (playerState == STATE_INTERACTING_TURRET){
+
 		camPos = turret.camera.position;
 		camTar = turret.camera.target;
 		camUp = turret.camera.up;
 	}
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	else if (playerState == STATE_INTERACTING_AIRSHIP){
 		camPos = allyShip.camera.position;
 		camTar = allyShip.camera.target;
 		camUp =	allyShip.camera.up;
 	}
+=======
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 	else{
 		camPos = player.camera.position;
 		camTar = player.camera.target;
@@ -936,7 +974,7 @@ void SP2::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(player.position.x, player.position.y, player.position.z);
 	RenderSkybox();
-	modelStack.PopMatrix();	
+	modelStack.PopMatrix();
 
 	RenderBaseCamp();
 	RenderEnemyShip();
@@ -955,7 +993,7 @@ void SP2::Render()
 		turret.position.z
 		);
 	RenderTurret();
-	modelStack.PopMatrix();	
+	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -979,7 +1017,6 @@ void SP2::Render()
 		modelStack.PopMatrix();
 		if (player.position.y <= 16.5){
 			onGround = true;
-			mappy.mazeSuccess = false;
 		}
 	}
 
@@ -991,7 +1028,7 @@ void SP2::Render()
 
 
 	modelStack.PushMatrix();
-	RenderQuadOnScreen(meshList[GEO_PlayerHands], 200,200,1100,-500);
+	RenderQuadOnScreen(meshList[GEO_PlayerHands], 200, 200, 1100, -500);
 	modelStack.PopMatrix();
 
 	//modelStack.PushMatrix();
@@ -1077,30 +1114,34 @@ void SP2::Render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(turret.heatSystem), Color(1, 0, 0), 40, -400.f, -25.f);
+	if (playerState == STATE_INTERACTING_TURRET){
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 250, 650, 380.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_DEFEND].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 450.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(turret.heatSystem), Color(1, 0, 0), 40, 450.f, 400.f);
+	}
 
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500, 250, 0, -25.f);
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, -400.f, -25.f);
 	}
 	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
 		RenderLightSlider();
 	}
 	if ((player.position - portal.position).Length() < 2.f && portalChk == false){
-		
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX],  1500,250, 0,-25.f);
+
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 40, -400.f, -25.f);
 	}
-		//modelStack.PushMatrix();
-		//modelStack.Rotate(180, 0, 0, 1);
-		//modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Rotate(180, 0, 0, 1);
+	//modelStack.PopMatrix();
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Q' to Show/Hide Hitboxes", Color(1.f, 1.f, 1.f), 2, -55.f, -35.f);
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Click on 'LMB' to Shoot", Color(1.f, 1.f, 1.f), 2, -55.f, -33.f);
 
-		//RenderTextOnScreen(meshList[GEO_TEXT], "X " + std::to_string(player.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-		//RenderTextOnScreen(meshList[GEO_TEXT], "Z " + std::to_string(player.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "X " + std::to_string(player.position.x), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "Z " + std::to_string(player.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemList.size  " + std::to_string(ItemObject::ItemList.size), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "Crouched: " + std::to_string(player.crouch), Color(1.f, 1.f, 1.f), 2, -55.f, -25.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Y: " + std::to_string(player.camera.position.y), Color(1.f, 1.f, 1.f), 2, -55.f, -27.f);
@@ -1108,10 +1149,10 @@ void SP2::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], "POSITION Z: " + std::to_string(player.camera.position.z), Color(1.f, 1.f, 1.f), 2, -55.f, -29.f);
 
 	//RenderTextOnScreen(meshList[GEO_TEXT], "pick Item " + std::to_string(Hitbox::CheckItems(ItemObject::ItemList[0]->hitbox, player.hitbox)), Color(1.f, 1.f, 1.f), 2, -55.f, -39.f);
-		//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
+	//RenderTextOnScreen(meshList[GEO_TEXT], "haveItem  " + std::to_string(ItemObject::ItemList[0]->haveItem), Color(1.f, 1.f, 1.f), 2, -55.f, -41.f);
 	//RenderTextOnScreen(meshList[GEO_TEXT], "ItemBoolInterval  " + std::to_string(ItemObject::ItemList[0]->ItemBoolInterval), Color(1.f, 1.f, 1.f), 2, -55.f, -37.f);
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
+	RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
 
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -1138,10 +1179,10 @@ void SP2::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "PRESS F TO PICK UP", Color(1.f, 1.f, 1.f), 40, -700.f, -25.f);
 		}
 	}
-	
+
 	if (npcCheck == true){
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -200.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], currentDialogue, Color(1.f, 1.f, 1.f),40, -700.f, -200.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], currentDialogue, Color(1.f, 1.f, 1.f), 40, -700.f, -200.f);
 	}
 
 	if (playerState == STATE_INTERACTING_MAZE){
@@ -1160,7 +1201,7 @@ void SP2::Render()
 		}
 	}
 
-		if (mappy.mazeSuccess == true){
+	/*	if (mappy.mazeSuccess == true){
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
@@ -1168,22 +1209,25 @@ void SP2::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
 			counter++;
 			if (counter <=200){
-				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
 			}
 			if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
-				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
 			}
-			if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
-				counter++;
-				if (counter <= 2000){
-					RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
-					RenderTextOnScreen(meshList[GEO_TEXT], "Mission Success~!", Color(0.f, 1.f, 0.f), 40, -300.f, -300.f);
-				}
-			}
-		}
+			else{
 
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Mission Success~!", Color(0.f, 1.f, 0.f), 40, -300.f, -300.f);
+
+			}
+			}
+			*/
+	
+
+
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	if (m_timer[TIMER_SCENARIO_TEXTS].GetTimeLeft() > 0){
 		if (scenarioResult == true){ // if win
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
@@ -1192,6 +1236,35 @@ void SP2::Render()
 		else{ // if lose
 		}
 	}
+=======
+	if (mappy.mazeSuccess == true){
+		Application::SetMousePosition(0, 0);
+		playerState = STATE_FPS;
+		Application::HideCursor();
+		std::cout << onGround << std::endl;
+
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, 450.f, 400.f);
+		counter++;
+
+		if (counter <= 200){
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+		}
+		if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
+			if (m_timer[TIMER_CONDITION_WIN].GetTimeLeft() > 0){
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -25.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, -400.f, -25.f);
+			}
+			}
+		else if (m_timer[TIMER_MAZE].GetTimeLeft()<=0 && onGround == false){
+				RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, -300.f, -300.f);
+				// if lose
+			}
+	}
+
+		
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 
 		/*if (runningScenario->loseScenario == true){
 			m_timer[TIMER_SCENARIO].StartCountdown(5);
@@ -1969,40 +2042,6 @@ void SP2::Interval(double dt)
 }
 
 void SP2::MazeInteraction(double dt){
-
-	//if (Application::state2D == false){
-	//	player.Update(dt);
-	//	//std::cout << "testies" << std::endl;
-
-	//}
-	//else{
-	//	double mouseX, mouseY;
-	//	Application::GetMouseMovement(mouseX, mouseY);
-	//	//std::cout << mouseX << "-----------|" << mouseY << std::endl;
-	//	if (mouseX > 45 && mouseX<483 && mouseY >-461 && mouseY < -350){
-	//		//std::cout << "test" << std::endl;
-	//	}
-	//	else if (mouseX>42 && mouseX< 149&& mouseY<-25 && mouseY>-351){
-	//		//std::cout << "test2" << std::endl;
-	//	}
-	//	else if (mouseX > -190 && mouseX < 135 && mouseY>-95 && mouseY<-25){
-	//		//std::cout << "test3" << std::endl;
-	//	}
-	//	else if (mouseX > -190 && mouseX <-159 && mouseY>-95 && mouseY < 320){
-	//		//std::cout << "test4" << std::endl;
-	//	}
-	//	else if (mouseX > -500 && mouseX < -160 && mouseY < 320 && mouseY>291){
-	//		//std::cout << "test5" << std::endl;
-	//	}
-	//	else if (mouseX > -500 && mouseX < -482 && mouseY < 498 && mouseY >290){
-	//		//std::cout << "test6" << std::endl;
-	//	}
-	//	else{
-	//		Application::state2D = false;
-	//		Application::SetMousePosition(0,0);
-	//		//std::cout << "die" << std::endl;
-	//	}
-	//}
 	mappy.Collision();
 }
 
@@ -2263,7 +2302,6 @@ void SP2::RenderAllyShip()
 		allyShip.position.y,
 		allyShip.position.z
 		);
-	modelStack.Rotate(allyShip.facingYaw, 0, 1, 0);
 	modelStack.Scale(2, 2, 2);
 	RenderMesh(meshList[GEO_ALLYSHIP], true);
 	modelStack.PopMatrix();
@@ -2280,6 +2318,7 @@ void SP2::RenderEnemyShip()
 		modelStack.PopMatrix();
 	}
 }
+
 
 void SP2::RenderBaseCamp()
 {
@@ -2414,6 +2453,7 @@ void SP2::RenderNPCs()
 		modelStack.PopMatrix();
 	}
 	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
+
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
@@ -2421,7 +2461,19 @@ void SP2::RenderNPCs()
 			(*it)->position.z
 			);
 		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
-		RenderFriendly();
+
+		switch ((*it)->status){
+		case Friendly::STATUS_CIVILIAN:
+			RenderFriendly();
+			break;
+
+		case Friendly::STATUS_GENERAL:
+			RenderGeneral();
+			break;
+
+		default:
+			break;
+		}
 		modelStack.PopMatrix();
 	}
 }
@@ -2545,6 +2597,15 @@ void SP2::RenderFriendly()
 	modelStack.PopMatrix();
 }
 
+void SP2::RenderGeneral(){
+	modelStack.PushMatrix();
+	modelStack.Translate(-30, 0, 0);
+	modelStack.Scale(0.3, 0.3, 0.3);
+	RenderMesh(meshList[GEO_GENERAL1], true);
+	modelStack.PopMatrix();
+
+}
+
 void SP2::RenderShipGuard()
 {
 	if (ItemObject::ItemList[4]->ShipGuardCheck == false)
@@ -2661,6 +2722,7 @@ void SP2::UpdateEvacuationScenario()
 			runningEvacuationScenario = false;
 		}
 	}
+<<<<<<< 353cb43bb21902923d777972813dda0f74abdd90
 
 void SP2::RenderFenceBoundary()
 {
@@ -3154,3 +3216,6 @@ void SP2::RenderObstacles()
 
 
 }
+=======
+}
+>>>>>>> 64169a5546709cc3fa1d24e57f4dd5e22a8d6da2

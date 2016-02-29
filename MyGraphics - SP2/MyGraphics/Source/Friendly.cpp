@@ -7,7 +7,11 @@ NPC(pos, dir, speed)
 {
 	state = IDLE;
 	dialogue.clear();
+<<<<<<< 029b1855139d72acdcca5d0d021453c2caa07c8c
 	reachedDestination = false;
+=======
+	status = STATUS_CIVILIAN;
+>>>>>>> bc47c15713c5bb9e307b6723d388a25c3dedb179
 
 	Friendly::friendlyList.push_back(this);
 }
