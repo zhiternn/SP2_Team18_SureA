@@ -8,6 +8,7 @@ NPC(pos, dir, speed)
 	state = IDLE;
 	dialogue.clear();
 	reachedDestination = false;
+	status = STATUS_CIVILIAN;
 
 	Friendly::friendlyList.push_back(this);
 }
@@ -35,7 +36,9 @@ void Friendly::Update(double dt)
 	case ROAM:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
@@ -60,7 +63,9 @@ void Friendly::Update(double dt)
 	case EVACUATE:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
@@ -92,7 +97,9 @@ void Friendly::TalkTo(Vector3 pos)
 {
 	timer.StartCountdown(2);//stays for 2 seconds
 
-	Vector3 view = (pos - position).Normalized();
-	facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
-	state = CHAT;
+	if (position != pos){
+		Vector3 view = (pos - position).Normalized();
+		facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
+		state = CHAT;
+	}
 }

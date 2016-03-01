@@ -35,7 +35,9 @@ void Enemy::Update(double dt)
 	case MOVE:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (defaultDirection.Cross(checkPointDir)).Dot(Vector3(0, 1, 0) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 

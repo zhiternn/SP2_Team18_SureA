@@ -345,7 +345,7 @@ Vector3 Vector3::Normalized( void ) const throw( DivideByZero )
 /******************************************************************************/
 /*!
 \brief
-Normalize this vector and return a reference to it
+Normalize this vector and return a reference to its	
 
 \param rhs
 	Point to calculate distance from

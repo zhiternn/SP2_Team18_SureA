@@ -78,6 +78,8 @@ class SP2 : public Scene
 		GEO_RIGHTLEGNPC2,
 		GEO_LEFTLEGNPC2,
 
+		GEO_GENERAL1,
+
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,
 		GEO_Testitem3,
@@ -189,7 +191,6 @@ class SP2 : public Scene
 		TIMER_NPC,
 		TIMER_DEFEND,
 		TIMER_CONDITION,
-		TIMER_CONDITION_WIN,
 
 		TIMER_END
 	};
@@ -227,8 +228,10 @@ private:
 	void RenderShipGuard();
 	void RenderFriendly();
 	void RenderAlien();
+
 	void RenderFenceBoundary();
 	void RenderObstacles();
+	void RenderGeneral();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
@@ -297,6 +300,8 @@ private:
 	Object backDoor2;
 	Object trapdoor;
 	Object baseSpotlight;
+
+	Friendly General1;
 
 	Airship allyShip;
 	Turret turret;

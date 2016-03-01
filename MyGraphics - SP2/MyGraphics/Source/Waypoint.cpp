@@ -91,7 +91,7 @@ void Waypoint::LinkWaypoints()
 	collisionChecker.SetSize(Waypoint::sizeH, Waypoint::sizeV, Waypoint::sizeH);
 
 	for (int j = 0; j < Waypoint::waypointList.size(); ++j){// Check waypoints one by one with gotten waypoint
-		if (this != Waypoint::waypointList[j]){//Check if its comparing with itself
+		if (this->position != Waypoint::waypointList[j]->position){//Check if its comparing with itself
 			float distance = (Waypoint::waypointList[j]->position - this->position).Length();
 			Vector3 pathDir = (Waypoint::waypointList[j]->position - this->position).Normalized();
 			pathDir.y = 0;
