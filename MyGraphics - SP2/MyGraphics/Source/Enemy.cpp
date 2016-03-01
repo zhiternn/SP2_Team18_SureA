@@ -24,14 +24,6 @@ NPC(pos, dir, speed)
 
 Enemy::~Enemy()
 {
-	for (std::vector<Enemy*>::iterator it = enemyList.begin(); it != Enemy::enemyList.end();){
-		if ((*it)->isDead){
-			it = Enemy::enemyList.erase(it);
-		}
-		else{
-			++it;
-		}
-	}
 }
 
 void Enemy::Update(double dt)

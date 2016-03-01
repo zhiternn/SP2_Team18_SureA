@@ -86,6 +86,9 @@ void Airship::Update(double dt, bool controlling)
 		{
 			ySpeed -= (THRUST_LIMIT/2) * dt;
 		}
+
+		camera.target = position;
+		camera.Update(dt);
 	 }
 	view.y = 0;
 	view.Normalize();
@@ -119,7 +122,4 @@ void Airship::Update(double dt, bool controlling)
 
 		hitbox.SetPosition(position);
 	}
-
-	camera.target = position;
-	camera.Update(dt);
 }

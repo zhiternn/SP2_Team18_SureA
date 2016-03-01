@@ -58,6 +58,8 @@ class SP2 : public Scene
 		GEO_ENDFLAG,
 		GEO_MAZETEX,
 		GEO_STARTFLAG,
+		GEO_FENCE,
+		GEO_CRATE,
 
 		GEO_TURRET_BASE,
 		GEO_TURRET_HEAD,
@@ -185,6 +187,9 @@ class SP2 : public Scene
 		TIMER_SCENARIO_TEXTS,
 		TIMER_SCENARIO_EVACUATE,
 		TIMER_NPC,
+		TIMER_DEFEND,
+		TIMER_CONDITION,
+		TIMER_CONDITION_WIN,
 
 		TIMER_END
 	};
@@ -222,6 +227,8 @@ private:
 	void RenderShipGuard();
 	void RenderFriendly();
 	void RenderAlien();
+	void RenderFenceBoundary();
+	void RenderObstacles();
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);
@@ -330,10 +337,11 @@ private:
 
 	int InitialCivilianCount;
 	int counter;
-	int screenX, screenY;
 	int playerState;
 	int gameState;
 	int npcCountdown;
+
+	int screenX, screenY;
 
 	//Variables and Functions required for Scenario Evacuate
 	void StartEvacuationScenario(double duration, int numberToSave);
@@ -344,7 +352,7 @@ private:
 
 	Player player;
 
-	Scenario* runningScenario;// nullptr if no scenario is running
+	ScenarioDefend* runningScenario;// nullptr if no scenario is running
 	bool scenarioResult; // true if win
 
 	Maze mappy;

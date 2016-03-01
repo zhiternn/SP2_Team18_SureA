@@ -7,6 +7,8 @@
 #include <list>
 #include <string>
 
+#include "Countdown.h"
+
 using std::string;
 using std::vector;
 using std::list;
@@ -29,6 +31,8 @@ public:
 	static vector<Friendly*> friendlyList;
 
 	virtual void Update(double dt);
+	void TalkTo(Vector3 pos);
+
 	void StoreDialogue(vector<string> svec);
 	string GetDialogue();
 
@@ -36,6 +40,7 @@ public:
 	FRIENDLY_STATE state;
 private:
 	vector<string> dialogue;
+	Countdown timer;
 };
 
 #endif

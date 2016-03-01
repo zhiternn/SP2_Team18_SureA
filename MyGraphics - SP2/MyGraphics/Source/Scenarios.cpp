@@ -2,23 +2,11 @@
 #include "Enemy.h"
 #include "Friendly.h"
 
-Scenario::Scenario(double duration)
-{
-	timer.StartCountdown(duration);
-	winScenario = false;
-	stopScenario = false;
-}
-
-Scenario::~Scenario()
-{
-}
-
 //============================================================================================
 //SCENARIO DEFEND
 //============================================================================================
 
-ScenarioDefend::ScenarioDefend(int health, double duration, int increment) :
-Scenario(duration)
+ScenarioDefend::ScenarioDefend(int health, double duration, int increment)
 {
 
 	this->increment = increment;
@@ -26,6 +14,7 @@ Scenario(duration)
 	HP = health;
 	wave = 1;
 	winScenario = false;
+	timer.StartCountdown(duration);
 
 	SpawnEnemies();
 	MoveEnemies();

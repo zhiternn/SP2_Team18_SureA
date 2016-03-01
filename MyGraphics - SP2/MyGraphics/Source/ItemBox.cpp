@@ -163,7 +163,6 @@ void ItemObject::PickUp(Hitbox hitbox)
 {
 	if (Hitbox::CheckItems(this->hitbox, hitbox))
 	{
-		//std::cout << " TeSTTESTESTSEST " << std::endl;
 		if (haveItem == false && ItemBoolInterval == false && oneTimeThing == false)
 		{
 			takeItem = true;
@@ -223,7 +222,8 @@ void ItemObject::ShipButtonAnimation(double dt)
 	if (buttonRise < 0)
 	{
 		buttonPressBool = false;
-		mazeCounter = 1;
+		mazeCheck = 1;
+		buttonRise = 0.f;
 	}
 	
 }

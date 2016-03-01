@@ -22,6 +22,8 @@ public:
 
 	static double mouseWheelX;
 	static double mouseWheelY;
+	static int screenX;
+	static int screenY;
 
 private:
 

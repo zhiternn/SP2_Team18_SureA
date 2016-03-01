@@ -3,34 +3,22 @@
 
 #include "Countdown.h"
 
-class Scenario
-{
-public:
-
-	Scenario(double duration);
-	virtual ~Scenario();
-
-	virtual void Update(double dt) = 0;
-
-	bool stopScenario;
-	bool winScenario;
-protected:
-	Countdown timer;
-};
-
-class ScenarioDefend : public Scenario
+class ScenarioDefend
 {
 public:
 	ScenarioDefend(int health, double duration, int increment);
-	virtual ~ScenarioDefend();
+	~ScenarioDefend();
 
-	virtual void Update(double dt);
-
+	void Update(double dt);
+	bool stopScenario;
+	bool winScenario;
+	int HP;
 private:
 	int wave;
 	int increment;
 	int amountToSpawn;
-	int HP;
+
+	Countdown timer;
 
 	void SpawnEnemies();
 	void MoveEnemies();

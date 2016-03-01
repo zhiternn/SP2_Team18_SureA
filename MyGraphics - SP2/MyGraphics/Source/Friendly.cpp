@@ -52,7 +52,9 @@ void Friendly::Update(double dt)
 		break;
 
 	case CHAT:
-
+		if (timer.GetTimeLeft() <= 0){
+			state = ROAM;
+		}
 		break;
 
 	case EVACUATE:
@@ -84,4 +86,13 @@ void Friendly::StoreDialogue(vector<string> svec)
 string Friendly::GetDialogue()
 {
 	return dialogue[rand()%dialogue.size()];
+}
+
+void Friendly::TalkTo(Vector3 pos)
+{
+	timer.StartCountdown(2);//stays for 2 seconds
+
+	Vector3 view = (pos - position).Normalized();
+	facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
+	state = CHAT;
 }
