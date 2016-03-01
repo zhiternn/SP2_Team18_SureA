@@ -66,24 +66,37 @@ mainMenu::mainMenu()
 	glUseProgram(m_programID);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image/ExportedFont1.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//ExportedFont1.tga");
 
 	meshList[GEO_BG] = MeshBuilder::GenerateQuad("background", Color(1, 1, 1), 1, 1);
 	meshList[GEO_BG]->textureID = LoadTGA("Image//bg.tga");
 
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("Textbox for menu pages", Color(0, 0, 0), 1, 1);
 
-	meshList[GEO_EXITBUTTON] = MeshBuilder::GenerateQuad("exit button", Color(1, 1, 1), 18, 5);
-	meshList[GEO_EXITBUTTONHOVER] = MeshBuilder::GenerateQuad("exit button hover", Color(0, 0, 0), 18, 5);
-	meshList[GEO_BUTTONSELECTED] = MeshBuilder::GenerateQuad("exit menu button select", Color(1, 1, 1), 18, 5);
+	meshList[GEO_MENUBAR] = MeshBuilder::GenerateQuad("menu bar", Color(1, 1, 1), 1, 1);
+	meshList[GEO_MENUBAR]->textureID = LoadTGA("Image//menubar.tga");
 
-	meshList[GEO_BUTTON] = MeshBuilder::GenerateQuad(" menu button", Color(1, 1, 1), 10, 5);
-	meshList[GEO_BUTTONHOVER] = MeshBuilder::GenerateQuad(" menu button hover", Color(0, 0, 0), 10, 5);
-	meshList[GEO_BUTTONSELECTED] = MeshBuilder::GenerateQuad(" menu button select", Color(1, 1, 1), 10, 5);
+	meshList[GEO_EXITBUTTON] = MeshBuilder::GenerateQuad("exit button", Color(1, 1, 1), 1, 1);
+	meshList[GEO_EXITBUTTON]->textureID = LoadTGA("Image//button.tga");
+	meshList[GEO_EXITBUTTONHOVER] = MeshBuilder::GenerateQuad("exit button hover", Color(0, 0, 0), 1, 1);
+	meshList[GEO_EXITBUTTONHOVER]->textureID = LoadTGA("Image//buttonhover.tga");
+	meshList[GEO_BUTTONSELECTED] = MeshBuilder::GenerateQuad("exit menu button select", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BUTTONSELECTED]->textureID = LoadTGA("Image//button.tga");
 
-	meshList[GEO_PLAYBUTTON] = MeshBuilder::GenerateQuad("play button", Color(1, 1, 1), 14, 14);
-	meshList[GEO_PLAYBUTTONHOVER] = MeshBuilder::GenerateQuad("play button hover", Color(0, 0, 0), 14, 14);
-	meshList[GEO_PLAYBUTTONSELECTED] = MeshBuilder::GenerateQuad("play button select", Color(1, 1, 1), 14, 14);
+	meshList[GEO_BUTTON] = MeshBuilder::GenerateQuad(" menu button", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BUTTON]->textureID = LoadTGA("Image//button.tga");
+	meshList[GEO_BUTTONHOVER] = MeshBuilder::GenerateQuad(" menu button hover", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BUTTONHOVER]->textureID = LoadTGA("Image//buttonhover.tga");
+	meshList[GEO_BUTTONSELECTED] = MeshBuilder::GenerateQuad(" menu button select", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BUTTONSELECTED]->textureID = LoadTGA("Image//button.tga");
+
+
+	meshList[GEO_PLAYBUTTON] = MeshBuilder::GenerateQuad("play button", Color(1, 1, 1), 1, 1);
+	meshList[GEO_PLAYBUTTON]->textureID = LoadTGA("Image//button.tga");
+	meshList[GEO_PLAYBUTTONHOVER] = MeshBuilder::GenerateQuad("play button hover", Color(1, 1, 1), 1, 1);
+	meshList[GEO_PLAYBUTTONHOVER]->textureID = LoadTGA("Image//buttonhover.tga");
+	meshList[GEO_PLAYBUTTONSELECTED] = MeshBuilder::GenerateQuad("play button select", Color(1, 1, 1), 1, 1);
+	meshList[GEO_PLAYBUTTONSELECTED]->textureID = LoadTGA("Image//button.tga");
 
 	objx = objy = 0;
 
@@ -114,27 +127,45 @@ void mainMenu::readTxtFile(string load)
 	{
 		if (instructions == true)
 		{
-			RenderBackgroundOnScreen(meshList[GEO_TEXTBOX], Color(0, 0, 0), 45, 52, 35);
+			RenderBackgroundOnScreen(meshList[GEO_MENUBAR], Color(0, 0, 0), 45, 52, 35);
 			while (getline(readFile, output))
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 1, 1), 2, 18, y + 26);
-				y--;
+				if (y == 0 || y == -1)
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 1), 2, 18, y + 27);
+					y--;
+				}
+				else if (y == -3 || y == -7 || y == -11 || y == -15)
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(0, 1, 0), 2, 18, y + 27);
+					y--;
+				}
+				else
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 0), 2, 18, y + 27);
+					y--;
+				}
 			}
 			readFile.close();
 		}
 		if (credits == true)
 		{
-			RenderBackgroundOnScreen(meshList[GEO_TEXTBOX], Color(0, 0, 0), 48, 43, 35);
+			RenderBackgroundOnScreen(meshList[GEO_MENUBAR], Color(0, 0, 0), 50, 41, 33);
 			while (getline(readFile, output))
 			{
-				if (y == -5 || y == -10 || y == -15 || y == -20)
+				if (y == 0)
 				{
-					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 1, 1), 2, 12, y + 27);
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 1), 2, 13, y + 27);
+					y--;
+				}
+				else if (y == -4 || y == -9 || y == -14 || y == -19)
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 1, 1), 2, 13, y + 27);
 					y--;
 				}
 				else
 				{
-					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 0), 2, 12, y + 27);
+					RenderTextOnScreen(meshList[GEO_TEXT], output, Color(1, 0, 0), 2, 13, y + 27);
 					y--;
 				}
 			}
@@ -527,7 +558,7 @@ void mainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 
 	for (unsigned i = 0; i < text.length(); ++i) {
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 0.8f + 0.5f, 0.5f, 0);  //1.f is the spacing of each character (can be changed)
+		characterSpacing.SetToTranslation(i * 0.6f + 0.5f, 0.5f, 0);  //1.f is the spacing of each character (can be changed)
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
@@ -545,24 +576,24 @@ void mainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 void mainMenu::MainMenuState()
 {
 
-	RenderBackgroundOnScreen(meshList[GEO_BG], Color(0, 0, 0), 80, 40, 40);
+	RenderBackgroundOnScreen(meshList[GEO_BG], Color(0, 0, 0), 80, 40, 30);
 	//Play Button
 	if (SharedData::GetInstance()->m_newX >= 668 && SharedData::GetInstance()->m_newX <= 1142
 		&& SharedData::GetInstance()->m_newY >= 407 && SharedData::GetInstance()->m_newY <= 460){
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_PLAYBUTTONSELECTED], Color(0, 0, 0), 20, 38, 35);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 0, 1), 2, 17.3, 17);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 1), 2, 17.8, 17);
 		}
 		else
 		{
 			RenderButtonOnScreen(meshList[GEO_PLAYBUTTONHOVER], Color(0, 0, 0), 20, 38, 35);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 0, 1), 2, 17.3, 17);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 1), 2, 17.8, 17);
 		}
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_PLAYBUTTON], Color(0, 0, 0), 20, 38, 35);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 0, 1), 2, 17.3, 17);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 1), 2, 17.8, 17);
 	
 	//Instruction Button
 	if (!clickChk && SharedData::GetInstance()->m_newX >= 668 && SharedData::GetInstance()->m_newX <= 1142
@@ -570,17 +601,17 @@ void mainMenu::MainMenuState()
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONSELECTED], Color(0, 0, 0), 20, 38, 31);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(0, 0, 1), 2, 14.3, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 0, 1), 2, 15.5, 15);
 		}
 		else
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONHOVER], Color(0, 0, 0), 20, 38, 31);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(0, 0, 1), 2, 14.3, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 0, 1), 2, 15.5, 15);
 		}
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_BUTTON], Color(0, 0, 0), 20, 38, 31);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(0, 0, 1), 2, 14.3, 15);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 0, 1), 2, 15.5, 15);
 	
 	//Option Button
 	if (!clickChk && SharedData::GetInstance()->m_newX >= 668 && SharedData::GetInstance()->m_newX <= 1142
@@ -588,17 +619,17 @@ void mainMenu::MainMenuState()
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONSELECTED], Color(0, 0, 0), 20, 38, 27);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(0, 0, 1), 2, 16.3, 13);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(1, 0, 1), 2, 17, 13);
 		}
 		else
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONHOVER], Color(0, 0, 0), 20, 38, 27);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(0, 0, 1), 2, 16.3, 13);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(1, 0, 1), 2, 17, 13);
 		}
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_BUTTON], Color(0, 0, 0), 20, 38, 27);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(0, 0, 1), 2, 16.3, 13);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Options", Color(1, 0, 1), 2, 17, 13);
 	
 	//Credit Button
 	if (!clickChk && SharedData::GetInstance()->m_newX >= 668 && SharedData::GetInstance()->m_newX <= 1142
@@ -606,17 +637,17 @@ void mainMenu::MainMenuState()
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONSELECTED], Color(0, 0, 0), 20, 38, 23);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(0, 0, 1), 2, 16.3, 11);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 0, 1), 2, 17, 11);
 		}
 		else
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONHOVER], Color(0, 0, 0), 20, 38, 23);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(0, 0, 1), 2, 16.3, 11);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 0, 1), 2, 17, 11);
 		}
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_BUTTON], Color(0, 0, 0), 20, 38, 23);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(0, 0, 1), 2, 16.3, 11);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 0, 1), 2, 17, 11);
 
 	//Exit Button
 	if (!clickChk && SharedData::GetInstance()->m_newX >= 668 && SharedData::GetInstance()->m_newX <= 1142
@@ -624,20 +655,20 @@ void mainMenu::MainMenuState()
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONSELECTED], Color(0, 0, 0), 20, 38, 19);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(0, 0, 1), 2, 17.3, 9);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(1, 0, 1), 2, 17.7, 9);
 		}
 		else
 		{
 			RenderButtonOnScreen(meshList[GEO_BUTTONHOVER], Color(0, 0, 0), 20, 38, 19);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(0, 0, 1), 2, 17.3, 9);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(1, 0, 1), 2, 17.7, 9);
 		}
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_BUTTON], Color(0, 0, 0), 20, 38, 19);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(0, 0, 1), 2, 17.3, 9);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Quit", Color(1, 0, 1), 2, 17.7, 9);
 	
 
-	RenderTextOnScreen(meshList[GEO_TEXT], " Le Space Game", Color(0, 0, 0), 3, 6, 17);
+	RenderTextOnScreen(meshList[GEO_TEXT], " Le Space Game", Color(1, 0, 0), 3, 6, 17);
 
 	//mouse postion
 	RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
@@ -654,26 +685,22 @@ void mainMenu::InstructionState()
 
 	readTxtFile("Text//instructions.txt");
 
-	//mouse postion
-	//RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
-	//RenderTextOnScreen(meshList[GEO_TEXT], "y pos : " + std::to_string(SharedData::GetInstance()->m_newY), Color(0, 0, 0), 2, 1, 1);
-
-	RenderTitleOnScreen(meshList[GEO_PLAYBUTTONSELECTED], Color(0, 0, 0), 23, 12.5, 57);
-	RenderTextOnScreen(meshList[GEO_TEXT], "INSTRUCTIONS :", Color(0, 0, 1), 2, 1, 28);
+	RenderTitleOnScreen(meshList[GEO_MENUBAR], Color(0, 0, 0), 23, 12.5, 57);
+	RenderTextOnScreen(meshList[GEO_TEXT], "INSTRUCTIONS :", Color(0, 1, 1), 2, 2, 28);
 
 	if(SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 		&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950){
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_EXITBUTTONSELECTED], Color(0, 0, 0), 20, 69.5, 7);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 		}
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTONHOVER], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTON], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 
 }
 
@@ -685,26 +712,22 @@ void mainMenu::OptionsState()
 
 	RenderBackgroundOnScreen(meshList[GEO_BG], Color(0, 0, 0), 80, 40, 40);
 
-	//mouse postion
-	RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], "y pos : " + std::to_string(SharedData::GetInstance()->m_newY), Color(0, 0, 0), 2, 1, 1);
-
-	RenderTitleOnScreen(meshList[GEO_PLAYBUTTONSELECTED], Color(0, 0, 0), 15, 9, 57);
-	RenderTextOnScreen(meshList[GEO_TEXT], "OPTIONS :", Color(0, 0, 1), 2, 1, 28);
+	RenderTitleOnScreen(meshList[GEO_MENUBAR], Color(0, 0, 0), 15, 9, 57);
+	RenderTextOnScreen(meshList[GEO_TEXT], "OPTIONS :", Color(0, 1, 1), 2, 2, 28);
 
 	if (SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 		&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950){
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_EXITBUTTONSELECTED], Color(0, 0, 0), 20, 69.5, 7);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 		}
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTONHOVER], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTON], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 
 }
 
@@ -718,26 +741,22 @@ void mainMenu::CreditState()
 
 	readTxtFile("Text//credits.txt");
 
-	//mouse postion
-	RenderTextOnScreen(meshList[GEO_TEXT], "x pos : " + std::to_string(SharedData::GetInstance()->m_newX), Color(0, 0, 0), 2, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], "y pos : " + std::to_string(SharedData::GetInstance()->m_newY), Color(0, 0, 0), 2, 1, 1);
-
-	RenderTitleOnScreen(meshList[GEO_PLAYBUTTONSELECTED], Color(0, 0, 0), 15, 9, 57);
-	RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS :", Color(0, 0, 1), 2, 1, 28);
+	RenderTitleOnScreen(meshList[GEO_MENUBAR], Color(0, 0, 0), 15, 9, 57);
+	RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS :", Color(0, 1, 1), 2, 2, 28);
 
 	if (SharedData::GetInstance()->m_newX >= 1412 && SharedData::GetInstance()->m_newX <= 1895
 		&& SharedData::GetInstance()->m_newY >= 880 && SharedData::GetInstance()->m_newY <= 950){
 		if (onClicked)
 		{
 			RenderButtonOnScreen(meshList[GEO_EXITBUTTONSELECTED], Color(0, 0, 0), 20, 69.5, 7);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 		}
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTONHOVER], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 	}
 	else
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTON], Color(0, 0, 0), 20, 69.5, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(0, 0, 1), 2, 30, 3);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
 
 }
 

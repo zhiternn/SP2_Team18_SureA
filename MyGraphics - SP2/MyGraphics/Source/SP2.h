@@ -229,12 +229,9 @@ private:
 	void RenderShipGuard();
 	void RenderFriendly();
 	void RenderAlien();
-<<<<<<< 353cb43bb21902923d777972813dda0f74abdd90
 	void RenderFenceBoundary();
 	void RenderObstacles();
-=======
 	void RenderGeneral();
->>>>>>> 64169a5546709cc3fa1d24e57f4dd5e22a8d6da2
 
 	void UpdatePortal(double dt);
 	void DoorMovement(double dt);

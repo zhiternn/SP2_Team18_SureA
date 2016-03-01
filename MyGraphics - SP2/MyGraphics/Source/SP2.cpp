@@ -479,13 +479,9 @@ void SP2::Init()
 
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
-<<<<<<< 638017802895c6a3400ed3a818a5bfd061f91cce
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);
-=======
-	frontDoor.SetPosition(-20.3, 2.8, 37.75); \
->>>>>>> ccf061a516679a72c768c8b8386dabaece2c6ea2
 
-		frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
+	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
 
 	//back door
@@ -685,8 +681,8 @@ void SP2::Init()
 	}
 
 	tempostorage.clear();
-	
 }
+
 void SP2::Update(double dt)
 {
 	if (playerState == STATE_FPS){
@@ -2708,7 +2704,9 @@ void SP2::UpdateEvacuationScenario()
 			runningEvacuationScenario = false;
 		}
 	}
-<<<<<<< 353cb43bb21902923d777972813dda0f74abdd90
+
+}
+
 
 void SP2::RenderFenceBoundary()
 {
@@ -3202,6 +3200,5 @@ void SP2::RenderObstacles()
 
 
 }
-=======
-}
->>>>>>> 64169a5546709cc3fa1d24e57f4dd5e22a8d6da2
+
+
