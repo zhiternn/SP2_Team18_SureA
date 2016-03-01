@@ -20,6 +20,7 @@
 #include "Countdown.h"
 #include "MazeInteraction.h"
 #include "Scenarios.h"
+#include "Sound.h"
 
 using std::vector;
 
@@ -191,7 +192,6 @@ class SP2 : public Scene
 		TIMER_NPC,
 		TIMER_DEFEND,
 		TIMER_CONDITION,
-		TIMER_CONDITION_WIN,
 
 		TIMER_END
 	};
@@ -249,6 +249,7 @@ private:
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
 	void AlarmUpdate();
 	void DeleteAfter();
+	void GenerateCivilians(int amount);
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
@@ -339,12 +340,13 @@ private:
 	float animation_moveDoor;
 	float towardsCameraYaw;
 
-
+	int InitialCivilianCount;
 	int counter;
-	int screenX, screenY;
 	int playerState;
 	int gameState;
 	int npcCountdown;
+
+	int screenX, screenY;
 
 	//Variables and Functions required for Scenario Evacuate
 	void StartEvacuationScenario(double duration, int numberToSave);
@@ -355,7 +357,7 @@ private:
 
 	Player player;
 
-	Scenario* runningScenario;// nullptr if no scenario is running
+	ScenarioDefend* runningScenario;// nullptr if no scenario is running
 	bool scenarioResult; // true if win
 
 	Maze mappy;
@@ -365,6 +367,8 @@ private:
 	MS modelStack, viewStack, projectionStack;
 
 	Light light[4];
+
+	Sound sound;
 };
 
 #endif

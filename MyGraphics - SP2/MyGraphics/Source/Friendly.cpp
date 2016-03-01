@@ -36,7 +36,9 @@ void Friendly::Update(double dt)
 	case ROAM:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
@@ -53,13 +55,17 @@ void Friendly::Update(double dt)
 		break;
 
 	case CHAT:
-
+		if (timer.GetTimeLeft() <= 0){
+			state = ROAM;
+		}
 		break;
 
 	case EVACUATE:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (((defaultDirection.Cross(checkPointDir)).y / abs((defaultDirection.Cross(checkPointDir)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 
@@ -84,5 +90,16 @@ void Friendly::StoreDialogue(vector<string> svec)
 
 string Friendly::GetDialogue()
 {
-	return dialogue[rand() % dialogue.size()];
+	return dialogue[rand()%dialogue.size()];
+}
+
+void Friendly::TalkTo(Vector3 pos)
+{
+	timer.StartCountdown(2);//stays for 2 seconds
+
+	if (position != pos){
+		Vector3 view = (pos - position).Normalized();
+		facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
+		state = CHAT;
+	}
 }

@@ -30,8 +30,8 @@ void Player::Init(const Vector3& pos, const Vector3& view)
 void Player::Update(double dt)
 {
 	static const float CAMERA_SPEED = 5.f;
-	static const float MOVEMENT_SPEED = 5.f;
-	float SPRINT_MULTIPLIER = 5.f;
+	static const float MOVEMENT_SPEED = 10.f;
+	float SPRINT_MULTIPLIER = 1.f;
 
 	Vector3 oldPos = position;
 
@@ -40,7 +40,7 @@ void Player::Update(double dt)
 	// if not pressed, no speed increase
 
 	if (Application::IsKeyPressed(VK_SHIFT) && tired == false){
-		SPRINT_MULTIPLIER = 10.f;
+		SPRINT_MULTIPLIER = 2.5f;
 		SprintDuration -= 0.5 * dt;
 	}
 
@@ -72,12 +72,6 @@ void Player::Update(double dt)
 			vSpeed = 6.f * dt;
 		}
 	}
-
-	//if (sprint1 >= 0)
-	//{
-	//	sprint1 -= 0.3 * dt;
-	//	tired = false;
-	//}
 
 	if (SprintDuration < 0)
 	{

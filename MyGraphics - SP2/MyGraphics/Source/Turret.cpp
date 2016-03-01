@@ -111,7 +111,7 @@ void Turret::Update(double dt, bool controlling)
 
 	if (readyToShoot > (float)(1.f / roundPerSecond)){//only cool down when not shooting
 		if (heatSystem > 0){
-			heatSystem -= (float)(1.0f / roundPerSecond);
+			heatSystem -= (float)(((isOverHeated * 3) + 1.0f) / roundPerSecond);//cool downs 3 times faster if overheated
 		}
 		else{
 			heatSystem = 0;

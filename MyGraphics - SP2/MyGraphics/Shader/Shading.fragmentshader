@@ -56,7 +56,8 @@ void main(){
 		float attenuationFactor = getAttenuation(lights[0], distance);
 
 		// Normal of the computed fragment, in camera space
-		vec3 N = normalize( vertexNormal_cameraspace );
+		vec3 N = 
+		( vertexNormal_cameraspace );
 		// Direction of the light (from the fragment to the light)
 		vec3 L = normalize( lightDirection_cameraspace );
 		// Cosine of the angle between the normal and the light direction, 

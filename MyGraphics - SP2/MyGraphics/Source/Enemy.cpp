@@ -24,14 +24,6 @@ NPC(pos, dir, speed)
 
 Enemy::~Enemy()
 {
-	for (std::vector<Enemy*>::iterator it = enemyList.begin(); it != Enemy::enemyList.end();){
-		if ((*it)->isDead){
-			it = Enemy::enemyList.erase(it);
-		}
-		else{
-			++it;
-		}
-	}
 }
 
 void Enemy::Update(double dt)
@@ -43,7 +35,9 @@ void Enemy::Update(double dt)
 	case MOVE:
 		if (checkPoint != path.rend()){
 			//MOVE TO
-			checkPointDir = ((*checkPoint)->position - position).Normalized();
+			if (position != (*checkPoint)->position){
+				checkPointDir = ((*checkPoint)->position - position).Normalized();
+			}
 			facingYaw = (defaultDirection.Cross(checkPointDir)).Dot(Vector3(0, 1, 0) * Math::RadianToDegree(acos(defaultDirection.Dot(checkPointDir))));
 			position += checkPointDir * speed * dt;
 

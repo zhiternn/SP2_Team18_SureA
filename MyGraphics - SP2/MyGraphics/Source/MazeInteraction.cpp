@@ -5,16 +5,15 @@
 
 Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 {
-		gridSizeY = (float)(screenSizeY*1.f) / numberOfRows;
-		gridSizeX = (float)(screenSizeX*0.75f) / numberOfCols;
-		startingPointX = (float)screenSizeX / 2.f;
-		startingPointY = (float)screenSizeY / 2.f;
-		rowNumber = numberOfRows;
-		colNumber = numberOfCols;
-
-
-		GenerateMap();
+	gridSizeY = (float)(screenSizeY*1.f) / numberOfRows;
+	gridSizeX = (float)(screenSizeX*0.75f) / numberOfCols;
+	startingPointX = (float)screenSizeX / 2.f;
+	startingPointY = (float)screenSizeY / 2.f;
 		
+	rowNumber = numberOfRows;
+	colNumber = numberOfCols;
+
+	GenerateMap();
 }
 
 void Maze::GenerateMap(void)
@@ -120,6 +119,7 @@ void Maze::PrintMap(){
 void Maze::Collision(){
 	double mouseX, mouseY;
 	Application::GetMouseMovement(mouseX, mouseY);
+
 	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
 	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
 

@@ -21,6 +21,8 @@ const unsigned int frameTime = 1000 / FPS; // time for each frame
 bool Application::state2D;
 double Application::mouseWheelX;
 double Application::mouseWheelY;
+int Application::screenX;
+int Application::screenY;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -49,8 +51,8 @@ void Application::SetMousePosition(double x, double y)
 
 		glfwGetWindowSize(m_window, &sizeX, &sizeY);
 
-		sizeX = (sizeX / 2) - x;
-		sizeY = (sizeY / 2) - y;
+		sizeX = (sizeX / 2);
+		sizeY = (sizeY / 2);
 
 		glfwSetCursorPos(m_window, sizeX, sizeY);
 	}
