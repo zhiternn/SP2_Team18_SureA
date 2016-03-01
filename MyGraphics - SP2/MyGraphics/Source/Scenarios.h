@@ -12,13 +12,33 @@ public:
 	void Update(double dt);
 	bool stopScenario;
 	bool winScenario;
+<<<<<<< Updated upstream
 	int HP;
+=======
+protected:
+	Countdown timer;
+};
+
+class ScenarioDefend : public Scenario
+{
+public:
+	ScenarioDefend(int health, double duration, int increment);
+	virtual ~ScenarioDefend();
+
+	virtual void Update(double dt);
+	int HP;
+
+
+>>>>>>> Stashed changes
 private:
 	int wave;
 	int increment;
 	int amountToSpawn;
+<<<<<<< Updated upstream
 
 	Countdown timer;
+=======
+>>>>>>> Stashed changes
 
 	void SpawnEnemies();
 	void MoveEnemies();

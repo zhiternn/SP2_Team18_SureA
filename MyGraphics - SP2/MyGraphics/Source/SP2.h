@@ -281,6 +281,10 @@ private:
 	float baseSpotlight_maxLength;
 	float baseSpotlight_startingX;
 	float baseSpotlight_endingX;
+	float TextBox_StartingX;
+	float TextBox_EndingX;
+	float TextBox_StartingY;
+	float TextBox_EndingY;
 	float baseSpotlight_power; //calculates in percentage
 
 	int mazeChk;
