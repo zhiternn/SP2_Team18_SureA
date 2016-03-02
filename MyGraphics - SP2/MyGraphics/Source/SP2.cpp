@@ -243,7 +243,8 @@ void SP2::Init()
 
 	meshList[GEO_TRAPS] = MeshBuilder::GenerateCylinder("traps", Color(1.f, 0.f, 0.f), 1); //door
 
-	meshList[GEO_SLIDEDOOR] = MeshBuilder::GenerateCube("sliding door", Color(1, 0, 0));
+	meshList[GEO_SLIDEDOOR] = MeshBuilder::GenerateOBJ("slidedoor", "OBJ//doortemp.obj");
+	meshList[GEO_SLIDEDOOR]->textureID = LoadTGA("Image//slidedoortex.tga");
 
 	//INTERNAL SKYBOX
 	meshList[GEO_INTERNAL_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1));
@@ -2083,7 +2084,7 @@ void SP2::RenderSlideDoor()
 		frontDoor.position.y, 
 		frontDoor.position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 5.5, 0.2);
+	//modelStack.Scale(3, 5.5, 0.2);
 	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
@@ -2093,10 +2094,11 @@ void SP2::RenderSlideDoor()
 		frontDoor2.position.y,
 		frontDoor2.position.z
 		);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 5.5, 0.2);
+	modelStack.Rotate(270, 0, 1, 0);
+	//modelStack.Scale(3, 5.5, 0.2);
 	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
+
 	//back door
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -2105,7 +2107,7 @@ void SP2::RenderSlideDoor()
 		backDoor.position.z
 		);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 5.5, 0.2);
+	//modelStack.Scale(3, 5.5, 0.2);
 	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
@@ -2116,7 +2118,7 @@ void SP2::RenderSlideDoor()
 		backDoor2.position.z
 		);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 5.5, 0.2);
+	//modelStack.Scale(3, 5.5, 0.2);
 	RenderMesh(meshList[GEO_SLIDEDOOR], true);
 	modelStack.PopMatrix();
 
@@ -2128,14 +2130,12 @@ void SP2::DoorMovement(double dt)
 	//front door
 	if (player.position.x <= -19 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -10 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
 	{
-		if (DoorMove < 2.2)
+		if (DoorMove < 2)
 		{
 			Door = true;
 		}
 		inRange = true;
-		doorChk = true;
 		front = true;
-		timer = 0;
 	}
 	else
 	{
@@ -2146,24 +2146,17 @@ void SP2::DoorMovement(double dt)
 	//back door
 	if (player.position.x <= 30 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 21 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
 	{
-		if (DoorMove2 < 2.2)
+		if (DoorMove2 < 2)
 		{
 			Door2 = true;
 		}
 		inRange2 = true;
-		doorChk = true;
 		back = true;
-		timer = 0;
 	}
 	else
 	{
 		inRange2 = false;
 		Door2 = false;
-	}
-
-	if (doorChk == true)
-	{
-		timer += (float)(1 * dt);
 	}
 
 	if (inRange == true)
@@ -2173,7 +2166,7 @@ void SP2::DoorMovement(double dt)
 			DoorMove += (float)(5 * dt);
 			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
 			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-			if (DoorMove > 2.2)
+			if (DoorMove > 2)
 			{
 				Door = false;
 			}
@@ -2184,19 +2177,13 @@ void SP2::DoorMovement(double dt)
 	}
 	else if (inRange == false && Door == false)
 	{
-		timerBool = true;
-		doorChk = false;
-		timer = 0;
-
 		if (front == true)
 		{
 			DoorMove -= (float)(5 * dt);
 			frontDoor.SetPosition(-20.3, 2.8, 37.75 - DoorMove);
 			frontDoor2.SetPosition(-20.3, 2.8, 40.75 + DoorMove);
-			if (DoorMove < -0.2)
+			if (DoorMove < 0.001)
 			{
-				timerBool = false;
-				Door = false;
 				front = false;
 			}
 		}
@@ -2208,7 +2195,7 @@ void SP2::DoorMovement(double dt)
 			DoorMove2 += (float)(5 * dt);
 			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
 			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-			if (DoorMove2 > 2.2)
+			if (DoorMove2 > 2)
 			{
 				Door2 = false;
 			}
@@ -2217,19 +2204,13 @@ void SP2::DoorMovement(double dt)
 	}
 	else if (inRange2 == false && Door2 == false)
 	{
-		timerBool = true;
-		doorChk = false;
-		timer = 0;
-
 		if (back == true)
 		{
 			DoorMove2 -= (float)(5 * dt);
 			backDoor.SetPosition(20.9, 2.8, 37.75 - DoorMove2);
 			backDoor2.SetPosition(20.9, 2.8, 40.75 + DoorMove2);
-			if (DoorMove2 < -0.2)
+			if (DoorMove2 < 0.001)
 			{
-				timerBool = false;
-				Door2 = false;
 				back = false;
 			}
 		}
@@ -2785,6 +2766,7 @@ void SP2::UpdateEvacuationScenario()
 	}
 }
 
+<<<<<<< 27231e970905530428217c2ff75660158f370606
 void SP2::GenerateCivilians(int amount)
 {
 	//clears friendly list
@@ -2828,6 +2810,8 @@ void SP2::GenerateCivilians(int amount)
 	tempostorage.clear();
 }
 
+=======
+>>>>>>> 04698ec39fc7edf87aaf6e15ff84283bfc78a686
 void SP2::RenderFenceBoundary()
 {
 	//Right Boundary

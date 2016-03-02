@@ -263,11 +263,8 @@ private:
 	//door
 	float DoorMove;
 	float DoorMove2;
-	float timer;
-	bool timerBool;
 	bool Door;
 	bool Door2;
-	bool doorChk;
 	bool front;
 	bool back;
 	bool inRange;
