@@ -27,7 +27,9 @@ public:
 	enum STATUS
 	{
 		STATUS_CIVILIAN,
-		STATUS_GENERAL
+		STATUS_GENERAL1,
+		STATUS_GENERAL2,
+		STATUS_GENERAL3
 	};
 
 	Friendly(Vector3 pos = Vector3(0, 0, 0), Vector3 dir = Vector3(0, 0, 1), float speed = 1.f);
@@ -45,6 +47,8 @@ public:
 	FRIENDLY_STATE state;
 	STATUS status;
 private:
+	void StateChart_Civilian(double dt);
+	void StateChart_General(double dt);
 	vector<string> dialogue;
 	Countdown timer;
 };

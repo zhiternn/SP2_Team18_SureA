@@ -33,7 +33,7 @@ void SP2::Init()
 	srand(time(NULL));
 
 	Application::HideCursor();
-
+	sound.playMusic("Sound//SpaceMusic.mp3");
 	//Application::SetMousePosition();
 	// Load vertex and fragment shaders
 	m_programID = LoadShaders(
@@ -356,44 +356,20 @@ void SP2::Init()
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("Textbox", Color(1, 1, 1));
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//textbox.tga");
 
-	meshList[GEO_HEADNPC1] = MeshBuilder::GenerateOBJ("head", "OBJ//head.obj");
-	meshList[GEO_HEADNPC1]->textureID = LoadTGA("Image//head2.tga");
+	meshList[GEO_NPC_HEAD] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
+	meshList[GEO_NPC_HEAD]->textureID = LoadTGA("Image//headnpc2.tga");
 
-	meshList[GEO_BODYNPC1] = MeshBuilder::GenerateOBJ("body", "OBJ//body.obj");
-	meshList[GEO_BODYNPC1]->textureID = LoadTGA("Image//body.tga");
+	meshList[GEO_NPC_BODY] = MeshBuilder::GenerateOBJ("body", "OBJ//bodynpc2.obj");
+	meshList[GEO_NPC_BODY]->textureID = LoadTGA("Image//bodynpc2.tga");
 
-	meshList[GEO_LEFTLEGNPC1] = MeshBuilder::GenerateOBJ("left", "OBJ//legLeft.obj");
-	meshList[GEO_LEFTLEGNPC1]->textureID = LoadTGA("Image//leg.tga");
+	meshList[GEO_NPC_LEG_L] = MeshBuilder::GenerateOBJ("left", "OBJ//legleftnpc2.obj");
+	meshList[GEO_NPC_LEG_L]->textureID = LoadTGA("Image//legnpc2.tga");
 
-	meshList[GEO_RIGHTLEGNPC1] = MeshBuilder::GenerateOBJ("right", "OBJ//legRight.obj");
-	meshList[GEO_RIGHTLEGNPC1]->textureID = LoadTGA("Image//leg.tga");
+	meshList[GEO_NPC_LEG_R] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
+	meshList[GEO_NPC_LEG_R]->textureID = LoadTGA("Image//legnpc2.tga");
 
-	meshList[GEO_HEADNPC2] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
-	meshList[GEO_HEADNPC2]->textureID = LoadTGA("Image//headnpc2.tga");
-
-	meshList[GEO_BODYNPC2] = MeshBuilder::GenerateOBJ("body", "OBJ//bodynpc2.obj");
-	meshList[GEO_BODYNPC2]->textureID = LoadTGA("Image//bodynpc2.tga");
-
-	meshList[GEO_LEFTLEGNPC2] = MeshBuilder::GenerateOBJ("left", "OBJ//legleftnpc2.obj");
-	meshList[GEO_LEFTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
-
-	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
-	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
-
-	meshList[GEO_HEADNPC2] = MeshBuilder::GenerateOBJ("head", "OBJ//headnpc2.obj");
-	meshList[GEO_HEADNPC2]->textureID = LoadTGA("Image//headnpc2.tga");
-
-	meshList[GEO_BODYNPC2] = MeshBuilder::GenerateOBJ("body", "OBJ//bodynpc2.obj");
-	meshList[GEO_BODYNPC2]->textureID = LoadTGA("Image//bodynpc2.tga");
-
-	meshList[GEO_LEFTLEGNPC2] = MeshBuilder::GenerateOBJ("left", "OBJ//legleftnpc2.obj");
-	meshList[GEO_LEFTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
-
-	meshList[GEO_RIGHTLEGNPC2] = MeshBuilder::GenerateOBJ("right", "OBJ//legrightnpc2.obj");
-	meshList[GEO_RIGHTLEGNPC2]->textureID = LoadTGA("Image//legnpc2.tga");
-
-	meshList[GEO_GENERAL1] = MeshBuilder::GenerateOBJ("general1", "OBJ//General_1.obj");
-	meshList[GEO_GENERAL1]->textureID = LoadTGA("Image//flag.tga");
+	meshList[GEO_GENERAL] = MeshBuilder::GenerateOBJ("general1", "OBJ//General_1.obj");
+	meshList[GEO_GENERAL]->textureID = LoadTGA("Image//flag.tga");
 
 	meshList[GEO_PlayerHands] = MeshBuilder::GenerateOBJ("right", "OBJ//PlayerHands.obj");
 	meshList[GEO_PlayerHands]->textureID = LoadTGA("Image//PlayerHands.tga");
@@ -423,7 +399,6 @@ void SP2::Init()
 
 	onGround = true;
 
-	alarmLights = false;
 	interval = 0;
 	intervalBool = false;
 
@@ -474,8 +449,7 @@ void SP2::Init()
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);
-	frontDoor.SetPosition(-20.3, 2.8, 37.75);
-
+	
 	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
 
@@ -640,7 +614,6 @@ void SP2::Init()
 	CampWall_Back2->hitbox.SetSize(1, 5, 8);
 	CampWall_Back2->SetPosition(21.f, 2.5f, 45.5f);
 
-
 	Object* CampWall_Front = new Object();
 	CampWall_Front->hitbox.SetSize(1.5, 5, 8);
 	CampWall_Front->SetPosition(-20.5f, 2.5f, 45.5f);
@@ -651,10 +624,21 @@ void SP2::Init()
 
 	GenerateWaypoints(100, 100, 1, 4);
 
-	InitialCivilianCount = 30;
+	InitialCivilianCount = 10;
 	GenerateCivilians(InitialCivilianCount);
-	//Friendly General1 = Friendly::STATUS_GENERAL;
+
+	Friendly* General1 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 43.f), Vector3(1, 0, 0));
+	General1->status = Friendly::STATUS_GENERAL1;
+
+	Friendly* General2 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 44.5f), Vector3(1, 0, 0));
+	General2->status = Friendly::STATUS_GENERAL2;
+
+	Friendly* General3 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 46.f), Vector3(1, 0, 0));
+	General3->status = Friendly::STATUS_GENERAL3;
+
+	totalFriendlyCount = InitialCivilianCount + 3;//3 == number of generals
 }
+
 void SP2::Update(double dt)
 {
 	if (playerState == STATE_FPS){
@@ -689,7 +673,6 @@ void SP2::Update(double dt)
 		stateChanged = true;
 		m_timer[TIMER_MAZE].StartCountdown(20);
 
-
 		mappy = Maze(16, 16, screenX, screenY);
 		Application::SetMousePosition(mappy.gridSizeX + mappy.gridSizeX / 2, mappy.gridSizeY - mappy.gridSizeY);
 		ItemObject::ItemList[3]->mazeCheck = 0;
@@ -704,7 +687,7 @@ void SP2::Update(double dt)
 		readyToInteract = 0.f;
 
 		//PORTAL INTERACTION
-		if ((player.position - portal.position).Length() < 2.f && portalChk == true){
+		if ((player.position - portal.position).Length() < 2.f && portalChk == true && StartInfiltrate == true){
 			player.Init(Vector3(0, 21, 0), Vector3(1, 0, 0));
 			onGround = false;
 		}
@@ -731,16 +714,40 @@ void SP2::Update(double dt)
 
 		//NPC INTERACTION
 		for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
-			if (ItemCheckPosition((*it)->position, 45) && (player.position - (*it)->position).Length() <= 4.5f && m_timer[TIMER_NPC].GetTimeLeft() <= 0){
-				if (runningEvacuationScenario){
-					(*it)->GoTo(allyShip.position);
-					(*it)->state = Friendly::EVACUATE;
+			if (ItemCheckPosition((*it)->position, 30) && (player.position - (*it)->position).Length() <= 4.5f && m_timer[TIMER_NPC].GetTimeLeft() <= 0){
+				if ((*it)->status == Friendly::STATUS_CIVILIAN){
+					if (runningEvacuationScenario){
+						(*it)->GoTo(allyShip.position);
+						(*it)->state = Friendly::EVACUATE;
+					}
+					else{
+						(*it)->TalkTo(player.position);
+						currentDialogue = (*it)->GetDialogue();
+						m_timer[TIMER_NPC].StartCountdown(2);
+					}
 				}
 				else{
-					(*it)->TalkTo(player.position);
-					currentDialogue = (*it)->GetDialogue();
-					m_timer[TIMER_NPC].StartCountdown(2);
+					switch ((*it)->status){
+						case Friendly::STATUS_GENERAL1:
+							StartEvacuationScenario(3, 5);
+							break;
+
+						case Friendly::STATUS_GENERAL2:
+							if (runningScenario == nullptr){
+								runningScenario = new ScenarioDefend(3, 60, 10);
+								m_timer[TIMER_DEFEND].StartCountdown(60);
+							}
+							break;
+
+						case Friendly::STATUS_GENERAL3:
+							StartInfiltrate = true;
+							break;
+
+						default:
+							break;
+					}
 				}
+				break;
 			}
 		}
 
@@ -798,55 +805,42 @@ void SP2::Update(double dt)
 		AlienSpawn = true;
 	}
 
-	if (Application::IsKeyPressed('Y'))
-	{
-		Mtx44 rotate;
-		rotate.SetToRotation(12, 0, 1, 0);
-		light[2].spotDirection = rotate * light[2].spotDirection;
-		light[3].spotDirection = rotate * light[3].spotDirection;
-		//DeleteAfter();
-		AlienSpawn = true;
-	}
-
 	if (Application::IsKeyPressed('F'))
 	{
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 		{
-		
 			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 			{
-				
-
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
 			}		
 		}
 	}
-		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	{
+		if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 		{
-			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
-			{
-				ItemObject::ItemList[i]->Collider(player.hitbox);
-			}
+			ItemObject::ItemList[i]->Collider(player.hitbox);
 		}
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
-			{
-				ItemObject::ItemList[i]->PickUpAnimation(dt);
-				ItemObject::ItemList[i]->ShipButtonAnimation(dt);
-			}
-			
-			for (int i = 0; i < ItemObject::ItemList.size(); ++i)
-			{
-				ItemObject::ItemList[i]->ItemDelay(dt);
-			}
+	}
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	{
+		ItemObject::ItemList[i]->PickUpAnimation(dt);
+		ItemObject::ItemList[i]->ShipButtonAnimation(dt);
+	}
+	
+	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
+	{
+		ItemObject::ItemList[i]->ItemDelay(dt);
+	}
 
-			if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
-			{
-				player.position.Set(0, 20, 0);
-			}
-			else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap3.hitbox))){
-				player.position.Set(18, 19, 0);
-			}
-		
+	if (mappy.mazeSuccess == false && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox)))
+	{
+		player.position.Set(0, 20, 0);
+	}
+	else if (mappy.mazeSuccess == true && (Hitbox::CheckItems(player.hitbox, laserTrap.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap1.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap2.hitbox) || Hitbox::CheckItems(player.hitbox, laserTrap3.hitbox))){
+		player.position.Set(18, 19, 0);
+	}
+	
 	for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 	{
 		ItemObject::ItemList[i]->PickUpAnimation(dt);
@@ -968,10 +962,6 @@ void SP2::Render()
 		RenderShipButton();
 		RenderTraps();
 		modelStack.PopMatrix();
-		if (player.position.y <= 16.5){
-			onGround = true;
-			mappy.mazeSuccess = false;
-		}
 	}
 
 	modelStack.PushMatrix();
@@ -1076,12 +1066,20 @@ void SP2::Render()
 	if (runningEvacuationScenario){
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 150, 650, 380.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.4f));
-		RenderTextOnScreen(meshList[GEO_TEXT], "Civilians Left " + std::to_string(Friendly::friendlyList.size()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.35f));
+		RenderTextOnScreen(meshList[GEO_TEXT], "Civilians Left " + std::to_string(Friendly::friendlyList.size() - (totalFriendlyCount - InitialCivilianCount)), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.35f));
 	}
 
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
+		if (StartInfiltrate == true){
+
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
+
+		}
+		else{
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "Start mission with General!", Color(1, 0, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
+		}
 	}
 	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
 		RenderLightSlider();
@@ -1151,14 +1149,22 @@ void SP2::Render()
 		if (counter <= 200){
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 1500, 250, 0, -300.f);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Success! Now Escape the ship!", Color(0.f, 1.f, 0.f), 40, -650.f, -300.f);
+		}	
+
+		if (player.position.y <= 16.5){
+			onGround = true;
 		}
 		if (m_timer[TIMER_MAZE].GetTimeLeft() > 0 && onGround == true){
 			scenarioResult = true;
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
+			mappy.mazeSuccess = false;
+			StartInfiltrate = false;
 		}
 		else if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 			scenarioResult = false;
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
+			mappy.mazeSuccess = false;
+			StartInfiltrate = false;
 		}
 	}
 
@@ -1828,7 +1834,7 @@ void SP2::RenderPickUpObj()
 			modelStack.PopMatrix();
 		}
 
-		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true)
+		if (ItemObject::ItemList[0]->haveItem == false && ItemObject::ItemList[0]->canPut == true && ItemObject::ItemList[1]->haveItem == false && ItemObject::ItemList[1]->canPut == true && ItemObject::ItemList[2]->haveItem == false && ItemObject::ItemList[2]->canPut == true)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(0, ItemObject::ItemList[1]->fly * 2 + 2, 0) ;
@@ -2190,6 +2196,13 @@ void SP2::TrapsMovement(double dt)
 			}
 		}
 	}
+	else
+	{
+		laserTrap.SetPosition(9, 30, 0);
+		laserTrap1.SetPosition(5, 30, 0);
+		laserTrap2.SetPosition(2, 30, 0);
+		laserTrap3.SetPosition(3, 30, 0);
+	}
 }
 
 void SP2::RenderAllyShip()
@@ -2362,17 +2375,28 @@ void SP2::RenderNPCs()
 		modelStack.PushMatrix();
 		modelStack.Translate(
 			(*it)->position.x,
-			(*it)->position.y - Waypoint::sizeV/2,
+			(*it)->position.y,
 			(*it)->position.z
 			);
 		modelStack.Rotate((*it)->facingYaw, 0, 1, 0);
 
 		switch ((*it)->status){
 		case Friendly::STATUS_CIVILIAN:
-			RenderFriendly();
+			RenderCivilian();
 			break;
 
-		case Friendly::STATUS_GENERAL:
+		case Friendly::STATUS_GENERAL1:
+			meshList[GEO_GENERAL]->material.kAmbient.Set(0.5f, 0, 0);
+			RenderGeneral();
+			break;
+
+		case Friendly::STATUS_GENERAL2:
+			meshList[GEO_GENERAL]->material.kAmbient.Set(0, 0.5f, 0);
+			RenderGeneral();
+			break;
+
+		case Friendly::STATUS_GENERAL3:
+			meshList[GEO_GENERAL]->material.kAmbient.Set(0, 0, 0.5f);
 			RenderGeneral();
 			break;
 
@@ -2405,6 +2429,10 @@ void SP2::UpdateLightSlider()
 
 void SP2::RenderLightSlider()
 {
+	RenderQuadOnScreen(meshList[GEO_TEXTBOX],
+		screenX * 1.1, 100,
+		0, 0
+		);
 	RenderQuadOnScreen(meshList[GEO_LIGHTSLIDER],
 		baseSpotlight_power * (baseSpotlight_endingX - baseSpotlight_startingX), 10,
 		baseSpotlight_startingX + (baseSpotlight_power * (baseSpotlight_endingX - baseSpotlight_startingX))/2, 0
@@ -2418,7 +2446,7 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 
 		float angleX = Math::RadianToDegree(acos(view.Dot(player.view)));
 
-		if (angleX < degree)
+		if (angleX <= degree)
 		{
 			return true;
 		}
@@ -2493,22 +2521,23 @@ void SP2::RenderAlien()
 	modelStack.PopMatrix();
 }
 
-void SP2::RenderFriendly()
+void SP2::RenderCivilian()
 {
 	modelStack.PushMatrix();
-	modelStack.Scale(0.3, 0.3, 0.3);
-	RenderMesh(meshList[GEO_BODYNPC2], true);
-	RenderMesh(meshList[GEO_HEADNPC2], true);
-	RenderMesh(meshList[GEO_LEFTLEGNPC2], true);
-	RenderMesh(meshList[GEO_RIGHTLEGNPC2], true);
+	modelStack.Translate(0, 0.6 - Waypoint::sizeV / 2, 0);
+	modelStack.Scale(0.25, 0.25, 0.25);
+	RenderMesh(meshList[GEO_NPC_HEAD], true);
+	RenderMesh(meshList[GEO_NPC_BODY], true);
+	RenderMesh(meshList[GEO_NPC_LEG_L], true);
+	RenderMesh(meshList[GEO_NPC_LEG_R], true);
 	modelStack.PopMatrix();
 }
 
 void SP2::RenderGeneral(){
 	modelStack.PushMatrix();
-	modelStack.Translate(-30, 0, 0);
+	modelStack.Translate(0, -Waypoint::sizeV / 2, 0);
 	modelStack.Scale(0.3, 0.3, 0.3);
-	RenderMesh(meshList[GEO_GENERAL1], true);
+	RenderMesh(meshList[GEO_GENERAL], true);
 	modelStack.PopMatrix();
 }
 
@@ -2616,7 +2645,7 @@ void SP2::StartEvacuationScenario(double duration, int numberToSave)
 void SP2::UpdateEvacuationScenario()
 {
 	if (runningEvacuationScenario){
-		if (Friendly::friendlyList.size() == 0 && playerState == STATE_INTERACTING_AIRSHIP && allyShip.position.y >= 30.f){
+		if (Friendly::friendlyList.size() - (totalFriendlyCount - InitialCivilianCount) <= 0 && playerState == STATE_INTERACTING_AIRSHIP && allyShip.position.y >= 30.f){
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 			scenarioResult = true;
 			runningEvacuationScenario = false;
@@ -2635,8 +2664,13 @@ void SP2::GenerateCivilians(int amount)
 {
 	//clears friendly list
 	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end();){
-		//delete *it;
-		it = Friendly::friendlyList.erase(it);
+		if ((*it)->status == Friendly::STATUS_CIVILIAN){
+			//delete *it;
+			it = Friendly::friendlyList.erase(it);
+		}
+		else{
+			++it;
+		}
 	}
 
 	std::ifstream file;
@@ -2651,6 +2685,7 @@ void SP2::GenerateCivilians(int amount)
 			std::getline(file, line);
 			tempostorage.push_back(line);
 		}
+		tempostorage.pop_back();
 	}
 
 	file.close();
@@ -3154,3 +3189,4 @@ void SP2::RenderObstacles()
 	RenderMesh(meshList[GEO_CRATE], true);
 	modelStack.PopMatrix();
 }
+

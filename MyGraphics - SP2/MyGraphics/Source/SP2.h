@@ -20,6 +20,7 @@
 #include "Countdown.h"
 #include "MazeInteraction.h"
 #include "Scenarios.h"
+#include "Sound.h"
 
 using std::vector;
 
@@ -69,16 +70,12 @@ class SP2 : public Scene
 		GEO_PORTAL_FRONT,
 		GEO_PORTAL_BACK,
 
-		GEO_HEADNPC1,
-		GEO_BODYNPC1,
-		GEO_RIGHTLEGNPC1,
-		GEO_LEFTLEGNPC1,
-		GEO_HEADNPC2,
-		GEO_BODYNPC2,
-		GEO_RIGHTLEGNPC2,
-		GEO_LEFTLEGNPC2,
+		GEO_NPC_HEAD,
+		GEO_NPC_BODY,
+		GEO_NPC_LEG_L,
+		GEO_NPC_LEG_R,
 
-		GEO_GENERAL1,
+		GEO_GENERAL,
 
 		GEO_Testitem1,//Test for pick up.
 		GEO_Testitem2,
@@ -226,7 +223,7 @@ private:
 	void RenderLightSlider();
 	void RenderEffect();
 	void RenderShipGuard();
-	void RenderFriendly();
+	void RenderCivilian();
 	void RenderAlien();
 
 	void RenderFenceBoundary();
@@ -253,10 +250,10 @@ private:
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
-	bool alarmLights;
 	float interval; // can delete after alarmlight has been set to button
 
-	bool AlienSpawn;//
+	//alien animation variables
+	bool AlienSpawn;
 	bool AlienMovementsBool;
 	bool AlienMovementDirections;
 	float AlienAnimate;
@@ -276,6 +273,7 @@ private:
 	bool portalChk;
 	bool mazeSuccess;
 	bool onGround;
+	bool StartInfiltrate;
 
 	//base spotlight
 	float baseSpotlight_maxLength;
@@ -307,7 +305,7 @@ private:
 	Turret turret;
 	void RenderTurret();
 
-	void SP2::Interval(double dt);
+	void Interval(double dt);
 
 	void PickUp();
 	void PickUpAnimation(double dt);
@@ -341,6 +339,7 @@ private:
 	float towardsCameraYaw;
 
 	int InitialCivilianCount;
+	int totalFriendlyCount;
 	int counter;
 	int playerState;
 	int gameState;
@@ -367,6 +366,8 @@ private:
 	MS modelStack, viewStack, projectionStack;
 
 	Light light[4];
+
+	Sound sound;
 };
 
 #endif

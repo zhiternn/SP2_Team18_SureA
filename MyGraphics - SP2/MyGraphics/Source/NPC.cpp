@@ -6,9 +6,9 @@ defaultDirection(dir)
 	position = pos;
 	checkPoint = path.rend();
 	checkPointDir.SetZero();
+	facingYaw = 0.f;
 
 	this->speed = speed;
-	facingYaw = 0.f;
 }
 
 NPC::~NPC()

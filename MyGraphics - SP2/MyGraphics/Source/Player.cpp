@@ -129,7 +129,6 @@ void Player::Update(double dt)
 
 		double mouseX, mouseY;
 		Application::GetMouseMovement(mouseX, mouseY);
-		Application::SetMousePosition();
 		float yaw = (float)(mouseX * CAMERA_SPEED * dt);
 		Mtx44 rotate;
 		rotate.SetToRotation(yaw, 0, 1, 0);
@@ -150,7 +149,6 @@ void Player::Update(double dt)
 		right.Normalized();
 		camera.up.Normalize();
 		camera.Update(position, view);
-
-
-	}
+		Application::SetMousePosition();
+}
 

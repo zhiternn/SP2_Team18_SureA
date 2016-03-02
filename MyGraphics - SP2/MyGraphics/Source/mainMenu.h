@@ -29,6 +29,7 @@ class mainMenu : public Scene
 		GEO_BG,
 		GEO_TEXT,
 		GEO_TEXTBOX,
+		GEO_MENUBAR,
 
 		GEO_BUTTON,
 		GEO_BUTTONHOVER, 

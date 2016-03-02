@@ -5,10 +5,11 @@ vector<Friendly*> Friendly::friendlyList;
 Friendly::Friendly(Vector3 pos, Vector3 dir, float speed) :
 NPC(pos, dir, speed)
 {
+	this->status = status;
+
 	state = IDLE;
 	dialogue.clear();
 	reachedDestination = false;
-	status = STATUS_CIVILIAN;
 
 	Friendly::friendlyList.push_back(this);
 }
@@ -19,7 +20,39 @@ Friendly::~Friendly()
 
 void Friendly::Update(double dt)
 {
+	if (status == STATUS_CIVILIAN){
+		StateChart_Civilian(dt);
+	}
+	else{
+		StateChart_General(dt);
+	}
+}
+
+void Friendly::StoreDialogue(vector<string> svec)
+{
+	dialogue = svec;
+}
+
+string Friendly::GetDialogue()
+{
+	return dialogue[rand()%dialogue.size()];
+}
+
+void Friendly::TalkTo(Vector3 pos)
+{
+	timer.StartCountdown(2);//stays for 2 seconds
+
+	if (position != pos){
+		Vector3 view = (pos - position).Normalized();
+		facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
+		state = CHAT;
+	}
+}
+
+void Friendly::StateChart_Civilian(double dt)
+{
 	static int IDLE_TIME = 10; // average idle time in seconds
+
 	switch (state)
 	{
 	case IDLE:
@@ -83,23 +116,27 @@ void Friendly::Update(double dt)
 	}
 }
 
-void Friendly::StoreDialogue(vector<string> svec)
+void Friendly::StateChart_General(double dt)
 {
-	dialogue = svec;
-}
+	switch (state)
+	{
+	case IDLE:
+		facingYaw = (((Vector3(0, 0, 1).Cross(defaultDirection)).y / abs((Vector3(0, 0, 1).Cross(defaultDirection)).y)) * Math::RadianToDegree(acos(Vector3(0, 0, 1).Dot(defaultDirection))));
+		break;
 
-string Friendly::GetDialogue()
-{
-	return dialogue[rand()%dialogue.size()];
-}
+	case ROAM:
+		break;
 
-void Friendly::TalkTo(Vector3 pos)
-{
-	timer.StartCountdown(2);//stays for 2 seconds
+	case PANIC:
+		break;
 
-	if (position != pos){
-		Vector3 view = (pos - position).Normalized();
-		facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
-		state = CHAT;
+	case CHAT:
+		break;
+
+	case EVACUATE:
+		break;
+
+	default:
+		break;
 	}
 }
