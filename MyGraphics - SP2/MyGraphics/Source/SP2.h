@@ -259,6 +259,7 @@ private:
 	bool AlienSpawn;//
 	bool AlienMovementsBool;
 	bool AlienMovementDirections;
+	bool GeneralCheck;
 	float AlienAnimate;
 
 	//door
