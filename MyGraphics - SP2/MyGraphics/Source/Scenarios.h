@@ -7,12 +7,13 @@ class ScenarioDefend
 {
 public:
 	ScenarioDefend(int health, double duration, int increment);
-	~ScenarioDefend();
+	virtual ~ScenarioDefend();
 
-	void Update(double dt);
+	virtual void Update(double dt);
+	int HP;
+
 	bool stopScenario;
 	bool winScenario;
-	int HP;
 private:
 	int wave;
 	int increment;
