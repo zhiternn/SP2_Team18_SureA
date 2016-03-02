@@ -26,12 +26,13 @@ SP2::~SP2()
 
 void SP2::Init()
 {
+	sound.playMusic("Sound//BattleAlien.mp3");
 	sound.Init();
 
 	srand(time(NULL));
 
 	Application::HideCursor();
-	sound.playMusic("Sound//SpaceMusic.mp3");
+	
 	//Application::SetMousePosition();
 	// Load vertex and fragment shaders
 	m_programID = LoadShaders(
@@ -803,21 +804,25 @@ void SP2::Update(double dt)
 		for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
 			if (ItemCheckPosition((*it)->position, 30) && (player.position - (*it)->position).Length() <= 4.5f && m_timer[TIMER_NPC].GetTimeLeft() <= 0){
 				if ((*it)->status == Friendly::STATUS_CIVILIAN){
-					if (runningEvacuationScenario){
+					if (runningEvacuationScenario)
+					{
 						(*it)->GoTo(allyShip.position);
 						(*it)->state = Friendly::EVACUATE;
 					}
-					else{
+					else
+					{
+						sound.playSoundEffect("Sound//NPC.wav");
 						(*it)->TalkTo(player.position);
 						currentDialogue = (*it)->GetDialogue();
 						m_timer[TIMER_NPC].StartCountdown(2);
 					}
 				}
-				else{
+				else
+				{
 					m_timer[TIMER_NPC].StartCountdown(1);
 					playerState = STATE_TALKING;
 					generalIndex = (*it)->status;
-
+					sound.playSoundEffect("Sound//NPC.wav");
 					currentDialogue = (*it)->GetDialogue();
 					(*it)->TalkTo(player.position);
 
@@ -860,6 +865,8 @@ void SP2::Update(double dt)
 			case Friendly::STATUS_GENERAL1:
 				//start scenario
 				StartEvacuationScenario(60, 5);
+				//sound.stopMusic("Sound//Normal.mp3");
+				sound.playMusic("Sound//AlramScene.mp3");
 				break;
 
 			case Friendly::STATUS_GENERAL2:
@@ -867,12 +874,16 @@ void SP2::Update(double dt)
 				if (runningScenario == nullptr){
 					runningScenario = new ScenarioDefend(3, 60, 10);
 					m_timer[TIMER_DEFEND].StartCountdown(60);
+					//sound.stopMusic("Sound//Normal.mp3");
+					sound.playMusic("Sound//BattleAlien.mp3");
 				}
 				break;
 
 			case Friendly::STATUS_GENERAL3:
 				//start scenario
 				StartInfiltrate = true;
+				//sound.stopMusic("Sound//Normal.mp3");
+				sound.playMusic("Sound//Timekeeper.mp3");
 				break;
 
 			default:
@@ -948,7 +959,8 @@ void SP2::Update(double dt)
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
-
+			//sound.stopMusic("Sound//BattleAlien.mp3");
+			sound.playMusic("Sound//Normal.mp3");
 			delete runningScenario;
 			runningScenario = nullptr;
 		}
@@ -1344,21 +1356,16 @@ void SP2::Render()
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
+				//sound.stopMusic("Sound//Timekeeper.mp3");
+				//sound.playMusic("Sound//Normal.mp3");
 			}
 			else if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 				scenarioResult = false;
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
-			}
-			if (m_timer[TIMER_MAZE].GetTimeLeft() >= 0 && onGround == true){
-				RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-				RenderTextOnScreen(meshList[GEO_TEXT], "Success!", Color(0, 1, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
-			}
-			else if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
-				RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-				RenderTextOnScreen(meshList[GEO_TEXT], "Mission Failed!", Color(1.f, 0.f, 0.f), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
-				// if lose
+				//sound.stopMusic("Sound//Timekeeper.mp3");
+				//sound.playMusic("Sound//Normal.mp3");
 			}
 		}
 
@@ -2826,12 +2833,16 @@ void SP2::UpdateEvacuationScenario()
 			scenarioResult = true;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
+			//sound.stopMusic("sound//AlramScene.mp3");
+			//sound.playMusic("sound//Normal.mp3");
 		}
 		else if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() <= 0){//LOSE
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 			scenarioResult = false;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
+			//sound.stopMusic("sound//AlramScene.mp3");
+			//sound.playMusic("sound//Normal.mp3");
 		}
 	}
 }
