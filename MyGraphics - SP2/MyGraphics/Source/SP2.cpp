@@ -1197,10 +1197,7 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "WASD to move turret", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.37f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "L click/Space to shoot", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.35f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "Mouse to look around", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.33f));
-<<<<<<< 3fc206c1e6ea8ed0ba3c851e3d6e33c7b7db1071
 
-=======
->>>>>>> 69df04263839b253f94eaebd08171db786543fe6
 	}
 	if (runningScenario != nullptr && playerState == STATE_INTERACTING_TURRET){
 		RenderTextOnScreen(meshList[GEO_TEXT], "Health Left: " + std::to_string(runningScenario->HP), Color(0, 1, 0), 25, (screenX / 2) * 0.44, (screenY * 0.3f));
@@ -1297,10 +1294,8 @@ void SP2::Render()
 			Application::ShowCursor();
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX, screenY, 0, 0);
 
-<<<<<<< 3fc206c1e6ea8ed0ba3c851e3d6e33c7b7db1071
 			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.26f));
 			RenderMaze();
-=======
 		//Application::ShowCursor();
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX, screenY, 0, 0);
 		
@@ -1312,7 +1307,6 @@ void SP2::Render()
 		RenderQuadOnScreen(meshList[GEO_CURSOR], 50, 50, -mouseX/2 - mouseX/2, mouseY/2 + mouseY/2);
 
 		Application::HideCursor();
->>>>>>> 69df04263839b253f94eaebd08171db786543fe6
 
 			if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 				Application::SetMousePosition(0, 0);
