@@ -109,6 +109,7 @@ class SP2 : public Scene
 		STATE_INTERACTING_TURRET,
 		STATE_INTERACTING_LIGHTSLIDER,
 		STATE_INTERACTING_AIRSHIP,
+		STATE_TALKING,
 
 		STATE_END
 	};
@@ -256,7 +257,7 @@ private:
 	bool AlienSpawn;
 	bool AlienMovementsBool;
 	bool AlienMovementDirections;
-	bool GeneralCheck;
+	bool InfiltrateGeneral;
 	float AlienAnimate;
 
 	//door
@@ -334,6 +335,7 @@ private:
 	bool itemText;//item pickup
 	bool intervalBool;//Interval for ... anything i guess
 	bool npcCheck;
+	bool talkedToGeneral;
 
 	float readyToUse;
 	float readyToInteract;
@@ -349,6 +351,7 @@ private:
 	int playerState;
 	int gameState;
 	int npcCountdown;
+	int generalIndex;
 
 	int screenX, screenY;
 

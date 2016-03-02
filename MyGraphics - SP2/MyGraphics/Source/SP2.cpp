@@ -389,6 +389,8 @@ void SP2::Init()
 	playerState = STATE_FPS;
 
 	currentDialogue = "";
+	talkedToGeneral = false;
+	generalIndex = 0;
 
 	readyToUse = 2.f;
 	readyToUse_HITBOX = 2.f;
@@ -638,11 +640,81 @@ void SP2::Init()
 	Friendly* General1 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 43.f), Vector3(1, 0, 0));
 	General1->status = Friendly::STATUS_GENERAL1;
 
+	std::ifstream file1;
+	std::string line1 = "";
+
+	file1.open("Text//npc_General3.txt");
+
+	vector<string> generalText;
+
+
+
+	if (file1.is_open()){
+		while (!file1.eof()){
+			std::getline(file1, line1);
+			generalText.push_back(line1);
+		}
+		General1->StoreDialogue(generalText);
+
+		generalText.pop_back();
+
+	}
+	file1.close();
+
+	generalText.clear();
+
 	Friendly* General2 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 44.5f), Vector3(1, 0, 0));
 	General2->status = Friendly::STATUS_GENERAL2;
 
+
+	std::ifstream file2;
+	std::string line2 = "";
+
+	file2.open("Text//npc_General2.txt");
+
+	vector<string> general2Text;
+
+
+
+	if (file2.is_open()){
+		while (!file2.eof()){
+			std::getline(file2, line2);
+			general2Text.push_back(line2);
+		}
+		General2->StoreDialogue(general2Text);
+
+		general2Text.pop_back();
+
+	}
+	file2.close();
+
+	general2Text.clear();
+
 	Friendly* General3 = new Friendly(Vector3(-45, Waypoint::sizeV / 2, 46.f), Vector3(1, 0, 0));
 	General3->status = Friendly::STATUS_GENERAL3;
+
+	std::ifstream file3;
+	std::string line3 = "";
+
+	file3.open("Text//npc_General1.txt");
+
+	vector<string> general3Text;
+
+
+
+	if (file3.is_open()){
+		while (!file3.eof()){
+			std::getline(file3, line3);
+			general3Text.push_back(line3);
+		}
+		General3->StoreDialogue(general3Text);
+
+		general3Text.pop_back();
+
+	}
+	file3.close();
+
+	general3Text.clear();
 
 	totalFriendlyCount = InitialCivilianCount + 3;//3 == number of generals
 }
@@ -735,24 +807,16 @@ void SP2::Update(double dt)
 					}
 				}
 				else{
-					switch ((*it)->status){
-						case Friendly::STATUS_GENERAL1:
-							StartEvacuationScenario(3, 5);
-							break;
+					m_timer[TIMER_NPC].StartCountdown(1);
+					playerState = STATE_TALKING;
+					generalIndex = (*it)->status;
 
-						case Friendly::STATUS_GENERAL2:
-							if (runningScenario == nullptr){
-								runningScenario = new ScenarioDefend(3, 60, 10);
-								m_timer[TIMER_DEFEND].StartCountdown(60);
-							}
-							break;
+					currentDialogue = (*it)->GetDialogue();
+					(*it)->TalkTo(player.position);
 
-						case Friendly::STATUS_GENERAL3:
-							StartInfiltrate = true;
-							break;
-
-						default:
-							break;
+					if ((*it)->finishedTalking == true){
+						playerState = STATE_FPS;
+						talkedToGeneral = true;
 					}
 				}
 				break;
@@ -786,7 +850,33 @@ void SP2::Update(double dt)
 		readyToInteract += (float)(10.f * dt);
 	}
 
-	if (m_timer[TIMER_NPC].GetTimeLeft() > 0){
+	if (talkedToGeneral){
+		talkedToGeneral = false;
+		switch (generalIndex){
+			case Friendly::STATUS_GENERAL1:
+				//start scenario
+				StartEvacuationScenario(60, 5);
+				break;
+
+			case Friendly::STATUS_GENERAL2:
+				//start scenario
+				if (runningScenario == nullptr){
+					runningScenario = new ScenarioDefend(3, 60, 10);
+					m_timer[TIMER_DEFEND].StartCountdown(60);
+				}
+				break;
+
+			case Friendly::STATUS_GENERAL3:
+				//start scenario
+				StartInfiltrate = true;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	if (m_timer[TIMER_NPC].GetTimeLeft() > 0 || playerState == STATE_TALKING){
 		npcCheck = true;
 	}
 	else{
@@ -1070,17 +1160,26 @@ void SP2::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
 
-
-	
-	if (runningEvacuationScenario){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 150, 650, 380.f);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.4f));
-		RenderTextOnScreen(meshList[GEO_TEXT], "Civilians Left " + std::to_string(Friendly::friendlyList.size() - (totalFriendlyCount - InitialCivilianCount)), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.35f));
+	if (runningEvacuationScenario || playerState == STATE_INTERACTING_AIRSHIP){
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 250, (screenX / 2) * 0.67, (screenY * 0.35f));
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.44f));
+		RenderTextOnScreen(meshList[GEO_TEXT], "Civilians Left " + std::to_string(Friendly::friendlyList.size() - (totalFriendlyCount - InitialCivilianCount)), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.4f));
+		if (playerState == STATE_INTERACTING_AIRSHIP){
+			RenderTextOnScreen(meshList[GEO_TEXT], "W to accelerate", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.37f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "S to decelerate", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.34f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "A/D to rotate left/right", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.31f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "Spacebar to ascend", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.28f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "LCtrl to descend", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.25f));
+		}
 	}
+
+	/*if (InfiltrateGeneral = true){
+			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
+			RenderTextOnScreen(meshList[GEO_TEXT], "Fuck you go do shit", Color(0, 1, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
+	}*/
 
 	if ((player.position - portal.position).Length() < 2.f && portalChk == true){
 		if (StartInfiltrate == true){
-
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
 
@@ -1088,15 +1187,6 @@ void SP2::Render()
 		else{
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "Start mission with General!", Color(1, 0, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
-		//RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-		//RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
-		if (GeneralCheck == false){
-		RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-		RenderTextOnScreen(meshList[GEO_TEXT], "Start mission with General!", Color(1, 0, 0), 40, (-screenX / 2) * 0.5, (-screenY * 0.3f));
-		}
-		else{
-			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
-			RenderTextOnScreen(meshList[GEO_TEXT], "Press 'E' to Enter Portal", Color(1, 1, 1), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
 		}
 	}
 	if (playerState == STATE_INTERACTING_LIGHTSLIDER){
@@ -1107,8 +1197,12 @@ void SP2::Render()
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "Collect all the cores!", Color(1, 0, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
 	}
+
+
 	
 	RenderTextOnScreen(meshList[GEO_TEXT], "EnergyBar:  ", Color(1.f, 1.f, 1.f), 20, -930, 480);
+
+
 	
 	if (ItemObject::ItemList[0]->oneTimeThing == false || ItemObject::ItemList[1]->oneTimeThing == false || ItemObject::ItemList[2]->oneTimeThing == false)
 	{
@@ -2724,7 +2818,11 @@ void SP2::GenerateCivilians(int amount)
 	//generates civilians
 	for (size_t i = 0; i < amount; ++i){
 		new Friendly(Vector3(rand() % 21 - 10, Waypoint::sizeV / 2, rand() % 21 - 10), Vector3(0, 0, 1), 8.f);
-		Friendly::friendlyList[i]->StoreDialogue(tempostorage);
+	}
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it){
+		if ((*it)->status == Friendly::STATUS_CIVILIAN){
+			(*it)->StoreDialogue(tempostorage);
+		}
 	}
 
 	tempostorage.clear();

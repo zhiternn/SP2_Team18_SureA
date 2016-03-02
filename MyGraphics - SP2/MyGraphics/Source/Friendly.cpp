@@ -10,6 +10,8 @@ NPC(pos, dir, speed)
 	state = IDLE;
 	dialogue.clear();
 	reachedDestination = false;
+	chatLineCounter = 0;
+	finishedTalking = false;
 
 	Friendly::friendlyList.push_back(this);
 }
@@ -30,22 +32,37 @@ void Friendly::Update(double dt)
 
 void Friendly::StoreDialogue(vector<string> svec)
 {
+	dialogue.clear();
 	dialogue = svec;
 }
 
 string Friendly::GetDialogue()
 {
-	return dialogue[rand()%dialogue.size()];
+	if (status == STATUS_CIVILIAN){
+		return dialogue[rand() % dialogue.size()];
+	}
+	else{
+		return dialogue[chatLineCounter];
+	}
 }
 
 void Friendly::TalkTo(Vector3 pos)
 {
-	timer.StartCountdown(2);//stays for 2 seconds
+	if(status == STATUS_CIVILIAN){
+		timer.StartCountdown(2);//stays for 2 seconds
+		if (position != pos){
+			Vector3 view = (pos - position).Normalized();
+			facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
+			state = CHAT;
+		}
+	}
+	else{
+		chatLineCounter++;
 
-	if (position != pos){
-		Vector3 view = (pos - position).Normalized();
-		facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view))));
-		state = CHAT;
+		if (chatLineCounter >= dialogue.size()){
+			finishedTalking = true;
+			chatLineCounter = 0;
+		}
 	}
 }
 

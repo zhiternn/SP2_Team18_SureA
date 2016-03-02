@@ -44,6 +44,7 @@ public:
 	string GetDialogue();
 
 	bool reachedDestination;
+	bool finishedTalking;
 	FRIENDLY_STATE state;
 	STATUS status;
 private:
@@ -51,6 +52,7 @@ private:
 	void StateChart_General(double dt);
 	vector<string> dialogue;
 	Countdown timer;
+	int chatLineCounter;
 };
 
 #endif
