@@ -31,7 +31,6 @@ void Projectile::Update(double dt)
 	position.y += vSpeed;
 
 	if (Hitbox::CheckHitBox(position, damage)){
-		sound.playSoundEffect("Sound//Blast.wav");
 		deleteBullet = true;
 
 		Effect::effectList.push_back(new Effect_Explosion(position));

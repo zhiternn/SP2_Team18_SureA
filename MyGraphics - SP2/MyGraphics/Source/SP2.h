@@ -366,6 +366,8 @@ private:
 
 	Player player;
 
+	Vector3 camPos, camTar, camUp;
+
 	ScenarioDefend* runningScenario;// nullptr if no scenario is running
 	bool scenarioResult; // true if win
 

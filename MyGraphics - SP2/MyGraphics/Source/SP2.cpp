@@ -26,6 +26,8 @@ SP2::~SP2()
 
 void SP2::Init()
 {
+	sound.Init();
+
 	srand(time(NULL));
 
 	Application::HideCursor();
@@ -940,6 +942,8 @@ void SP2::Update(double dt)
 		ItemObject::ItemList[2]->SetPosition(25, 0, 0);
 	}
 
+	//musicEngine->setListenerPosition(irrklang::vec3df(0, 0, 0), irrklang::vec3df(0, 0, 1));
+
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
@@ -1028,8 +1032,6 @@ void SP2::Render()
 {
 	// Clear color & depth buffer every frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Vector3 camPos, camTar, camUp;
 
 	if (playerState == STATE_INTERACTING_TURRET){
 
@@ -2796,6 +2798,9 @@ void SP2::UpdateProjectile(double dt)
 {
 	for (vector<Projectile*>::iterator it = Projectile::projectileList.begin(); it != Projectile::projectileList.end();){
 		if ((*it)->deleteBullet == true){
+			sound.playSoundEffect3D("Sound//Blast.wav", irrklang::vec3df(camPos.x, camPos.y, camPos.z), irrklang::vec3df((*it)->position.x, (*it)->position.y, (*it)->position.z));
+			//std::cout << "MyPosition" << camPos.x << " " << camPos.y << " " << camPos.z << std::endl;
+			//std::cout << "TargetPosition" << (*it)->position.x << " " << (*it)->position.y << " " << (*it)->position.z << std::endl;
 			delete *it;
 			it = Projectile::projectileList.erase(it);
 		}
