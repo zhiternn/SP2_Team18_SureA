@@ -1,7 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
 #include "SP2.h"
 #include "GL\glew.h"
 #include "shader.hpp"
@@ -387,6 +383,10 @@ void SP2::Init()
 
 	meshList[GEO_STARTFLAG] = MeshBuilder::GenerateQuad("Start", Color(1, 1, 1));
 	meshList[GEO_STARTFLAG]->textureID = LoadTGA("Image//start.tga");
+
+	meshList[GEO_CURSOR] = MeshBuilder::GenerateQuad("Cursor", Color(1, 1, 1));
+	meshList[GEO_CURSOR]->textureID = LoadTGA("Image//cursor.tga");
+
 	//Initializing transforming matrices
 	Application::GetScreenSize(screenX, screenY);
 
@@ -842,11 +842,8 @@ void SP2::Update(double dt)
 		//PICKUP INTERACTION
 		for (int i = 0; i < ItemObject::ItemList.size(); ++i)
 		{
-
 			if (ItemCheckPosition(ItemObject::ItemList[i]->position, 90) == true)
 			{
-
-
 				ItemObject::ItemList[i]->PickUp(player.hitbox);
 			}
 		}
@@ -1188,6 +1185,7 @@ void SP2::Render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	// UI STUFF HERE
+
 	if (playerState == STATE_FPS){
 		RenderQuadOnScreen(meshList[GEO_PlayerHands], 200, 200, 1100, -500);
 	}
@@ -1199,7 +1197,10 @@ void SP2::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "WASD to move turret", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.37f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "L click/Space to shoot", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.35f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "Mouse to look around", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.33f));
+<<<<<<< 3fc206c1e6ea8ed0ba3c851e3d6e33c7b7db1071
 
+=======
+>>>>>>> 69df04263839b253f94eaebd08171db786543fe6
 	}
 	if (runningScenario != nullptr && playerState == STATE_INTERACTING_TURRET){
 		RenderTextOnScreen(meshList[GEO_TEXT], "Health Left: " + std::to_string(runningScenario->HP), Color(0, 1, 0), 25, (screenX / 2) * 0.44, (screenY * 0.3f));
@@ -1296,8 +1297,22 @@ void SP2::Render()
 			Application::ShowCursor();
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX, screenY, 0, 0);
 
+<<<<<<< 3fc206c1e6ea8ed0ba3c851e3d6e33c7b7db1071
 			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.26f));
 			RenderMaze();
+=======
+		//Application::ShowCursor();
+		RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX, screenY, 0, 0);
+		
+		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_MAZE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.26f));
+		RenderMaze();
+		double mouseX, mouseY;
+		Application::GetMouseMovement(mouseX, mouseY);
+
+		RenderQuadOnScreen(meshList[GEO_CURSOR], 50, 50, -mouseX/2 - mouseX/2, mouseY/2 + mouseY/2);
+
+		Application::HideCursor();
+>>>>>>> 69df04263839b253f94eaebd08171db786543fe6
 
 			if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && playerState == STATE_INTERACTING_MAZE){
 				Application::SetMousePosition(0, 0);
@@ -1369,8 +1384,6 @@ void SP2::Exit()
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
-
-	_CrtDumpMemoryLeaks();
 }
 
 void SP2::RenderMesh(Mesh *mesh, bool enableLight)

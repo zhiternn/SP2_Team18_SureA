@@ -123,7 +123,6 @@ void Maze::Collision(){
 	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
 	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
 
-	std::cout << xGrid << "Y" << yGrid << std::endl;
 	if (mapLayout[yGrid][xGrid] == MAP_BLOCK){
 		Application::SetMousePosition(gridSizeX + gridSizeX/2, gridSizeY + gridSizeY/2);
 	}

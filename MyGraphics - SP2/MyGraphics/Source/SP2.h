@@ -84,6 +84,7 @@ class SP2 : public Scene
 		GEO_TestItemStand,
 		GEO_UIBAR,
 		GEO_UIBAROUTLINE,
+		GEO_CURSOR,
 
 		GEO_ShipButtonStand,
 		GEO_ShipButton,
