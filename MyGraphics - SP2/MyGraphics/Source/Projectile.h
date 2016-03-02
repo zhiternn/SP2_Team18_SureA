@@ -3,7 +3,7 @@
 
 #include "Vector3.h"
 #include "Hitbox.h"
-
+#include "Sound.h"
 #include <vector>
 
 using std::vector;
@@ -29,6 +29,8 @@ private:
 	float vSpeed;
 
 	int damage;
+
+	Sound sound;
 };
 
 #endif

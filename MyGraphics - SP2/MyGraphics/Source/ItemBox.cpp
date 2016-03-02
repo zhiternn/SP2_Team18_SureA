@@ -122,7 +122,7 @@ void ItemObject::PickUpAnimation(double dt)
 			counter = 0;
 		}
 		else
-			haveItem = true;
+		haveItem = true;
 		RotationBool = true;
 		canPut = true;
 		counter = 0;

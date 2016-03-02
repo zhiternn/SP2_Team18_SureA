@@ -298,6 +298,9 @@ void SP2::Init()
 	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("ShipButton", "OBJ//ShipButton.obj");
 	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
 
+	meshList[GEO_AlarmPost] = MeshBuilder::GenerateOBJ("AlarmPost", "OBJ//AlarmPost.obj");
+	meshList[GEO_AlarmPost]->textureID = LoadTGA("Image//walls3.tga");
+
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
 
@@ -895,6 +898,50 @@ void SP2::Update(double dt)
 			StartEvacuationScenario(60, 5);
 		}
 	}
+
+	if (runningEvacuationScenario)
+	{
+		AlarmRotation += (float(50 * dt));
+	}
+
+	if (Application::IsKeyPressed('O'))
+	{
+		for (int i = 0; i < ItemObject::ItemList.size(); i++)
+		{
+			ItemObject::ItemList[i]->takeItem = false;//item
+			ItemObject::ItemList[i]->growItem = false;//item
+			ItemObject::ItemList[i]->growingbool = false;
+			ItemObject::ItemList[i]->cangrowItem = false;
+			ItemObject::ItemList[i]->haveItem = false;//item
+			ItemObject::ItemList[i]->putItem = false;
+			ItemObject::ItemList[i]->ItemBoolInterval = false;
+			ItemObject::ItemList[i]->dropItem = false;
+			ItemObject::ItemList[i]->canPut = false;
+			ItemObject::ItemList[i]->oneTimeThing = false;
+
+			ItemObject::ItemList[i]->buttonCoverBool = false;
+			ItemObject::ItemList[i]->buttonRiseBool = false;
+			ItemObject::ItemList[i]->buttonPressBool = false;
+			ItemObject::ItemList[i]->cbuttonRise = false;
+
+			ItemObject::ItemList[i]->TextCheck = false;
+			ItemObject::ItemList[i]->ShipGuardCheck = false;
+
+			ItemObject::ItemList[i]->mazeCheck = 0;
+			ItemObject::ItemList[i]->buttonCover = 0;
+			ItemObject::ItemList[i]->buttonRise = 0;
+			ItemObject::ItemList[i]->counter = 0;
+
+			ItemObject::ItemList[i]->ItemInterval = 0;
+			ItemObject::ItemList[i]->fly = 0.001;//item
+			ItemObject::ItemList[i]->growing = 0;//item grows.
+			ItemObject::ItemList[i]->rotateitem = 0;//item rotation
+		}
+		ItemObject::ItemList[0]->SetPosition(5,0, 0);
+		ItemObject::ItemList[1]->SetPosition(15,0, 0);
+		ItemObject::ItemList[2]->SetPosition(25, 0, 0);
+	}
+
 	if (runningScenario != nullptr){
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
@@ -1033,6 +1080,7 @@ void SP2::Render()
 	RenderShipGuard();
 	RenderFenceBoundary();
 	RenderObstacles();
+	RenderAlarmPost();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(
@@ -3304,5 +3352,15 @@ void SP2::RenderObstacles()
 	modelStack.Translate(-38, 0, -18);
 	modelStack.Scale(2, 2, 2);
 	RenderMesh(meshList[GEO_CRATE], true);
+	modelStack.PopMatrix();
+}
+
+void SP2::RenderAlarmPost()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Rotate(AlarmRotation, 0, 1, 0);
+	modelStack.Scale(0.3, 0.3, 0.3);
+	RenderMesh(meshList[GEO_AlarmPost], true);
 	modelStack.PopMatrix();
 }

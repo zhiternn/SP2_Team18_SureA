@@ -89,6 +89,7 @@ void Turret::Update(double dt, bool controlling)
 
 		if ((Application::IsKeyPressed(VK_SPACE) || Application::IsKeyPressed(VK_LBUTTON)) && readyToShoot >= (float)(1.f / roundPerSecond) && !isOverHeated){
 			readyToShoot = 0.f;
+			sound.playSoundEffect("Sound//Gun1.mp3");
 			Projectile::projectileList.push_back(new Projectile(
 				Vector3(barrelPos.x, barrelPos.y, barrelPos.z),
 				Vector3(view.x, view.y, view.z),

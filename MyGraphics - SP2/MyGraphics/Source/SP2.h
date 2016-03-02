@@ -100,6 +100,8 @@ class SP2 : public Scene
 
 		GEO_PlayerHands,
 
+		GEO_AlarmPost,
+
 		NUM_GEOMETRY
 	};
 	enum PLAYER_STATE
@@ -245,9 +247,11 @@ private:
 	void LightsSetup();
 
 	void ArrangeObjs(int sizeX, int sizeZ, int distanceBetweenObjs);
-	void AlarmUpdate();
-	void DeleteAfter();
+	
 	void GenerateCivilians(int amount);
+
+	void AlarmUpdate();
+	void RenderAlarmPost();
 
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
@@ -288,7 +292,6 @@ private:
 	float trapMove;
 	bool backN;
 	bool forth = true;
-	
 
 	Object portal;
 	Object laserTrap;
@@ -341,6 +344,7 @@ private:
 	float animation_scalePortal;
 	float animation_moveDoor;
 	float towardsCameraYaw;
+	float AlarmRotation;
 
 	int InitialCivilianCount;
 	int totalFriendlyCount;

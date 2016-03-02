@@ -4,6 +4,8 @@
 #include "Vehicle.h"
 #include "Camera_LockPosition.h"
 
+#include "Sound.h"
+
 class Turret : public Vehicle
 {
 public:
@@ -27,6 +29,8 @@ private:
 	int roundPerSecond;
 	float heatAmount;
 	bool isOverHeated;
+	
+	Sound sound;
 
 };
 
