@@ -357,6 +357,7 @@ void SP2::Init()
 
 	meshList[GEO_BASE_SPOTLIGHT] = MeshBuilder::GenerateOBJ("spotlight", "OBJ//spotlight_obj.obj");
 	meshList[GEO_BASE_SPOTLIGHT]->textureID = LoadTGA("Image//spotlight_uv.tga");
+
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("Textbox", Color(1, 1, 1));
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//textbox.tga");
 
@@ -1213,14 +1214,15 @@ void SP2::Render()
 		RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 250, (screenX / 2) * 0.67, (screenY * 0.35f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.44f));
 		RenderTextOnScreen(meshList[GEO_TEXT], "Civilians Left " + std::to_string(Friendly::friendlyList.size() - (totalFriendlyCount - InitialCivilianCount)), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.44, (screenY * 0.4f));
-		if (playerState == STATE_INTERACTING_AIRSHIP){
+		if (playerState == STATE_INTERACTING_AIRSHIP)
+		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "W to accelerate", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.37f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "S to decelerate", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.34f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "A/D to rotate left/right", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.31f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "Spacebar to ascend", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.28f));
 			RenderTextOnScreen(meshList[GEO_TEXT], "LCtrl to descend", Color(1, 1, 1), 20, (screenX / 2) * 0.44, (screenY * 0.25f));
 		}
-
+	}
 		if (runningEvacuationScenario){
 			RenderQuadOnScreen(meshList[GEO_TEXTBOX], 500, 150, 650, 380.f);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Time Left " + std::to_string(m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft()), Color(1.f, 1.f, 1.f), 25, (screenX / 2) * 0.45, (screenY * 0.4f));
@@ -1305,7 +1307,8 @@ void SP2::Render()
 			}
 		}
 
-		if (mappy.mazeSuccess == true){
+		if (mappy.mazeSuccess == true)
+		{
 			Application::SetMousePosition(0, 0);
 			playerState = STATE_FPS;
 			Application::HideCursor();
@@ -1348,7 +1351,8 @@ void SP2::Render()
 			}
 		}
 
-		if (m_timer[TIMER_SCENARIO_TEXTS].GetTimeLeft() > 0){
+		if (m_timer[TIMER_SCENARIO_TEXTS].GetTimeLeft() > 0)
+		{
 			if (scenarioResult == true){ // if win
 				RenderQuadOnScreen(meshList[GEO_TEXTBOX], screenX * 0.8, screenY * 0.2, 0, (-screenY / 2) + (screenY * 0.2f));
 				RenderTextOnScreen(meshList[GEO_TEXT], "Success! :D", Color(0, 1, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
@@ -1358,7 +1362,6 @@ void SP2::Render()
 				RenderTextOnScreen(meshList[GEO_TEXT], "Failure :(", Color(1, 0, 0), 40, (-screenX / 2) * 0.45, (-screenY * 0.3f));
 			}
 		}
-	}
 }
 
 void SP2::Exit()
