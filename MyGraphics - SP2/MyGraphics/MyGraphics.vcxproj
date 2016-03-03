@@ -87,6 +87,7 @@
     <ClCompile Include="Source\Airship.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera_LockPosition.cpp" />
+    <ClCompile Include="Source\Countdown.cpp" />
     <ClCompile Include="Source\Effect.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Friendly.cpp" />

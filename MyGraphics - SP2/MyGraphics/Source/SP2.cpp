@@ -26,7 +26,7 @@ SP2::~SP2()
 
 void SP2::Init()
 {
-	sound.playMusic("Sound//BattleAlien.mp3");
+	sound.playMusic("Sound//NormalMusic.mp3");
 	sound.Init();
 
 	srand(time(NULL));
@@ -297,8 +297,8 @@ void SP2::Init()
 	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("ShipButton", "OBJ//ShipButton.obj");
 	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
 
-	meshList[GEO_AlarmPost] = MeshBuilder::GenerateOBJ("AlarmPost", "OBJ//AlarmPost.obj");
-	meshList[GEO_AlarmPost]->textureID = LoadTGA("Image//walls3.tga");
+	meshList[GEO_AlarmPost] = MeshBuilder::GenerateOBJ("AlarmPost", "OBJ//AlarmLamp.obj");
+	meshList[GEO_AlarmPost]->textureID = LoadTGA("Image//AlarmTexture.tga");
 
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
@@ -555,15 +555,15 @@ void SP2::Init()
 	//Items
 	ItemObject* item1 = new ItemObject();//Obj1 
 	item1->hitbox.SetSize(3, 2, 3);
-	item1->SetPosition(0, 1, 0);
+	item1->SetPosition(19, 1, 30);
 
 	ItemObject* item2 = new ItemObject();//Obj2 
 	item2->hitbox.SetSize(3, 2, 3);
-	item2->SetPosition(-10, 1, 0);
+	item2->SetPosition(-30, 1, -22);
 
 	ItemObject* item3 = new ItemObject();//Obj3 
 	item3->hitbox.SetSize(3, 2, 3);
-	item3->SetPosition(-5, 1, 0);
+	item3->SetPosition(47, 1, -48);
 
 	ItemObject* item4 = new ItemObject();//Button
 	item4->hitbox.SetSize(3, 2, 3);
@@ -819,6 +819,8 @@ void SP2::Update(double dt)
 					{
 						(*it)->GoTo(allyShip.position);
 						(*it)->state = Friendly::EVACUATE;
+						
+							sound.playSoundEffect("Sound//StrangeGrowl.wav");
 					}
 					else
 					{
@@ -876,7 +878,7 @@ void SP2::Update(double dt)
 			case Friendly::STATUS_GENERAL1:
 				//start scenario
 				StartEvacuationScenario(60, 5);
-				//sound.stopMusic("Sound//Normal.mp3");
+				sound.stopMusic("Sound//NormalMusic.mp3");
 				sound.playMusic("Sound//AlramScene.mp3");
 				break;
 
@@ -885,16 +887,16 @@ void SP2::Update(double dt)
 				if (runningScenario == nullptr){
 					runningScenario = new ScenarioDefend(SCENARIO_DEFEND_WAVE, SCENARIO_DEFEND_TIMER, SCENARIO_DEFEND_INCREMENT, multiplay);
 					m_timer[TIMER_DEFEND].StartCountdown(SCENARIO_DEFEND_TIMER);
-					//sound.stopMusic("Sound//Normal.mp3");
-					sound.playMusic("Sound//BattleAlien.mp3");
+					sound.stopMusic("Sound//NormalMusic.mp3");
+					sound.playMusic("Sound//AlramScene.mp3");
 				}
 				break;
 
 			case Friendly::STATUS_GENERAL3:
 				//start scenario
 				StartInfiltrate = true;
-				//sound.stopMusic("Sound//Normal.mp3");
-				sound.playMusic("Sound//Timekeeper.mp3");
+				sound.stopMusic("Sound//NormalMusic.mp3");
+				sound.playMusic("Sound//PickUpScene.mp3");
 				break;
 
 			default:
@@ -970,8 +972,8 @@ void SP2::Update(double dt)
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
-			//sound.stopMusic("Sound//BattleAlien.mp3");
-			sound.playMusic("Sound//Normal.mp3");
+			sound.stopMusic("Sound//BattleAlien.mp3");
+			sound.playMusic("Sound//NormalMusic.mp3");
 			delete runningScenario;
 			runningScenario = nullptr;
 		}
@@ -1466,16 +1468,20 @@ void SP2::Render()
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
-				//sound.stopMusic("Sound//Timekeeper.mp3");
-				//sound.playMusic("Sound//Normal.mp3");
+				sound.stopMusic("Sound//PickUpScene.mp3");
+				sound.playMusic("Sound//NormalMusic.mp3");
+				ResetItem();
+				portalChk = false;
 			}
 			else if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 				scenarioResult = false;
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
-				//sound.stopMusic("Sound//Timekeeper.mp3");
-				//sound.playMusic("Sound//Normal.mp3");
+				sound.stopMusic("Sound//PickUpScene.mp3");
+				sound.playMusic("Sound//NormalMusic.mp3");
+				ResetItem();
+				portalChk = false;
 			}
 		}
 
@@ -1999,8 +2005,6 @@ void SP2::RenderPortal()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 }
-
-
 
 /******************************************************************************/
 /*!
@@ -3112,16 +3116,16 @@ void SP2::UpdateEvacuationScenario()
 			scenarioResult = true;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
-			//sound.stopMusic("sound//AlramScene.mp3");
-			//sound.playMusic("sound//Normal.mp3");
+			sound.stopMusic("sound//AlramScene.mp3");
+			sound.playMusic("sound//NormalMusic.mp3");
 		}
 		else if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() <= 0){//LOSE
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 			scenarioResult = false;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
-			//sound.stopMusic("sound//AlramScene.mp3");
-			//sound.playMusic("sound//Normal.mp3");
+			sound.stopMusic("sound//AlramScene.mp3");
+			sound.playMusic("sound//NormalMusic.mp3");
 		}
 	}
 }
