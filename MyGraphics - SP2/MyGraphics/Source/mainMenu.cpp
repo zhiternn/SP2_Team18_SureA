@@ -1584,7 +1584,6 @@ void mainMenu::InstructionState()
 	else
 		RenderButtonOnScreen(meshList[GEO_EXITBUTTON], Color(0, 0, 0), 20, 69.5, 7);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Back to Main", Color(1, 0, 1), 2, 30.8, 3);
-<<<<<<< 5496926e8ebdb65c2951e20a3bdd98c2a3b6ad96
 
 }
 

@@ -1148,7 +1148,6 @@ void SP2::Render()
 				modelStack.LoadIdentity();
 			}
 		}
-<<<<<<< 5496926e8ebdb65c2951e20a3bdd98c2a3b6ad96
 
 		//viewStack.LoadIdentity();
 		//viewStack.LookAt(
@@ -1163,7 +1162,6 @@ void SP2::Render()
 		//RENDER OBJECTS
 		//RenderMesh(meshList[GEO_AXES], false);
 
-=======
 
 		//viewStack.LoadIdentity();
 		//viewStack.LookAt(
@@ -1178,7 +1176,6 @@ void SP2::Render()
 		//RENDER OBJECTS
 		//RenderMesh(meshList[GEO_AXES], false);
 
->>>>>>> 4ab91ee0b093873e988d7754e88d6eaf30295ff2
 		modelStack.PushMatrix();
 		modelStack.Translate(camPos.x, camPos.y, camPos.z);
 		RenderSkybox();
