@@ -10,7 +10,7 @@ Camera_LockTarget::~Camera_LockTarget()
 {
 }
 
-void Camera_LockTarget::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
+void Camera_LockTarget::Init(const Vector3& pos, const Vector3& target, const Vector3& up, float zoom)
 {
 	this->target = target;
 	this->position = pos;
@@ -20,7 +20,7 @@ void Camera_LockTarget::Init(const Vector3& pos, const Vector3& target, const Ve
 	this->up = up;
 	this->up.Normalize();
 
-	zoom = 10.f;
+	this->zoom = zoom;
 
 }
 
@@ -28,12 +28,12 @@ void Camera_LockTarget::Update(double dt)
 {
 	static const float CAMERA_SPEED = 6.f;
 	static float ZOOM_SPEED = 30.f;
-	
+
 	if (Application::mouseWheelY > 0){
 		zoom -= ZOOM_SPEED * dt;
 		Application::mouseWheelY = 0;
 	}
-	else if(Application::mouseWheelY < 0){
+	else if (Application::mouseWheelY < 0){
 		zoom += ZOOM_SPEED * dt;
 		Application::mouseWheelY = 0;
 	}

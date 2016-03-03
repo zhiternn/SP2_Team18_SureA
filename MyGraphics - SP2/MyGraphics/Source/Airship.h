@@ -15,9 +15,10 @@ public:
 
 	Camera_LockTarget camera;
 
-	float thrustSpeed;
-	float ySpeed;
+	float frontThrust;
+	float upThrust;
 	float hSpeed;
+	float vSpeed;
 
 	float facingYaw;
 

@@ -14,7 +14,7 @@ public:
 
 	Camera_LockTarget();
 	~Camera_LockTarget();
-	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
+	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up, float zoom = 10.f);
 	void Update(double dt);
 	virtual void Reset();
 

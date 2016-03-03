@@ -27,26 +27,27 @@ void Camera_LockPosition::Update(double dt)
 	static const float CAMERA_SPEED = 10.f;
 	static float ZOOM = 5.f;
 
-	double mouseX, mouseY;
+	//double mouseX, mouseY;
 
-	Application::GetMouseMovement(mouseX, mouseY);
-	float yaw = (float)(mouseX * CAMERA_SPEED * dt);
-	Mtx44 rotate;
-	rotate.SetToRotation(yaw, 0, 1, 0);
-	view = rotate * view;
-	right = rotate * right;
-	up = rotate * up;
+	//Application::GetMouseMovement(mouseX, mouseY);
+	//float yaw = (float)(mouseX * CAMERA_SPEED * dt);
+	//Mtx44 rotate;
+	//rotate.SetToRotation(yaw, 0, 1, 0);
+	//view = rotate * view;
+	//right = rotate * right;
+	//up = rotate * up;
+	//target = position + view * ZOOM;
+
+	//if (view.y < 0.95 && mouseY > 0 || view.y > -0.95 && mouseY < 0){
+	//	float pitch = (float)(mouseY * CAMERA_SPEED * dt);
+	//	rotate.SetToRotation(pitch, right.x, right.y, right.z);
+	//	view = rotate * view;
+	//	right = rotate * right;
+	//	up = rotate * up;
+	//	target = position + view * ZOOM;
+	//}
+
 	target = position + view * ZOOM;
-
-	if (view.y < 0.95 && mouseY > 0 || view.y > -0.95 && mouseY < 0){
-		float pitch = (float)(mouseY * CAMERA_SPEED * dt);
-		rotate.SetToRotation(pitch, right.x, right.y, right.z);
-		view = rotate * view;
-		right = rotate * right;
-		up = rotate * up;
-		target = position + view * ZOOM;
-	}
-
 	view.Normalize();
 	right.Normalize();
 	up.Normalize();

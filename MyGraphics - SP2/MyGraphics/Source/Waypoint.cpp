@@ -1,3 +1,13 @@
+/******************************************************************************/
+/*!
+\file	Waypoint.cpp
+\author Tang Zhi Tern
+\par	email: 155134X@mymail.nyp.edu.sg
+\brief
+Class to define a Waypoint
+*/
+/******************************************************************************/
+
 #include "Waypoint.h"
 #include "Object.h"
 
@@ -5,6 +15,18 @@ vector<Waypoint*> Waypoint::waypointList;
 float Waypoint::sizeH;
 float Waypoint::sizeV;
 
+/******************************************************************************/
+/*!
+\brief	Waypoint default constructor
+
+\param	pos
+	position of waypoint
+\param	hSize
+	horizontal size of waypoint
+\param	vSize
+	vertical size of waypoint
+*/
+/******************************************************************************/
 Waypoint::Waypoint(Vector3 pos, float hSize, float vSize)
 {
 	position = pos;
@@ -19,10 +41,23 @@ Waypoint::Waypoint(Vector3 pos, float hSize, float vSize)
 
 	movementCost = 999.f; // supposedly required to be an infinite value
 }
+
+/******************************************************************************/
+/*!
+\brief	Waypoint destructor
+*/
+/******************************************************************************/
 Waypoint::~Waypoint()
 {
 }
 
+/******************************************************************************/
+/*!
+\brief	Reset the properties of this waypoint
+	resets H costs, parenting node, and target node. Will not remove
+	pre-generated reachable waypoints list.
+*/
+/******************************************************************************/
 void Waypoint::Reset()
 {
 	movementCost = 999.f;
@@ -30,6 +65,21 @@ void Waypoint::Reset()
 	target = nullptr;
 }
 
+/******************************************************************************/
+/*!
+\brief	Stores waypoints into waypoint list
+	Waypoints generated beyond map boundaries will not be stored
+
+\param	mapSizeX
+	map X boundary
+\param	mapSizeZ
+	map Z boundary
+\param	waypointSizeH
+	horizontal size of waypoint
+\param	waypointSizeV
+	vertical size of waypoint
+*/
+/******************************************************************************/
 void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)
 {
 	Hitbox forWaypoint1;
@@ -60,6 +110,16 @@ void StoreWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypo
 		}
 	}
 }
+
+/******************************************************************************/
+/*!
+\brief	Check if 2 waypoints are in reach of each other
+returns true if waypoint can reach checking waypoint without being obstructed
+
+\param	toBeLinked
+	waypoint to be checked against
+*/
+/******************************************************************************/
 bool Waypoint::CheckLink(Waypoint toBeLinked)
 {
 	Hitbox collisionChecker;
@@ -85,10 +145,18 @@ bool Waypoint::CheckLink(Waypoint toBeLinked)
 		return true;
 	}
 }
+
+/******************************************************************************/
+/*!
+\brief	Push all reachable waypoints into this waypoint's reachable list
+*/
+/******************************************************************************/
 void Waypoint::LinkWaypoints()
 {
 	Hitbox collisionChecker;
 	collisionChecker.SetSize(Waypoint::sizeH, Waypoint::sizeV, Waypoint::sizeH);
+
+	reachableWaypoints.clear();
 
 	for (int j = 0; j < Waypoint::waypointList.size(); ++j){// Check waypoints one by one with gotten waypoint
 		if (this->position != Waypoint::waypointList[j]->position){//Check if its comparing with itself
@@ -117,6 +185,21 @@ void Waypoint::LinkWaypoints()
 		}
 	}
 }
+
+/******************************************************************************/
+/*!
+\brief	Generates waypoints and link them to each other
+
+\param	mapSizeX
+	map X boundary
+\param	mapSizeZ
+	map Z boundary
+\param	waypointSizeH
+	horizontal size of waypoint
+\param	waypointSizeV
+	vertical size of waypoint
+*/
+/******************************************************************************/
 void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float waypointSizeV)
 {
 	Waypoint::sizeH = waypointSizeH;
@@ -129,6 +212,11 @@ void GenerateWaypoints(int mapSizeX, int mapSizeZ, float waypointSizeH, float wa
 	}
 }
 
+/******************************************************************************/
+/*!
+\brief	run Reset function for all waypoints in waypointList
+*/
+/******************************************************************************/
 void ResetWaypoints()
 {
 	for (vector<Waypoint*>::iterator it = Waypoint::waypointList.begin(); it != Waypoint::waypointList.end(); ++it){

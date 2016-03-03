@@ -1,3 +1,13 @@
+/******************************************************************************/
+/*!
+\file	Waypoint.h
+\author Tang Zhi Tern
+\par	email: 155134X@mymail.nyp.edu.sg
+\brief
+Class to define a Waypoint
+*/
+/******************************************************************************/
+
 #ifndef WAYPOINT_H
 #define WAYPOINT_H
 
@@ -7,6 +17,12 @@
 
 using std::vector;
 
+/******************************************************************************/
+/*!
+Class Vector3:
+\brief	Defines a Waypoint and its required variables and methods
+*/
+/******************************************************************************/
 class Waypoint
 {
 public:
@@ -31,4 +47,5 @@ private:
 
 void GenerateWaypoints(int sizeX, int sizeZ, float waypointSizeH, float waypointSizeV);
 void ResetWaypoints();
-#endif
+
+#endif //WAYPOINT_H

@@ -21,8 +21,8 @@ const unsigned int frameTime = 1000 / FPS; // time for each frame
 bool Application::state2D;
 double Application::mouseWheelX;
 double Application::mouseWheelY;
-int Application::screenX;
-int Application::screenY;
+int Application::width;
+int Application::height;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -104,6 +104,9 @@ Application::~Application()
 void resize_callback(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h); //update opengl the new window size
+
+	Application::width = w;
+	Application::height = h;
 }
 
 void mouseWheel_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -135,6 +138,8 @@ void Application::Init()
 	m_window = glfwCreateWindow(1920, 1080, "Computer Graphics :D", NULL, NULL);
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 	glfwSetScrollCallback(m_window, mouseWheel_callback);
+
+	GetScreenSize(Application::width, Application::height);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -177,6 +182,10 @@ void Application::Run()
 	//Main Loop
 	Scene *scene = new mainMenu();
 	scene->Init();
+	Scene* sceneSP2 = new SP2();
+	sceneSP2->Init();
+
+	Application::ShowCursor();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && SharedData::GetInstance()->gameState != SharedData::G_EXIT && !IsKeyPressed(VK_ESCAPE))
@@ -206,7 +215,7 @@ void Application::Run()
 				glfwSetCursorPos(m_window, SharedData::GetInstance()->m_newX, 1080);
 		}
 
-        m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 		if (SharedData::GetInstance()->stateChange) {
 			delete scene;
@@ -214,13 +223,13 @@ void Application::Run()
 			switch (SharedData::GetInstance()->gameState)
 			{
 			case SharedData::G_MENU: scene = new mainMenu();
+				scene->Init();
 				break;
-			case SharedData::G_GAME: scene = new SP2();
+			case SharedData::G_GAME: scene = sceneSP2;
 				Application::HideCursor();
 				Application::SetMousePosition();
 				break;
 			}
-			scene->Init();
 		}
 
 	} //Check if the ESC key had been pressed or if the window had been closed

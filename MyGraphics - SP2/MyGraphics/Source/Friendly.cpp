@@ -48,7 +48,7 @@ string Friendly::GetDialogue()
 
 void Friendly::TalkTo(Vector3 pos)
 {
-	if(status == STATUS_CIVILIAN){
+	if (status == STATUS_CIVILIAN){
 		timer.StartCountdown(2);//stays for 2 seconds
 		if (position != pos){
 			Vector3 view = (pos - position).Normalized();
@@ -57,11 +57,18 @@ void Friendly::TalkTo(Vector3 pos)
 		}
 	}
 	else{
+		if (position != pos){
+			Vector3 view = (pos - position).Normalized();
+			facingYaw = (((defaultDirection.Cross(view)).y / abs((defaultDirection.Cross(view)).y)) * Math::RadianToDegree(acos(defaultDirection.Dot(view)))) + 90;
+			state = CHAT;
+		}
+
 		chatLineCounter++;
 
 		if (chatLineCounter >= dialogue.size()){
-			finishedTalking = true;
 			chatLineCounter = 0;
+			finishedTalking = true;
+			state = IDLE;
 		}
 	}
 }
@@ -138,6 +145,7 @@ void Friendly::StateChart_General(double dt)
 	switch (state)
 	{
 	case IDLE:
+		finishedTalking = false;
 		facingYaw = (((Vector3(0, 0, 1).Cross(defaultDirection)).y / abs((Vector3(0, 0, 1).Cross(defaultDirection)).y)) * Math::RadianToDegree(acos(Vector3(0, 0, 1).Dot(defaultDirection))));
 		break;
 

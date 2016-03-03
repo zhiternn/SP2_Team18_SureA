@@ -6,7 +6,7 @@
 //SCENARIO DEFEND
 //============================================================================================
 
-ScenarioDefend::ScenarioDefend(int health, double duration, int increment)
+ScenarioDefend::ScenarioDefend(int health, double duration, int increment, bool multiplay)
 {
 
 	this->increment = increment;
@@ -15,6 +15,7 @@ ScenarioDefend::ScenarioDefend(int health, double duration, int increment)
 	wave = 1;
 	winScenario = false;
 	timer.StartCountdown(duration);
+	this->multiplay = multiplay;
 
 	SpawnEnemies();
 	MoveEnemies();
@@ -28,8 +29,9 @@ ScenarioDefend::~ScenarioDefend()
 	}
 }
 
-void ScenarioDefend::Update(double dt)
+void ScenarioDefend::Update(double dt, bool multiplay)
 {
+	this->multiplay = multiplay;
 	if (timer.GetTimeLeft() > 0){
 		if (Enemy::enemyList.size() <= 0){//check for wave completion
 			wave++;
@@ -38,6 +40,8 @@ void ScenarioDefend::Update(double dt)
 			SpawnEnemies();
 			MoveEnemies();
 		}
+	}
+	if (Enemy::enemyList.size() > 0){
 		for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end();){//check if enemies reached destination
 			if ((*it)->reachedDestination){
 				HP -= 1;
@@ -53,7 +57,7 @@ void ScenarioDefend::Update(double dt)
 			}
 		}
 	}
-	else{// WIN
+	if (timer.GetTimeLeft() <= 0 && Enemy::enemyList.size() <= 0){// WIN
 		winScenario = true;
 		stopScenario = true;
 	}
@@ -82,6 +86,16 @@ void ScenarioDefend::SpawnEnemies()
 void ScenarioDefend::MoveEnemies()
 {
 	for (vector<Enemy*>::iterator it = Enemy::enemyList.begin(); it != Enemy::enemyList.end(); ++it){
-		(*it)->GoTo(Vector3(-22.3, 2.8, 40.75));
+		if (multiplay){
+			if (rand() % 2){
+				(*it)->GoTo(Vector3(-22.3, 2.8, 40.75));
+			}
+			else{
+				(*it)->GoTo(Vector3(22.3, 2.8, 40.75));
+			}
+		}
+		else{
+			(*it)->GoTo(Vector3(-22.3, 2.8, 40.75));
+		}
 	}
 }

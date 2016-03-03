@@ -20,7 +20,7 @@ public:
 	float GetPitch();
 	float GetYaw();
 
-	void Init(Vector3 pos, Vector3 dir, int atkSpeed = 1);
+	void Init(Vector3 pos, Vector3 dir, int atkSpeed = 1, int cntrl = 0);
 	virtual void Update(double dt, bool controlling);
 
 	float heatSystem;
@@ -29,7 +29,8 @@ private:
 	int roundPerSecond;
 	float heatAmount;
 	bool isOverHeated;
-	
+	bool alternateControl;
+
 	Sound sound;
 
 };

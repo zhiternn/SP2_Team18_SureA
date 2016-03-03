@@ -6,10 +6,10 @@
 class ScenarioDefend
 {
 public:
-	ScenarioDefend(int health, double duration, int increment);
+	ScenarioDefend(int health, double duration, int increment, bool multiplay);
 	virtual ~ScenarioDefend();
 
-	virtual void Update(double dt);
+	void Update(double dt, bool multiplay);
 	int HP;
 
 	bool stopScenario;
@@ -18,6 +18,7 @@ private:
 	int wave;
 	int increment;
 	int amountToSpawn;
+	bool multiplay;
 
 	Countdown timer;
 

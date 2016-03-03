@@ -39,7 +39,7 @@ void Player::Update(double dt)
 
 	// if not pressed, no speed increase
 
-	if (Application::IsKeyPressed(VK_SHIFT) && tired == false){
+	if (Application::IsKeyPressed(VK_SHIFT) && tired == false && Application::IsKeyPressed('W')){
 		SPRINT_MULTIPLIER = 2.5f;
 		SprintDuration -= 0.5 * dt;
 	}

@@ -24,6 +24,19 @@
 
 using std::vector;
 
+//SCENARIO
+#define SCENARIO_INFILTRATE_TIMER 40
+
+#define SCENARIO_DEFEND_TIMER 60
+#define SCENARIO_DEFEND_INCREMENT 5
+#define SCENARIO_DEFEND_WAVE 3
+
+#define SCENARIO_EVACUATE_TIMER 45
+#define SCENARIO_EVACUATE_CIVILIAN_COUNT 5
+
+//GENERAL
+#define CIVILIAN_CHAT_TIMER 2
+
 class SP2 : public Scene
 {
 	enum GEOMETRY_TYPE
@@ -110,6 +123,7 @@ class SP2 : public Scene
 		STATE_FPS,
 		STATE_INTERACTING_MAZE,
 		STATE_INTERACTING_TURRET,
+		STATE_INTERACTING_TURRET2,
 		STATE_INTERACTING_LIGHTSLIDER,
 		STATE_INTERACTING_AIRSHIP,
 		STATE_TALKING,
@@ -212,7 +226,8 @@ private:
 	void RenderTraps();
 	void RenderAllyShip();
 	void RenderEnemyShip();
-	void RenderTurrets();
+	void RenderTurret();
+	void RenderTurret2();
 	void RenderBaseCamp();
 	void RenderDoor();
 	void RenderPickUpObj();
@@ -254,6 +269,8 @@ private:
 	void AlarmUpdate();
 	void RenderAlarmPost();
 
+	void ResetItem();
+
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
 	float interval; // can delete after alarmlight has been set to button
@@ -278,6 +295,8 @@ private:
 	bool mazeSuccess;
 	bool onGround;
 	bool StartInfiltrate;
+	
+	bool multiplay;
 
 	//base spotlight
 	float baseSpotlight_maxLength;
@@ -306,11 +325,16 @@ private:
 	Object trapdoor;
 	Object baseSpotlight;
 
-	Friendly General1;
+	//Boundaries hitboxes
+	Object floor;
+	Object frontWall;
+	Object backWall;
+	Object leftWall;
+	Object rightWall;
 
 	Airship allyShip;
 	Turret turret;
-	void RenderTurret();
+	Turret turret2;
 
 	void Interval(double dt);
 
@@ -341,6 +365,7 @@ private:
 	float readyToUse;
 	float readyToInteract;
 	float readyToUse_HITBOX;
+	float readyToUse_MULTIPLAYER;
 	float animation_rotatePortal;
 	float animation_scalePortal;
 	float animation_moveDoor;
@@ -374,6 +399,7 @@ private:
 	Maze mappy;
 
 	Mtx44 MVP;
+	Mtx44 projection;
 
 	MS modelStack, viewStack, projectionStack;
 

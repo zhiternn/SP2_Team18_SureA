@@ -12,17 +12,17 @@ protected:
 	Vehicle(Vector3 pos = Vector3(0, 0, 0), Vector3 dir = Vector3(0, 0, 1))
 	{
 		position = pos;
-		view = dir.Normalized();
-		up = Vector3(0, 1, 0);
-		right = view.Cross(up);
+		frontDir = dir.Normalized();
+		normalDir = Vector3(0, 1, 0);
+		right = frontDir.Cross(normalDir);
 	}
 public:
 	virtual ~Vehicle(){}
 
 	virtual void Update(double dt, bool controlling) = 0;
 
-	Vector3 view;
-	Vector3 up;
+	Vector3 frontDir;
+	Vector3 normalDir;
 	Vector3 right;
 };
 
