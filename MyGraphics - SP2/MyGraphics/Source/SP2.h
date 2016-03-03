@@ -244,6 +244,7 @@ private:
 	void RenderShipGuard();
 	void RenderCivilian();
 	void RenderAlien();
+	void ResetItem();
 
 	void RenderFenceBoundary();
 	void RenderObstacles();
