@@ -1,3 +1,12 @@
+/****************************************************************************/
+/*!
+\file		mainMenu.h
+\author		Jason Zhang
+\par email: 155212W\@mymail.nyp.edu.sg
+\brief
+Class to define Main Menu Scene
+*/
+/****************************************************************************/
 #include "Scene.h"
 #include "Mesh.h"
 #include "Mtx44.h"
@@ -9,6 +18,13 @@
 #define MAIN_MENU_H
 
 using std::string;
+
+/****************************************************************************/
+/*!
+Class		mainMenu:
+\brief		Defines a Main Menu Scene and its methods
+*/
+/****************************************************************************/
 
 class mainMenu : public Scene
 {

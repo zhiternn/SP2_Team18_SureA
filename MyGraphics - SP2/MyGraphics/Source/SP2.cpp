@@ -26,7 +26,7 @@ SP2::~SP2()
 
 void SP2::Init()
 {
-	sound.playMusic("Sound//NormalMusic.mp3");
+	sound.playMusic("Sound//BattleAlien.mp3");
 	sound.Init();
 
 	srand(time(NULL));
@@ -297,8 +297,8 @@ void SP2::Init()
 	meshList[GEO_ShipButton] = MeshBuilder::GenerateOBJ("ShipButton", "OBJ//ShipButton.obj");
 	meshList[GEO_ShipButton]->textureID = LoadTGA("Image//walls3.tga");
 
-	meshList[GEO_AlarmPost] = MeshBuilder::GenerateOBJ("AlarmPost", "OBJ//AlarmLamp.obj");
-	meshList[GEO_AlarmPost]->textureID = LoadTGA("Image//AlarmTexture.tga");
+	meshList[GEO_AlarmPost] = MeshBuilder::GenerateOBJ("AlarmPost", "OBJ//AlarmPost.obj");
+	meshList[GEO_AlarmPost]->textureID = LoadTGA("Image//walls3.tga");
 
 	meshList[GEO_ShipButonCover] = MeshBuilder::GenerateOBJ("ShipButonCover", "OBJ//ShipButtonCover.obj");
 	meshList[GEO_ShipButonCover]->textureID = LoadTGA("Image//portal_Front.tga");
@@ -468,16 +468,20 @@ void SP2::Init()
 	//front 
 	frontDoor.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor.SetPosition(-20.3, 2.8, 37.75);
+	frontDoor.toBeIgnored = true;
 
 	frontDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	frontDoor2.SetPosition(-20.3, 2.8, 40.75);
+	frontDoor2.toBeIgnored = true;
 
 	//back door
 	backDoor.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor.SetPosition(20.9, 2.8, 37.75);
+	backDoor.toBeIgnored = true;
 
 	backDoor2.hitbox.SetSize(0.2, 5.5, 3);
 	backDoor2.SetPosition(20.9, 2.8, 40.75);
+	backDoor2.toBeIgnored = true;
 
 	//First stack of obstacles
 	Object* firstObstacles = new Object();
@@ -551,15 +555,15 @@ void SP2::Init()
 	//Items
 	ItemObject* item1 = new ItemObject();//Obj1 
 	item1->hitbox.SetSize(3, 2, 3);
-	item1->SetPosition(19, 1, 30);
+	item1->SetPosition(0, 1, 0);
 
 	ItemObject* item2 = new ItemObject();//Obj2 
 	item2->hitbox.SetSize(3, 2, 3);
-	item2->SetPosition(-30, 1, -22);
+	item2->SetPosition(-10, 1, 0);
 
 	ItemObject* item3 = new ItemObject();//Obj3 
 	item3->hitbox.SetSize(3, 2, 3);
-	item3->SetPosition(47, 1,-48);
+	item3->SetPosition(-5, 1, 0);
 
 	ItemObject* item4 = new ItemObject();//Button
 	item4->hitbox.SetSize(3, 2, 3);
@@ -723,9 +727,6 @@ void SP2::Init()
 
 void SP2::Update(double dt)
 {
-
-	std::cout << player.position.x << " " << player.position.z << std::endl;
-
 	if (playerState == STATE_FPS){
 		player.Update(dt);
 	}
@@ -805,7 +806,6 @@ void SP2::Update(double dt)
 				if ((*it)->status == Friendly::STATUS_CIVILIAN){
 					if (runningEvacuationScenario)
 					{
-						sound.playSoundEffect("Sound//StrangeGrowl.wav");
 						(*it)->GoTo(allyShip.position);
 						(*it)->state = Friendly::EVACUATE;
 					}
@@ -865,7 +865,7 @@ void SP2::Update(double dt)
 			case Friendly::STATUS_GENERAL1:
 				//start scenario
 				StartEvacuationScenario(60, 5);
-				sound.stopMusic("Sound//NormalMusic.mp3");
+				//sound.stopMusic("Sound//Normal.mp3");
 				sound.playMusic("Sound//AlramScene.mp3");
 				break;
 
@@ -874,7 +874,7 @@ void SP2::Update(double dt)
 				if (runningScenario == nullptr){
 					runningScenario = new ScenarioDefend(SCENARIO_DEFEND_WAVE, SCENARIO_DEFEND_TIMER, SCENARIO_DEFEND_INCREMENT, multiplay);
 					m_timer[TIMER_DEFEND].StartCountdown(SCENARIO_DEFEND_TIMER);
-					sound.stopMusic("Sound//NormalMusic.mp3");
+					//sound.stopMusic("Sound//Normal.mp3");
 					sound.playMusic("Sound//BattleAlien.mp3");
 				}
 				break;
@@ -882,8 +882,8 @@ void SP2::Update(double dt)
 			case Friendly::STATUS_GENERAL3:
 				//start scenario
 				StartInfiltrate = true;
-				sound.stopMusic("Sound//NormalMusic.mp3");
-				sound.playMusic("Sound//PickUpScene.mp3");
+				//sound.stopMusic("Sound//Normal.mp3");
+				sound.playMusic("Sound//Timekeeper.mp3");
 				break;
 
 			default:
@@ -948,9 +948,9 @@ void SP2::Update(double dt)
 			ItemObject::ItemList[i]->growing = 0;//item grows.
 			ItemObject::ItemList[i]->rotateitem = 0;//item rotation
 		}
-		ItemObject::ItemList[0]->SetPosition(19, 1,30);
-		ItemObject::ItemList[1]->SetPosition(-30,1,-22);
-		ItemObject::ItemList[2]->SetPosition(47, 1,-48);
+		ItemObject::ItemList[0]->SetPosition(5,0, 0);
+		ItemObject::ItemList[1]->SetPosition(15,0, 0);
+		ItemObject::ItemList[2]->SetPosition(25, 0, 0);
 	}
 
 	//musicEngine->setListenerPosition(irrklang::vec3df(0, 0, 0), irrklang::vec3df(0, 0, 1));
@@ -959,8 +959,8 @@ void SP2::Update(double dt)
 		if (runningScenario->stopScenario == true){
 			scenarioResult = runningScenario->winScenario;
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
-			sound.stopMusic("Sound//BattleAlien.mp3");
-			sound.playMusic("Sound//NormalMusic.mp3");
+			//sound.stopMusic("Sound//BattleAlien.mp3");
+			sound.playMusic("Sound//Normal.mp3");
 			delete runningScenario;
 			runningScenario = nullptr;
 		}
@@ -1441,20 +1441,16 @@ void SP2::Render()
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
-				sound.stopMusic("Sound//PickUpScene.mp3");
-				sound.playMusic("Sound//NormalMusic.mp3");
-				ResetItem();
-				portalChk = false;
+				//sound.stopMusic("Sound//Timekeeper.mp3");
+				//sound.playMusic("Sound//Normal.mp3");
 			}
 			else if (m_timer[TIMER_MAZE].GetTimeLeft() <= 0 && onGround == false){
 				scenarioResult = false;
 				m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 				mappy.mazeSuccess = false;
 				StartInfiltrate = false;
-				sound.stopMusic("Sound//PickUpScene.mp3");
-				sound.playMusic("Sound//NormalMusic.mp3");
-				ResetItem();
-				portalChk = false;
+				//sound.stopMusic("Sound//Timekeeper.mp3");
+				//sound.playMusic("Sound//Normal.mp3");
 			}
 		}
 
@@ -2240,6 +2236,17 @@ void SP2::MazeInteraction(double dt){
 	mappy.Collision();
 }
 
+/****************************************************************************/
+/*!
+\brief
+Render Sliding doors in the scene
+
+
+\return
+Resulting in Sliding doors being rendered
+*/
+/****************************************************************************/
+
 void SP2::RenderSlideDoor()
 {
 	//front door
@@ -2290,10 +2297,47 @@ void SP2::RenderSlideDoor()
 	
 }
 
+/****************************************************************************/
+/*!
+\brief
+Updates sliding doors movement
+
+\param dt - real time
+
+\return
+Resulting in Sliding doors moving accordingly
+*/
+/****************************************************************************/
+
 void SP2::DoorMovement(double dt)
 {
+	bool nearDoorF = false;
+	bool nearDoorB = false;
+
+	for (vector<Friendly*>::iterator it = Friendly::friendlyList.begin(); it != Friendly::friendlyList.end(); ++it)
+	{
+		if ((*it)->position.x <= -19 && (*it)->position.x >= -28 && (*it)->position.z <= 42 && (*it)->position.z >= 36 || (*it)->position.x <= -10 && (*it)->position.x >= -19 && (*it)->position.z <= 42 && (*it)->position.z >= 36)
+		{
+			nearDoorF = true;
+		}
+		if ((*it)->position.x <= 30 && (*it)->position.x >= 21 && (*it)->position.z <= 42 && (*it)->position.z >= 36 || (*it)->position.x <= 21 && (*it)->position.x >= 12 && (*it)->position.z <= 42 && (*it)->position.z >= 36)
+		{
+			nearDoorB = true;
+		}
+	}
+
 	//front door
-	if (player.position.x <= -19 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -10 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36)
+	if (player.position.x <= -19 && player.position.x >= -28 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= -10 && player.position.x >= -19 && player.position.z <= 42 && player.position.z >= 36 )
+	{
+		nearDoorF = true;
+	}
+	//back door
+	if (player.position.x <= 30 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 21 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
+	{
+		nearDoorB = true;
+	}
+
+	if (nearDoorF)
 	{
 		if (DoorMove < 2)
 		{
@@ -2308,8 +2352,7 @@ void SP2::DoorMovement(double dt)
 		Door = false;
 	}
 
-	//back door
-	if (player.position.x <= 30 && player.position.x >= 21 && player.position.z <= 42 && player.position.z >= 36 || player.position.x <= 21 && player.position.x >= 12 && player.position.z <= 42 && player.position.z >= 36)
+	if (nearDoorB)
 	{
 		if (DoorMove2 < 2)
 		{
@@ -2323,7 +2366,7 @@ void SP2::DoorMovement(double dt)
 		inRange2 = false;
 		Door2 = false;
 	}
-
+	//frontdoor movment
 	if (inRange == true)
 	{
 		if (Door == true)
@@ -2335,10 +2378,7 @@ void SP2::DoorMovement(double dt)
 			{
 				Door = false;
 			}
-
 		}
-
-
 	}
 	else if (inRange == false && Door == false)
 	{
@@ -2353,6 +2393,7 @@ void SP2::DoorMovement(double dt)
 			}
 		}
 	}
+	//backdoor movement
 	if (inRange2 == true)
 	{
 		if (Door2 == true)
@@ -2381,6 +2422,17 @@ void SP2::DoorMovement(double dt)
 		}
 	}
 }
+
+/****************************************************************************/
+/*!
+\brief
+Render traps in the scene
+
+
+\return
+Resulting in traps being rendered
+*/
+/****************************************************************************/
 
 void SP2::RenderTraps()
 {
@@ -2436,6 +2488,18 @@ void SP2::RenderTraps()
 	
 }
 
+/****************************************************************************/
+/*!
+\brief
+Updates trap movement
+
+\param dt - real time
+
+\return
+Resulting in traps moving accordingly
+*/
+/****************************************************************************/
+
 void SP2::TrapsMovement(double dt)
 {
 	if (mappy.mazeSuccess == true){
@@ -2476,6 +2540,17 @@ void SP2::TrapsMovement(double dt)
 	}
 }
 
+/****************************************************************************/
+/*!
+\brief
+Render Ally ship in the scene
+
+
+\return
+Resulting in Ally ship being rendered
+*/
+/****************************************************************************/
+
 void SP2::RenderAllyShip()
 {
 	modelStack.PushMatrix();
@@ -2490,6 +2565,17 @@ void SP2::RenderAllyShip()
 	modelStack.PopMatrix();
 }
 
+/****************************************************************************/
+/*!
+\brief
+Render Enemy ship in the scene
+
+
+\return
+Resulting in enemy ship being rendered
+*/
+/****************************************************************************/
+
 void SP2::RenderEnemyShip()
 {
 	if (onGround == true){
@@ -2501,6 +2587,17 @@ void SP2::RenderEnemyShip()
 		modelStack.PopMatrix();
 	}
 }
+
+/****************************************************************************/
+/*!
+\brief
+Render Base camp building in the scene
+
+
+\return
+Resulting in base camp being rendered
+*/
+/****************************************************************************/
 
 void SP2::RenderBaseCamp()
 {
@@ -2957,16 +3054,16 @@ void SP2::UpdateEvacuationScenario()
 			scenarioResult = true;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
-			sound.stopMusic("Sound//AlramScene.mp3");
-			sound.playMusic("Sound//NormalMusic.mp3");
+			//sound.stopMusic("sound//AlramScene.mp3");
+			//sound.playMusic("sound//Normal.mp3");
 		}
 		else if (m_timer[TIMER_SCENARIO_EVACUATE].GetTimeLeft() <= 0){//LOSE
 			m_timer[TIMER_SCENARIO_TEXTS].StartCountdown(5);
 			scenarioResult = false;
 			runningEvacuationScenario = false;
 			GenerateCivilians(InitialCivilianCount);
-			sound.stopMusic("Sound//AlramScene.mp3");
-			sound.playMusic("Sound//NormalMusic.mp3");
+			//sound.stopMusic("sound//AlramScene.mp3");
+			//sound.playMusic("sound//Normal.mp3");
 		}
 	}
 }
@@ -3013,6 +3110,17 @@ void SP2::GenerateCivilians(int amount)
 
 	tempostorage.clear();
 }
+
+/****************************************************************************/
+/*!
+\brief
+Render Fence mesh around the boundary of the map
+
+
+\return
+Resulting in fences being rendered
+*/
+/****************************************************************************/
 
 void SP2::RenderFenceBoundary()
 {
@@ -3513,43 +3621,4 @@ void SP2::RenderAlarmPost()
 	modelStack.Scale(0.3, 0.3, 0.3);
 	RenderMesh(meshList[GEO_AlarmPost], true);
 	modelStack.PopMatrix();
-}
-
-void SP2::ResetItem()
-{
-	for (int i = 0; i < ItemObject::ItemList.size(); i++)
-	{
-		ItemObject::ItemList[i]->takeItem = false;//item
-		ItemObject::ItemList[i]->growItem = false;//item
-		ItemObject::ItemList[i]->growingbool = false;
-		ItemObject::ItemList[i]->cangrowItem = false;
-		ItemObject::ItemList[i]->haveItem = false;//item
-		ItemObject::ItemList[i]->putItem = false;
-		ItemObject::ItemList[i]->ItemBoolInterval = false;
-		ItemObject::ItemList[i]->dropItem = false;
-		ItemObject::ItemList[i]->canPut = false;
-		ItemObject::ItemList[i]->oneTimeThing = false;
-
-		ItemObject::ItemList[i]->buttonCoverBool = false;
-		ItemObject::ItemList[i]->buttonRiseBool = false;
-		ItemObject::ItemList[i]->buttonPressBool = false;
-		ItemObject::ItemList[i]->cbuttonRise = false;
-
-		ItemObject::ItemList[i]->TextCheck = false;
-		ItemObject::ItemList[i]->ShipGuardCheck = false;
-
-		ItemObject::ItemList[i]->mazeCheck = 0;
-		ItemObject::ItemList[i]->buttonCover = 0;
-		ItemObject::ItemList[i]->buttonRise = 0;
-		ItemObject::ItemList[i]->counter = 0;
-
-		ItemObject::ItemList[i]->ItemInterval = 0;
-		ItemObject::ItemList[i]->fly = 0.001;//item
-		ItemObject::ItemList[i]->growing = 0;//item grows.
-		ItemObject::ItemList[i]->rotateitem = 0;//item rotation
-	}
-	ItemObject::ItemList[0]->SetPosition(19, 1, 30);
-	ItemObject::ItemList[1]->SetPosition(-30, 1, -22);
-	ItemObject::ItemList[2]->SetPosition(47, 1, -48);
-
 }

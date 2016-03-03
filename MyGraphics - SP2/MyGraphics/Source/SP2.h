@@ -269,8 +269,6 @@ private:
 	void AlarmUpdate();
 	void RenderAlarmPost();
 
-	void ResetItem();
-
 	bool ItemCheckPosition(Vector3 pos, float degree);
 
 	float interval; // can delete after alarmlight has been set to button
