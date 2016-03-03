@@ -765,6 +765,17 @@ void SP2::Update(double dt)
 		ItemObject::ItemList[3]->mazeCheck = 0;
 	}
 
+	if (Application::IsKeyPressed('B')){
+		playerState = STATE_INTERACTING_MAZE;
+
+		Application::state2D = true;
+		stateChanged = true;
+		m_timer[TIMER_MAZE].StartCountdown(SCENARIO_INFILTRATE_TIMER);
+
+		mappy = Maze(16, 16, screenX, screenY);
+		Application::SetMousePosition(mappy.gridSizeX + mappy.gridSizeX / 2, mappy.gridSizeY - mappy.gridSizeY);
+	}
+
 	if (stateChanged && Application::state2D == false){
 		Application::SetMousePosition(0, 0);
 		Application::HideCursor();
@@ -1137,6 +1148,7 @@ void SP2::Render()
 				modelStack.LoadIdentity();
 			}
 		}
+<<<<<<< 5496926e8ebdb65c2951e20a3bdd98c2a3b6ad96
 
 		//viewStack.LoadIdentity();
 		//viewStack.LookAt(
@@ -1151,6 +1163,22 @@ void SP2::Render()
 		//RENDER OBJECTS
 		//RenderMesh(meshList[GEO_AXES], false);
 
+=======
+
+		//viewStack.LoadIdentity();
+		//viewStack.LookAt(
+		//	camPos.x, camPos.y, camPos.z,
+		//	camTar.x, camTar.y, camTar.z,
+		//	camUp.x, camUp.y, camUp.z
+		//	);
+		//modelStack.LoadIdentity();
+
+		LightsSetup();
+
+		//RENDER OBJECTS
+		//RenderMesh(meshList[GEO_AXES], false);
+
+>>>>>>> 4ab91ee0b093873e988d7754e88d6eaf30295ff2
 		modelStack.PushMatrix();
 		modelStack.Translate(camPos.x, camPos.y, camPos.z);
 		RenderSkybox();
@@ -1975,6 +2003,16 @@ void SP2::RenderPortal()
 	modelStack.PopMatrix();
 }
 
+
+
+/******************************************************************************/
+/*!
+\param double dt
+
+\brief	Checks if maze if completed
+		if true, open trapdoor, if false, keep it closed
+*/
+/******************************************************************************/
 void SP2::UpdateDoor(double dt)
 {
 	

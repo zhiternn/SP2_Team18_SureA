@@ -1,3 +1,15 @@
+/******************************************************************************/
+/*!
+\file	MazeInteraction.h
+\author Quek Cher Yi
+\par	email: 155124D@mymail.nyp.edu.sg
+\brief
+Class to define the maze minigame
+*/
+/******************************************************************************/
+
+
+
 #ifndef MAZEINTERACTION_H
 #define MAZEINTERACTION_H
 
@@ -8,6 +20,12 @@
 
 using std::vector;
 
+/******************************************************************************/
+/*!
+Class Maze:
+\brief	Defines maze and its required variables and methods
+*/
+/******************************************************************************/
 class Maze{
 
 

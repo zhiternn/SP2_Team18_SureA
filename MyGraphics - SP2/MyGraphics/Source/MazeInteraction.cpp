@@ -1,12 +1,38 @@
+/******************************************************************************/
+/*!
+\file	MazeInteraction.cpp
+\author Quek Cher Yi	
+\par	email: 155124D@mymail.nyp.edu.sg
+\brief
+Class to define maze interactions
+*/
+/******************************************************************************/
+
+
 #include "MazeInteraction.h"
 #include "Application.h"
 #include <ctime>
 #include <iostream>
 
+/******************************************************************************/
+/*!
+\brief	Maze constructor
+
+\param	numberOfCols
+	int for number of columns
+\param	numberOfRows
+	int for number of rows
+\param	screenSizeX
+	int for the x coords for screen
+\param screenSizeY
+	int for the y coords for screen
+*/
+/******************************************************************************/
+
 Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 {
-	gridSizeY = (float)(screenSizeY*1.f) / numberOfRows;
-	gridSizeX = (float)(screenSizeX*0.75f) / numberOfCols;
+	gridSizeY = (float)(screenSizeY*1.f) / numberOfRows;   		//GridSize for each quad
+	gridSizeX = (float)(screenSizeX*0.75f) / numberOfCols;		//GridSize for each quad
 	startingPointX = (float)screenSizeX / 2.f;
 	startingPointY = (float)screenSizeY / 2.f;
 		
@@ -16,7 +42,13 @@ Maze::Maze(int numberOfCols, int numberOfRows, int screenSizeX, int screenSizeY)
 	GenerateMap();
 }
 
-void Maze::GenerateMap(void)
+/******************************************************************************/
+/*!
+\brief	Generates the maze
+*/
+/******************************************************************************/
+
+void Maze::GenerateMap()
 {
 	int iGeneratePathX = 1; // STARTING POINT
 	int iGeneratePathY = 1; // STARTING POINT 
@@ -33,7 +65,7 @@ void Maze::GenerateMap(void)
 	}
 
 	//
-	//	RANDOMLY GENERATE PATHS STARTING FROM CENTER
+	//	Randomly generates path
 	//
 	srand((unsigned int)time(NULL));
 	do{
@@ -96,11 +128,17 @@ void Maze::GenerateMap(void)
 		breakCounter++;
 	} while (mapLayout[colNumber - 3][rowNumber - 3] != MAP_PATH);// makes sure the map is filled up at least >= to the percentage inputed
 
-	mapLayout[1][1] = MAP_START;
-	mapLayout[colNumber - 3][rowNumber - 3] = MAP_END;
+	mapLayout[1][1] = MAP_START;							//Set starting position in array
+	mapLayout[colNumber - 3][rowNumber - 3] = MAP_END;		//Set ending position in array
 
 }			 
 
+/******************************************************************************/
+/*!
+\brief 	Prints the map
+	Nested loop to print map, prints according to whether its a map_block
+*/
+/******************************************************************************/
 void Maze::PrintMap(){
 	for (size_t y = 0; y<colNumber; ++y){
 		for (size_t x = 0; x<rowNumber; ++x){
@@ -116,9 +154,19 @@ void Maze::PrintMap(){
 	}
 }
 
+/******************************************************************************/
+/*!
+\brief	Checks for collision && check if player completes the maze
+		Uses perecentage of screensize to find where the mouse is compared to a single rendered quad
+
+
+*/
+/******************************************************************************/
 void Maze::Collision(){
 	double mouseX, mouseY;
 	Application::GetMouseMovement(mouseX, mouseY);
+
+	std::cout << startingPointX << "     Y        " << startingPointY << std::endl;
 
 	int xGrid = abs(((((mouseX - startingPointX) - (gridSizeX * 0.5)) / gridSizeX) + 0.5));
 	int yGrid = abs(((((mouseY - startingPointY) - (gridSizeY * 0.5)) / gridSizeY) + 0.5));
@@ -132,3 +180,4 @@ void Maze::Collision(){
 	}
 	
 }
+

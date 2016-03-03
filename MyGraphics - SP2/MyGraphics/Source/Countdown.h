@@ -1,3 +1,15 @@
+/******************************************************************************/
+/*!
+\file	Timer.h
+\author Quek Cher Yi
+\par	email: 155124D@mymail.nyp.edu.sg
+\brief
+Class to define Countdown and its methods
+*/
+/******************************************************************************/
+
+
+
 #include "timer.h"
 
 #ifndef COUNTDOWN_H
@@ -6,35 +18,11 @@
 class Countdown : public StopWatch
 {
 public:
-	Countdown()
-	{
-		StopWatch();
-		duration = 0;
-		isCountingDown = false;
-	}
-	virtual ~Countdown()
-	{
-	}
+	Countdown();
+	~Countdown();
 
-	void StartCountdown(double a)
-	{
-		isCountingDown = true;
-		duration = a;
-		startTimer();
-	}
-	double GetTimeLeft() // true when times up
-	{
-		if (isCountingDown){
-			duration -= getElapsedTime();
-			if (duration <= 0){
-				duration = 0;
-				isCountingDown = false;
-			}
-		}
-
-		return duration;
-	}
-
+	void StartCountdown(double a);
+	double GetTimeLeft();
 	bool isCountingDown;
 private:
 	double duration;

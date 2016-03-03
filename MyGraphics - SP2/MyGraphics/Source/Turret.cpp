@@ -91,6 +91,7 @@ void Turret::Update(double dt, bool controlling)
 				camera.view = rotate * camera.view;
 				camera.right = rotate * camera.right;
 				camera.up = rotate * camera.up;
+<<<<<<< 5496926e8ebdb65c2951e20a3bdd98c2a3b6ad96
 			}
 
 			barrelPos = seatPos + (frontDir * (hitbox.sizeX / 1.5f));
@@ -172,6 +173,106 @@ void Turret::Update(double dt, bool controlling)
 			barrelPos = seatPos + (frontDir * (hitbox.sizeX / 1.5f));
 			barrelPos.y -= (hitbox.sizeY*0.05);
 
+=======
+			}
+
+			barrelPos = seatPos + (frontDir * (hitbox.sizeX / 1.5f));
+			barrelPos.y -= (hitbox.sizeY*0.05);
+
+			if (Application::IsKeyPressed(VK_SPACE) && readyToShoot >= (float)(1.f / roundPerSecond) && !isOverHeated){
+				readyToShoot = 0.f;
+				sound.playSoundEffect("Sound//Gun1.mp3");
+				Projectile::projectileList.push_back(new Projectile(
+					Vector3(barrelPos.x, barrelPos.y, barrelPos.z),
+					Vector3(frontDir.x, frontDir.y, frontDir.z),
+					150,
+					65,
+					10
+					));
+				heatSystem += heatAmount;
+				if (heatSystem > HEAT_LIMIT){
+					isOverHeated = true;
+				}
+			}
+			else if (readyToShoot < (float)(1.f / roundPerSecond)){
+				readyToShoot += (float)(dt);
+			}
+		}
+		else if (alternateControl == 1){
+			/*double mouseX, mouseY;
+
+			Application::GetMouseMovement(mouseX, mouseY);
+			float yaw = (float)(mouseX * TURN_SPEED * dt);
+			Mtx44 rotate;
+			rotate.SetToRotation(yaw, 0, 1, 0);
+			frontDir = rotate * frontDir;
+			right = rotate * right;
+			normalDir = rotate * normalDir;
+
+			if (frontDir.y < 0.95 && mouseY > 0 || frontDir.y > -0.95 && mouseY < 0){
+				float pitch = (float)(mouseY * TURN_SPEED * dt);
+				rotate.SetToRotation(pitch, right.x, right.y, right.z);
+				frontDir = rotate * frontDir;
+				right = rotate * right;
+				normalDir = rotate * normalDir;
+			}*/
+			if (Application::IsKeyPressed(VK_UP)){
+				if (frontDir.y < 0.5f){
+					float pitch = (float)(TURN_SPEED / 2 * dt);
+					forRotationPitch += pitch;
+					Mtx44 rotate;
+					rotate.SetToRotation(pitch, right.x, right.y, right.z);
+					frontDir = rotate * frontDir;
+					right = rotate * right;
+					normalDir = rotate * normalDir;
+					camera.view = rotate * camera.view;
+					camera.right = rotate * camera.right;
+					camera.up = rotate * camera.up;
+				}
+			}
+			if (Application::IsKeyPressed(VK_DOWN)){
+				if (frontDir.y > -0.5f){
+					float pitch = -(float)(TURN_SPEED / 2 * dt);
+					forRotationPitch += pitch;
+					Mtx44 rotate;
+					rotate.SetToRotation(pitch, right.x, right.y, right.z);
+					frontDir = rotate * frontDir;
+					right = rotate * right;
+					normalDir = rotate * normalDir;
+					camera.view = rotate * camera.view;
+					camera.right = rotate * camera.right;
+					camera.up = rotate * camera.up;
+				}
+			}
+			if (Application::IsKeyPressed(VK_LEFT)){
+				float yaw = (float)(TURN_SPEED * dt);
+				forRotationYaw += yaw;
+				Mtx44 rotate;
+				rotate.SetToRotation(yaw, 0, 1, 0);
+				frontDir = rotate * frontDir;
+				right = rotate * right;
+				normalDir = rotate * normalDir;
+				camera.view = rotate * camera.view;
+				camera.right = rotate * camera.right;
+				camera.up = rotate * camera.up;
+			}
+			if (Application::IsKeyPressed(VK_RIGHT)){
+				float yaw = -(float)(TURN_SPEED * dt);
+				forRotationYaw += yaw;
+				Mtx44 rotate;
+				rotate.SetToRotation(yaw, 0, 1, 0);
+				frontDir = rotate * frontDir;
+				right = rotate * right;
+				normalDir = rotate * normalDir;
+				camera.view = rotate * camera.view;
+				camera.right = rotate * camera.right;
+				camera.up = rotate * camera.up;
+			}
+
+			barrelPos = seatPos + (frontDir * (hitbox.sizeX / 1.5f));
+			barrelPos.y -= (hitbox.sizeY*0.05);
+
+>>>>>>> 4ab91ee0b093873e988d7754e88d6eaf30295ff2
 			if (Application::IsKeyPressed(VK_LBUTTON) && readyToShoot >= (float)(1.f / roundPerSecond) && !isOverHeated){
 				readyToShoot = 0.f;
 				sound.playSoundEffect("Sound//Gun1.mp3");
