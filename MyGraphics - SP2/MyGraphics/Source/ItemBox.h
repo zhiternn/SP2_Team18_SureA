@@ -1,8 +1,23 @@
+/****************************************************************************/
+/*!
+\file ItemBox.h
+\author Bek Kunta
+\par email: xiaobek\@gmail.com
+\brief
+A Class that is define for the ItemBox in the game
+*/
+/****************************************************************************/
 #ifndef ITEMBOX_H
 #define ITEMBOX_H
 
 #include "Vector3.h"
 #include "Hitbox.h"
+/****************************************************************************/
+/*!
+Class ItemObject:
+\brief Defines ItemObject and its methods,functions and variables used.
+*/
+/****************************************************************************/
 
 class ItemObject
 {

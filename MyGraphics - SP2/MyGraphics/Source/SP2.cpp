@@ -2862,6 +2862,16 @@ void SP2::RenderLightSlider()
 		);
 }
 
+/****************************************************************************/
+/*!
+\brief ItemCheckPosition()
+\param pos
+a Vector3 to check the position of the item input
+\param degress
+a float to check the angle input
+It checks the pos of the player and the item and checks the FOV(Degree) of the player then return true or false; 
+*/
+/****************************************************************************/
 bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 {
 	if (pos != player.position){
@@ -2879,7 +2889,14 @@ bool SP2::ItemCheckPosition(Vector3 pos, float degree)
 		}
 	}
 }
-
+/****************************************************************************/
+/*!
+\brief
+AlienAnimation
+\param dt
+a dt to run its animation. Legs and hands movements.
+*/
+/****************************************************************************/
 void SP2::AlienAnimation(double dt)
 {
 	if (AlienSpawn == true)
@@ -2963,7 +2980,13 @@ void SP2::RenderGeneral(){
 	RenderMesh(meshList[GEO_GENERAL], true);
 	modelStack.PopMatrix();
 }
-
+/****************************************************************************/
+/*!
+\brief
+RenderShipGuard
+if player is in ship guard collision box.
+*/
+/****************************************************************************/
 void SP2::RenderShipGuard()
 {
 	if (ItemObject::ItemList[4]->ShipGuardCheck == false)
@@ -3656,4 +3679,49 @@ void SP2::RenderAlarmPost()
 	modelStack.Scale(0.3, 0.3, 0.3);
 	RenderMesh(meshList[GEO_AlarmPost], true);
 	modelStack.PopMatrix();
+}
+
+/****************************************************************************/
+/*!
+\brief ResetItem()
+reset for itempickup , item position and item animation.
+*/
+/****************************************************************************/
+void SP2::ResetItem()
+{
+	for (int i = 0; i < ItemObject::ItemList.size(); i++)
+	{
+		ItemObject::ItemList[i]->takeItem = false;//item
+		ItemObject::ItemList[i]->growItem = false;//item
+		ItemObject::ItemList[i]->growingbool = false;
+		ItemObject::ItemList[i]->cangrowItem = false;
+		ItemObject::ItemList[i]->haveItem = false;//item
+		ItemObject::ItemList[i]->putItem = false;
+		ItemObject::ItemList[i]->ItemBoolInterval = false;
+		ItemObject::ItemList[i]->dropItem = false;
+		ItemObject::ItemList[i]->canPut = false;
+		ItemObject::ItemList[i]->oneTimeThing = false;
+
+		ItemObject::ItemList[i]->buttonCoverBool = false;
+		ItemObject::ItemList[i]->buttonRiseBool = false;
+		ItemObject::ItemList[i]->buttonPressBool = false;
+		ItemObject::ItemList[i]->cbuttonRise = false;
+
+		ItemObject::ItemList[i]->TextCheck = false;
+		ItemObject::ItemList[i]->ShipGuardCheck = false;
+
+		ItemObject::ItemList[i]->mazeCheck = 0;
+		ItemObject::ItemList[i]->buttonCover = 0;
+		ItemObject::ItemList[i]->buttonRise = 0;
+		ItemObject::ItemList[i]->counter = 0;
+
+		ItemObject::ItemList[i]->ItemInterval = 0;
+		ItemObject::ItemList[i]->fly = 0.001;//item
+		ItemObject::ItemList[i]->growing = 0;//item grows.
+		ItemObject::ItemList[i]->rotateitem = 0;//item rotation
+	}
+	ItemObject::ItemList[0]->SetPosition(19, 1, 30);
+	ItemObject::ItemList[1]->SetPosition(-30, 1, -22);
+	ItemObject::ItemList[2]->SetPosition(47, 1, -48);
+
 }

@@ -1,7 +1,22 @@
+/****************************************************************************/
+/*!
+\file ItemBox.cpp
+\author Bek Kunta
+\par email: xiaobek\@gmail.com
+\brief
+A Class that is define for the ItemBox in the game
+*/
+/****************************************************************************/
 #include "ItemBox.h"
 
 std::vector<ItemObject*> ItemObject::ItemList;
 
+/****************************************************************************/
+/*!
+\brief ItemObject()
+Setting hitbox position , hitboxSize, variables, and push back
+*/
+/****************************************************************************/
 ItemObject::ItemObject()
 {
 	position.Set(0, 0, 0);
@@ -38,11 +53,27 @@ ItemObject::ItemObject()
 
 	ItemObject::ItemList.push_back(this);
 }
-
+/****************************************************************************/
+/*!
+\brief
+ItemObject Destructor
+*/
+/****************************************************************************/
 ItemObject::~ItemObject()
 {
 }
-
+/****************************************************************************/
+/*!
+\brief
+SetPosition
+\param x
+a float position that represent X
+\param y
+a float position that represent Y
+\param z
+a float position that represent Z
+*/
+/****************************************************************************/
 void ItemObject::SetPosition(float x, float y, float z)
 {
 	position.Set(
@@ -56,7 +87,14 @@ void ItemObject::SetPosition(float x, float y, float z)
 		position.z
 		));
 }
-
+/****************************************************************************/
+/*!
+\brief
+PickUpAnimation
+\param dt
+a dt to run its animation. item will float to then grow then it will than be picked up and stay on screen till its been put at the teleporter.
+*/
+/****************************************************************************/
 void ItemObject::PickUpAnimation(double dt)
 {
 	//////////////////
@@ -140,7 +178,14 @@ void ItemObject::PickUpAnimation(double dt)
 	//ITEM ANIMATION//
 	//////////////////
 }
-
+/****************************************************************************/
+/*!
+\brief
+Collider
+\param hitbox
+a Hitbox check if player and item is colliding with each other
+*/
+/****************************************************************************/
 void ItemObject::Collider(Hitbox hitbox)
 {
 	if (Hitbox::CheckItems(this->hitbox, hitbox)){
@@ -161,7 +206,14 @@ void ItemObject::Collider(Hitbox hitbox)
 		TextCheck = false;
 	}
 }
-
+/****************************************************************************/
+/*!
+\brief
+PickUp
+\param hitbox
+a Hitbox check if player and item is colliding with each other
+*/
+/****************************************************************************/
 void ItemObject::PickUp(Hitbox hitbox)
 {
 	if (Hitbox::CheckItems(this->hitbox, hitbox))
@@ -184,7 +236,14 @@ void ItemObject::PickUp(Hitbox hitbox)
 		}
 	}
 }
-
+/****************************************************************************/
+/*!
+\brief
+ItemDelay
+\param double
+a dt just for checking interval
+*/
+/****************************************************************************/
 void ItemObject::ItemDelay(double dt)
 {
 	if (ItemBoolInterval == true)
@@ -197,7 +256,15 @@ void ItemObject::ItemDelay(double dt)
 		ItemBoolInterval = false;
 	}
 }
-
+/****************************************************************************/
+/*!
+\brief
+ShipButtonAnimation
+\param dt
+a dt to run its animation.
+When press maze would run.
+*/
+/****************************************************************************/
 void ItemObject::ShipButtonAnimation(double dt)
 {
 	if (buttonCoverBool == true && buttonCover < 90)
